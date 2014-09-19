@@ -21,6 +21,11 @@ ProjectSource/*/release
 
 ProjectSource/*/ui_*
 
-ProjectSource/*.pro.*
+ProjectSource/*.pro.user
 
 ProjectSource/*/*.o
+
+ProjectSource/*/lib*
+
+ProjectSource/*/moc*
+
