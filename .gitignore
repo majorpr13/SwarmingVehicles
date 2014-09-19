@@ -22,3 +22,5 @@ ProjectSource/*/release
 ProjectSource/*/ui_*
 
 ProjectSource/*.pro.*
+
+ProjectSource/*/*.o
