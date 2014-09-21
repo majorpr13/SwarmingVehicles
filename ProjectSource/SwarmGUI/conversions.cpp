@@ -1,5 +1,5 @@
 #include "conversions.h"
-
+#include <iostream>
 Conversions::Conversions()
 {
     m_Initialization = new Initialization();

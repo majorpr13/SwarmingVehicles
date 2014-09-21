@@ -44,6 +44,18 @@ struct VehicleStateV
     double Goal_Heading;
     double Goal_Altitude;
 };
+struct VehicleRCHL
+{
+    VehicleRCHL(): throttle_low(1500),throttle_high(1500),yaw_low(1500),yaw_high(1500),pitch_low(1500),pitch_high(1500),roll_low(1500),roll_high(1500){}
+    int throttle_low;
+    int throttle_high;
+    int yaw_low;
+    int yaw_high;
+    int pitch_low;
+    int pitch_high;
+    int roll_low;
+    int roll_high;
+};
 }
 namespace FlightModeStructure{
 struct FlightModes

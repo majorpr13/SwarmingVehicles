@@ -10,6 +10,7 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
 
     m_ROSParser = new ROSParse(10);
     m_MapVehicleWidgets.clear();
+    m_MapVehicleRC.clear();
     m_HeartBeatTimer = new HeartBeatTimer();
     warningCounter = 0;
 
@@ -19,6 +20,7 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
     connect(m_ROSParser,SIGNAL(newVehicleStatus(mavlink_common::SYS_STATUS)), this, SLOT(updateVehicleSysStatus(mavlink_common::SYS_STATUS)));
     connect(m_ROSParser,SIGNAL(newVehiclePositionRaw(mavlink_common::GPS_RAW_INT)), this, SLOT(updateVehiclePositionRaw(mavlink_common::GPS_RAW_INT)));
     connect(m_ROSParser,SIGNAL(newVehiclePositionScaled(mavlink_common::GLOBAL_POSITION_INT)), this, SLOT(updateVehiclePositionScaled(mavlink_common::GLOBAL_POSITION_INT)));
+    connect(m_ROSParser,SIGNAL(newRCValues(mavlink_common::RC_CHANNELS_RAW)),this, SLOT(updateRadioValues(mavlink_common::RC_CHANNELS_RAW)));
     roll_counter = 0.0;
     pitch_counter = 0.0;
 }
@@ -66,7 +68,8 @@ void SwarmController_GUI::on_addVehicleID_clicked()
         m_MapVehicleWidgets[VehicleID]->addVehicle(VehicleID);
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(requestStream(int,int,int)),this,SLOT(updateStreamRequest(int,int,int)));
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(desiredFlightMode(int,int)),this,SLOT(updateDesiredFlightMode(int,int)));
-        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(),this,SLOT();
+        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(armRequest(int,bool)),this,SLOT(armRequest(int,bool)));
+        //connect(m_MapVehicleWidgets[VehicleID],SIGNAL(radioCalibrate(int,int,bool)),this,SLOT(radioCalibration(int,int,bool));
         m_ROSParser->addVehicle(VehicleID);
     }
 
@@ -97,8 +100,8 @@ void SwarmController_GUI::updateVehicleHeartbeat(const mavlink_common::HEARTBEAT
 {
     int VehicleID = VehicleHeartbeat.sysid;
     m_HeartBeatTimer->restartTimer(VehicleID);
-    //if the vehicle is armed
-    if(VehicleHeartbeat.system_status == 4)
+
+    if(VehicleHeartbeat.base_mode == 209)
     {
         ui->tableView_VehicleInformation->ChangeArmed(VehicleID, true);
         m_MapVehicleWidgets[VehicleID]->updateArmStatus(true);
@@ -146,4 +149,14 @@ void SwarmController_GUI::updateDesiredFlightMode(const int &VehicleID, const in
 void SwarmController_GUI::radioCalibration(const int &VehicleID, const int &MessageStream, const bool &boolStream)
 {
     m_ROSParser->publishDataStreamRequest(VehicleID,MessageStream,10);
+}
+
+void SwarmController_GUI::updateRadioValues(const mavlink_common::RC_CHANNELS_RAW &VehicleRCValues)
+{
+    m_MapVehicleWidgets[VehicleRCValues.sysid]->updateRCValues(VehicleRCValues);
+}
+
+void SwarmController_GUI::armRequest(const int &VehicleID, const bool &armValue)
+{
+    m_ROSParser->publishArmDisarm(VehicleID,armValue);
 }

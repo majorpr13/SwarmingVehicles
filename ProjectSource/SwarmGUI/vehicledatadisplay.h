@@ -6,11 +6,14 @@
 #include <mavlink_common/GPS_RAW_INT.h>
 #include <mavlink_common/HEARTBEAT.h>
 #include <mavlink_common/GLOBAL_POSITION_INT.h>
+#include <mavlink_common/RC_CHANNELS_RAW.h>
+
 #include "WidgetPFD.h"
 #include "qfi_PFD.h"
 
 #include "initialization.h"
 #include "conversions.h"
+#include "Definitions.h"
 
 namespace Ui {
 class VehicleDataDisplay;
@@ -27,6 +30,8 @@ public:
 
     void addVehicle(const int &VehicleID);
 
+    void updateRCValues(const mavlink_common::RC_CHANNELS_RAW &RCValues);
+
 public slots:
 
     void updateAttitude(const mavlink_common::ATTITUDE &VehicleAttitude);
@@ -39,6 +44,7 @@ signals:
     void desiredFlightMode(const int &VehicleID, const int &FlightMode);
     void requestStream(const int &VehicleID, const int &StreamType, const int &StreamRate);
     void radioCalibrate(const int &VehicleID, const int &StreamID, const bool &boolStream);
+    void armRequest(const int &VehicleID, const bool &armValue);
 
 private slots:
 
@@ -48,8 +54,14 @@ private slots:
 
     void on_pushButton_Cal_released();
 
+    void on_pushButton_ARM_clicked();
+
+    void on_pushButton_DISARM_clicked();
+
 private:
     Ui::VehicleDataDisplay *ui;
+
+    StructureDefinitions::VehicleRCHL m_RCCalibration;
 
     bool boolean_Calibration;
 

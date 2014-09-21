@@ -17,11 +17,13 @@
 #include <mavlink_common/GPS_RAW_INT.h>
 #include <mavlink_common/SYS_STATUS.h>
 #include <mavlink_common/GLOBAL_POSITION_INT.h>
+#include <mavlink_common/RC_CHANNELS_RAW.h>
 
 #include <mavlink_common/SET_MODE.h>
 #include <mavlink_common/REQUEST_DATA_STREAM.h>
 #include <mavlink_common/E_MAV_DATA_STREAM.h>
 #include <mavlink_common/E_MAV_CMD.h>
+#include <mavlink_common/COMMAND_LONG.h>
 
 class ROSParse : public QThread
 {
@@ -41,6 +43,9 @@ public:
 
     void publishDesiredFlightMode(const int &VehicleID, const int &FlightMode);
 
+    void publishArmDisarm(const int &VehicleID, const bool &ArmStatus);
+    int m_value;
+
 signals:
 
     void newVehicleAttitude(mavlink_common::ATTITUDE msg);
@@ -48,6 +53,7 @@ signals:
     void newVehiclePositionRaw(mavlink_common::GPS_RAW_INT msg);
     void newVehiclePositionScaled(mavlink_common::GLOBAL_POSITION_INT msg);
     void newVehicleStatus(mavlink_common::SYS_STATUS msg);
+    void newRCValues(mavlink_common::RC_CHANNELS_RAW msg);
 
 public slots:
 
@@ -61,6 +67,7 @@ private slots:
     void UAVPositionRaw(const mavlink_common::GPS_RAW_INT &msg);
     void UAVPositionScaled(const mavlink_common::GLOBAL_POSITION_INT &msg);
     void UAVSysStatus(const mavlink_common::SYS_STATUS &msg);
+    void UAVRCValue(const mavlink_common::RC_CHANNELS_RAW &msg);
 
     void publishGCSHeartbeat();
 
@@ -72,12 +79,14 @@ private:
 
     ros::Publisher arduPub_requestDataStreams;
     ros::Publisher arduPub_desiredFlightMode;
+    ros::Publisher arduPub_armRequest;
 
     ros::Subscriber arduSub_Heartbeat;
     ros::Subscriber arduSub_Attitude;
     ros::Subscriber arduSub_GPSPositionRaw;
     ros::Subscriber arduSub_GPSPositionScaled;
     ros::Subscriber arduSub_SysStatus;
+    ros::Subscriber arduSub_RCRawValue;
 
     ros::AsyncSpinner* rosspinner;
 

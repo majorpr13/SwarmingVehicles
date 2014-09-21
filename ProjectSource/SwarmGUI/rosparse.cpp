@@ -16,11 +16,14 @@ ROSParse::ROSParse(const int &GCSID)
         arduSub_GPSPositionRaw = node_handler.subscribe("/from_mav_gps_raw_int",10,&ROSParse::UAVPositionRaw,this);
         arduSub_GPSPositionScaled = node_handler.subscribe("/from_mav_global_position_int",10, &ROSParse::UAVPositionScaled,this);
         arduSub_SysStatus = node_handler.subscribe("/from_mav_sys_status",10,&ROSParse::UAVSysStatus,this);
+        arduSub_RCRawValue = node_handler.subscribe("/from_mav_rc_channels_raw",10,&ROSParse::UAVRCValue,this);
 
         arduPub_desiredFlightMode = node_handler.advertise<mavlink_common::SET_MODE>("to_mav_set_mode",10);
         arduPub_requestDataStreams = node_handler.advertise<mavlink_common::REQUEST_DATA_STREAM>("to_mav_request_data_stream",10);
+        arduPub_armRequest = node_handler.advertise<mavlink_common::COMMAND_LONG>("to_mav_command_long",10);
         //arduPub_gcsHeartbeat = node_handler.advertise<mavlink_common::HEARTBEAT>("to_mav_heartbeat",2);
 
+        m_value = 0;
         //connect(m_TimerHeartbeat,SIGNAL(timeout()),this,SLOT(publishGCSHeartbeat()));
         rosspinner = new ros::AsyncSpinner(0);
         rosspinner->start();
@@ -87,6 +90,14 @@ void ROSParse::UAVSysStatus(const mavlink_common::SYS_STATUS &msg)
     }
 }
 
+void ROSParse::UAVRCValue(const mavlink_common::RC_CHANNELS_RAW &msg)
+{
+    if(m_MapVehicleIDs.contains(msg.sysid))
+    {
+        emit(newRCValues(msg));
+    }
+}
+
 void ROSParse::publishGCSHeartbeat()
 {
     StructureDefinitions::GCSDefinition GCSParameters;
@@ -135,5 +146,28 @@ void ROSParse::publishDesiredFlightMode(const int &VehicleID, const int &FlightM
     msg.target_system = VehicleID;
     msg.base_mode = 01;
     msg.custom_mode = FlightMode;
+    arduPub_desiredFlightMode.publish(msg);
+    arduPub_desiredFlightMode.publish(msg);
+}
 
+void ROSParse::publishArmDisarm(const int &VehicleID, const bool &ArmStatus)
+{
+    StructureDefinitions::GCSDefinition GCSParameters;
+    mavlink_common::COMMAND_LONG msg;
+    m_value = m_value + 10;
+    std::cout<<"The value is:"<<m_value<<std::endl;
+    msg.sysid = GCSParameters.sysid;
+    msg.compid = GCSParameters.compid;
+
+    msg.target_system = VehicleID;
+    msg.target_component = 250;
+    msg.command = 400;
+    msg.confirmation = 00;
+
+    if(ArmStatus == false)
+        msg.param1 = 00;
+    else
+        msg.param1 = 01;
+
+    arduPub_armRequest.publish(msg);
 }

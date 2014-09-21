@@ -53,6 +53,10 @@ private slots:
 
     void radioCalibration(const int &VehicleID, const int &MessageStream, const bool &boolStream);
 
+    void updateRadioValues(const mavlink_common::RC_CHANNELS_RAW &VehicleRCValues);
+
+    void armRequest(const int &VehicleID, const bool &armValue);
+
 
 private:
     QTimer *m_Timer;
@@ -63,6 +67,7 @@ private:
     HeartBeatTimer *m_HeartBeatTimer;
 
     QMap<int, VehicleDataDisplay*> m_MapVehicleWidgets;
+    QMap<int, StructureDefinitions::VehicleRCHL> m_MapVehicleRC;
 
     int warningCounter;
 
