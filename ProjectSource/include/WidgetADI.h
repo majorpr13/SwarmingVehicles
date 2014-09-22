@@ -56,6 +56,8 @@
 
 #include "LayoutSquare.h"
 
+#include "qtflightview_global.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace Ui
@@ -63,9 +65,13 @@ namespace Ui
     class WidgetADI;
 }
 
+namespace QTFlightView
+{
+
+
 ////////////////////////////////////////////////////////////////////////////////
 
-class WidgetADI : public QWidget
+class QTFLIGHTVIEWSHARED_EXPORT WidgetADI : public QWidget
 {
     Q_OBJECT
     
@@ -100,5 +106,7 @@ private:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
+}
 
 #endif // WIDGETADI_H

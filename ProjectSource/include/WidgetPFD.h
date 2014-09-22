@@ -56,6 +56,8 @@
 
 #include "LayoutSquare.h"
 
+#include "qtflightview_global.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace Ui
@@ -63,9 +65,13 @@ namespace Ui
     class WidgetPFD;
 }
 
+namespace QTFlightView
+{
+
+
 ////////////////////////////////////////////////////////////////////////////////
 
-class WidgetPFD : public QWidget
+class QTFLIGHTVIEWSHARED_EXPORT WidgetPFD : public QWidget
 {
     Q_OBJECT
 
@@ -157,5 +163,7 @@ private:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
+}
 
 #endif // WIDGETPFD_H

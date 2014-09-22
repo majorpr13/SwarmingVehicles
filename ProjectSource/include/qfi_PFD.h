@@ -53,10 +53,16 @@
 #include <QGraphicsView>
 #include <QGraphicsSvgItem>
 
+#include "qtflightview_global.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace QTFlightView
+{
+
+
 /** Primary Flight Display widget. */
-class qfi_PFD : public QGraphicsView
+class QTFLIGHTVIEWSHARED_EXPORT qfi_PFD : public QGraphicsView
 {
     Q_OBJECT
 
@@ -583,5 +589,7 @@ private:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
+}
 
 #endif // QFI_PFD_H

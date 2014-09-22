@@ -53,10 +53,15 @@
 #include <QGraphicsView>
 #include <QGraphicsSvgItem>
 
+#include "qtflightview_global.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace QTFlightView
+{
+
 /** Barometric Altimeter widget. */
-class qfi_ALT : public QGraphicsView
+class QTFLIGHTVIEWSHARED_EXPORT qfi_ALT : public QGraphicsView
 {
     Q_OBJECT
 
@@ -121,5 +126,7 @@ private:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
+}
 
 #endif // QFI_ALT_H

@@ -62,6 +62,8 @@ private slots:
 
     void updateRCOverrides(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolOverrride);
 
+    void updateRCReverse(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolReverse);
+
     void on_pushButton_USBCalibrate_clicked();
 
     void on_doubleSpinBox_LatHome_valueChanged(double arg1);
@@ -69,6 +71,10 @@ private slots:
     void on_doubleSpinBox_LonHome_valueChanged(double arg1);
 
     void on_doubleSpinBox_AltHome_valueChanged(double arg1);
+
+    void on_pushButton_USBJOY_Enable_clicked();
+
+    void on_pushButton_ImportHome_clicked();
 
 private:
     QTimer *m_Timer;
@@ -78,12 +84,15 @@ private:
 
     HeartBeatTimer *m_HeartBeatTimer;
 
+    Conversions *m_Conversions;
+
     QMap<int, VehicleDataDisplay*> m_MapVehicleWidgets;
     QMap<int, StructureDefinitions::VehicleRCHL> m_MapVehicleRC;
 
     StructureDefinitions::JoystickHL m_USBJoystickHL;
 
     bool JoystickCalibrate;
+    bool JoystickEnabled;
 
     int warningCounter;
 

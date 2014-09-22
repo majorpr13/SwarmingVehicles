@@ -56,9 +56,14 @@
 #include <QRect>
 #include <QWidgetItem>
 
+#include "qtflightview_global.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 
-class LayoutSquare : public QLayout
+namespace QTFlightView {
+
+
+class QTFLIGHTVIEWSHARED_EXPORT LayoutSquare : public QLayout
 {
     Q_OBJECT
 
@@ -117,5 +122,7 @@ private:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
+}
 
 #endif // LAYOUTSQUARE_H

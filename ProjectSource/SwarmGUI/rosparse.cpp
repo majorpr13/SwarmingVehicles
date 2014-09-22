@@ -18,15 +18,13 @@ ROSParse::ROSParse(const int &GCSID)
         arduSub_SysStatus = node_handler.subscribe("/from_mav_sys_status", 10, &ROSParse::UAVSysStatus,this);
         arduSub_RCRawValue = node_handler.subscribe("/from_mav_rc_channels_raw", 10, &ROSParse::UAVRCValue,this);
 
-        joySub_Value = node_handler.subscribe("/joy", 2, &ROSParse::JoystickValues, this);
-
         arduPub_desiredFlightMode = node_handler.advertise<mavlink_common::SET_MODE>("to_mav_set_mode",10);
         arduPub_requestDataStreams = node_handler.advertise<mavlink_common::REQUEST_DATA_STREAM>("to_mav_request_data_stream",10);
         arduPub_armRequest = node_handler.advertise<mavlink_common::COMMAND_LONG>("to_mav_command_long",10);
+        arduPub_rcOverride = node_handler.advertise<mavlink_common::RC_CHANNELS_OVERRIDE>("to_mav_rc_channels_override",10);
+
         //arduPub_gcsHeartbeat = node_handler.advertise<mavlink_common::HEARTBEAT>("to_mav_heartbeat",2);
 
-
-        m_value = 0;
         //connect(m_TimerHeartbeat,SIGNAL(timeout()),this,SLOT(publishGCSHeartbeat()));
         rosspinner = new ros::AsyncSpinner(0);
         rosspinner->start();
@@ -157,8 +155,6 @@ void ROSParse::publishArmDisarm(const int &VehicleID, const bool &ArmStatus)
 {
     StructureDefinitions::GCSDefinition GCSParameters;
     mavlink_common::COMMAND_LONG msg;
-    m_value = m_value + 10;
-    std::cout<<"The value is:"<<m_value<<std::endl;
     msg.sysid = GCSParameters.sysid;
     msg.compid = GCSParameters.compid;
 
@@ -175,7 +171,37 @@ void ROSParse::publishArmDisarm(const int &VehicleID, const bool &ArmStatus)
     arduPub_armRequest.publish(msg);
 }
 
+void ROSParse::publishJoystickOverride(const int &VehicleID, const StructureDefinitions::RCOverride &RCOverride)
+{
+    StructureDefinitions::GCSDefinition GCSParameters;
+    mavlink_common::RC_CHANNELS_OVERRIDE msg;
+    msg.sysid = GCSParameters.sysid;
+    msg.compid = GCSParameters.compid;
+
+    msg.target_system = VehicleID;
+    msg.target_component = 0; // check that this value is correct
+    msg.chan1_raw = RCOverride.pitch_override;
+    msg.chan2_raw = RCOverride.roll_override;
+    msg.chan3_raw = RCOverride.throttle_override;
+    msg.chan4_raw = RCOverride.yaw_override;
+    msg.chan5_raw = 0;
+    msg.chan6_raw = 0;
+    msg.chan7_raw = 0;
+    msg.chan8_raw = 0;
+    arduPub_armRequest.publish(msg);
+}
+
 void ROSParse::JoystickValues(const sensor_msgs::Joy &msg)
 {
     emit(newJoystickValues(msg));
+}
+
+void ROSParse::joystickMode(const bool &joystickOperations)
+{
+    ros::NodeHandle node_handler;
+
+    if(joystickOperations == true)
+        joySub_Value = node_handler.subscribe("/joy", 2, &ROSParse::JoystickValues, this);
+    else
+        joySub_Value.shutdown();
 }

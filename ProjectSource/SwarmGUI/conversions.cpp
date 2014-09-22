@@ -3,6 +3,7 @@
 Conversions::Conversions()
 {
     m_Initialization = new Initialization();
+    PI = 3.14159265358979;
 }
 
 int Conversions::FlightMode_StringtoEnum(const QString &FlightMode)
@@ -125,4 +126,142 @@ QString Conversions::StreamMode_EnumtoString(const int &StreamMode)
         return "";
 }
 
+double Conversions::USBtoPercent(const StructureDefinitions::JoystickHL &USBRange, const EnumerationDefinitions::FlightMethods &FlightAxis, const double &USBRCValue)
+{
+    double percentage = 0.0;
 
+    switch(FlightAxis)
+    {
+    case(EnumerationDefinitions::Roll):
+        percentage = (USBRCValue - USBRange.roll_low) / (USBRange.roll_high - USBRange.roll_low);
+        break;
+    case(EnumerationDefinitions::Pitch):
+        percentage = (USBRCValue - USBRange.pitch_low) / (USBRange.pitch_high - USBRange.pitch_low);
+        break;
+    case(EnumerationDefinitions::Yaw):
+        percentage = (USBRCValue - USBRange.yaw_low) / (USBRange.yaw_high - USBRange.yaw_low);
+        break;
+    case(EnumerationDefinitions::Throttle):
+        percentage = (USBRCValue - USBRange.throttle_low) / (USBRange.throttle_high - USBRange.throttle_low);
+        break;
+    default:
+        percentage = 0.5;
+        break;
+    }
+
+    return(percentage);
+}
+
+int Conversions::PercenttoRC(const StructureDefinitions::VehicleRCHL &RCRange, const EnumerationDefinitions::FlightMethods &FlightAxis, const double &Percentage)
+{
+    int RC_Value = 0;
+    double result = 0.0;
+    switch(FlightAxis)
+    {
+    case(EnumerationDefinitions::Roll):
+        if(RCRange.roll_reverse == false)
+            result = ((double)(RCRange.roll_high - RCRange.roll_low) * Percentage) + (double)RCRange.roll_low;
+        else
+            result = (double)RCRange.roll_high - ((double)(RCRange.roll_high - RCRange.roll_low) * Percentage);
+        break;
+    case(EnumerationDefinitions::Pitch):
+        if(RCRange.pitch_reverse == false)
+            result = ((double)(RCRange.pitch_high - RCRange.pitch_low) * Percentage) + (double)RCRange.pitch_low;
+        else
+            result = (double)RCRange.pitch_high - ((double)(RCRange.pitch_high - RCRange.pitch_low) * Percentage);
+        break;
+    case(EnumerationDefinitions::Yaw):
+        if(RCRange.yaw_reverse == false)
+            result = ((double)(RCRange.yaw_high - RCRange.yaw_low) * Percentage) + (double)RCRange.yaw_low;
+        else
+            result = (double)RCRange.yaw_high - ((double)(RCRange.yaw_high - RCRange.yaw_low) * Percentage);
+        break;
+    case(EnumerationDefinitions::Throttle):
+        if(RCRange.throttle_reverse == false)
+            result = ((double)(RCRange.throttle_high - RCRange.throttle_low) * Percentage) + (double)RCRange.throttle_low;
+        else
+            result = (double)RCRange.throttle_high - ((double)(RCRange.throttle_high - RCRange.throttle_low) * Percentage);
+        break;
+    default:
+        result = 1500;
+        break;
+    }
+
+     result = result + 0.5; //This is performed so that the type cast to int rounds correctly
+     RC_Value = (int)result;
+     return(RC_Value);
+}
+
+double Conversions::DistanceGPS(const StructureDefinitions::GPS_Params &Beg, const StructureDefinitions::GPS_Params &End)
+{
+    StructureDefinitions::GPS_Params GPS1;
+    StructureDefinitions::GPS_Params GPS2;
+
+    GPS1.Lat = DegreestoRadians(Beg.Lat);
+    GPS1.Lon = DegreestoRadians(Beg.Lon);
+    GPS2.Lat = DegreestoRadians(End.Lat);
+    GPS2.Lon = DegreestoRadians(End.Lon);
+
+    double deltaLat = GPS2.Lat - GPS1.Lat;
+    double deltaLon = GPS2.Lon - GPS1.Lon;
+
+    double a = sin(deltaLat/2.0)*sin(deltaLat/2.0) + cos(GPS1.Lat)*cos(GPS2.Lat)*sin(deltaLon/2.0)*sin(deltaLon/2.0);
+    double c = 2 * atan2(sqrt(a),sqrt(1-a));
+    return (6371.0 * c);
+}
+
+double Conversions::BearingGPS(const StructureDefinitions::GPS_Params &Beg, const StructureDefinitions::GPS_Params &End)
+{
+    double bearing = 0.0;
+
+    StructureDefinitions::GPS_Params GPS1;
+    StructureDefinitions::GPS_Params GPS2;
+
+    GPS1.Lat = DegreestoRadians(Beg.Lat);
+    GPS1.Lon = DegreestoRadians(Beg.Lon);
+    GPS2.Lat = DegreestoRadians(End.Lat);
+    GPS2.Lon = DegreestoRadians(End.Lon);
+
+    double deltaLon = GPS2.Lon - GPS1.Lon;
+
+    double y = sin(deltaLon)*cos(GPS2.Lat);
+    double x = cos(GPS1.Lat)*sin(GPS2.Lat) - sin(GPS1.Lat)*cos(GPS2.Lat)*cos(deltaLon);
+    if(y == 0.0)
+    {
+        if (x > 0.0)
+            bearing = 0.0;
+        else if(x < 0)
+            bearing = 180.0;
+        else
+            bearing = 0.0;
+    }
+    else if(y > 0.0)
+    {
+        if (x > 0.0)
+            bearing = RadianstoDegrees(atan(y/x));
+        else if(x < 0)
+            bearing = 180.0 - RadianstoDegrees(atan(-y/x));
+        else
+            bearing = 90.0;
+    }
+    else if(y < 0.0)
+    {
+        if (x > 0.0)
+            bearing = -RadianstoDegrees(atan(-y/x));
+        else if(x < 0)
+            bearing = RadianstoDegrees(atan(y/x)) - 180.0;
+        else
+            bearing = 270.0;
+    }
+    return bearing;
+}
+
+double Conversions::DegreestoRadians(const double &valueDegrees)
+{
+    return(valueDegrees * (PI/180.0));
+}
+
+double Conversions::RadianstoDegrees(const double &valueRadians)
+{
+    return(valueRadians * (180.0/PI));
+}

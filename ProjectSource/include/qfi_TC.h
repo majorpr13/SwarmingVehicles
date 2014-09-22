@@ -53,10 +53,15 @@
 #include <QGraphicsView>
 #include <QGraphicsSvgItem>
 
+#include "qtflightview_global.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace QTFlightView
+{
+
 /** Turn Coordinator widget. */
-class qfi_TC : public QGraphicsView
+class QTFLIGHTVIEWSHARED_EXPORT qfi_TC : public QGraphicsView
 {
     Q_OBJECT
 
@@ -122,5 +127,7 @@ private:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
+}
 
 #endif // QFI_TC_H

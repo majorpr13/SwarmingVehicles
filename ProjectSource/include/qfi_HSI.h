@@ -53,10 +53,16 @@
 #include <QGraphicsView>
 #include <QGraphicsSvgItem>
 
+#include "qtflightview_global.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace QTFlightView
+{
+
+
 /** Horizontal Situation Indicator widget. */
-class qfi_HSI : public QGraphicsView
+class QTFLIGHTVIEWSHARED_EXPORT qfi_HSI : public QGraphicsView
 {
     Q_OBJECT
 
@@ -109,5 +115,7 @@ private:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
+}
 
 #endif // QFI_HSI_H

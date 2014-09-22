@@ -12,6 +12,7 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
     m_MapVehicleWidgets.clear();
     m_MapVehicleRC.clear();
     m_HeartBeatTimer = new HeartBeatTimer();
+    m_Conversions = new Conversions();
     warningCounter = 0;
 
     connect(m_HeartBeatTimer,SIGNAL(elapsedUpdate(int,int)),this,SLOT(updateElapsedHearbeat(int,int)));
@@ -25,6 +26,7 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
     roll_counter = 0.0;
     pitch_counter = 0.0;
     JoystickCalibrate = false;
+    JoystickEnabled = false;
 }
 
 //SwarmController_GUI::SwarmController_GUI()
@@ -41,20 +43,6 @@ SwarmController_GUI::~SwarmController_GUI()
 
 void SwarmController_GUI::on_addVehicleID_clicked()
 {
-
-//    int VehicleID = ui->spinBoxVehicleID->value();
-//    bool add_Vehicle;
-
-//    add_Vehicle = ui->tableView_VehicleInformation->addEntry(VehicleID);
-
-//    if(add_Vehicle == true)
-//    {
-//        VehicleDataDisplay *newWidget = new VehicleDataDisplay(ui->TabVehicleInfo);
-//        ui->TabVehicleInfo->addTab(newWidget,QString::number(VehicleID));
-//        m_MapVehicleWidgets.insert(VehicleID,newWidget);
-//        m_ROSParser->addVehicle(VehicleID);
-//    }
-
     int VehicleID = ui->spinBoxVehicleID->value();
     bool add_Vehicle;
 
@@ -72,12 +60,13 @@ void SwarmController_GUI::on_addVehicleID_clicked()
 
         StructureDefinitions::VehicleRCHL default_value;
         m_MapVehicleRC.insert(VehicleID,default_value);
-
+        std::cout<<"The vehicle has been inserted:"<<m_MapVehicleRC.value(VehicleID).pitch_high<<std::endl;
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(requestStream(int,int,int)),this,SLOT(updateStreamRequest(int,int,int)));
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(desiredFlightMode(int,int)),this,SLOT(updateDesiredFlightMode(int,int)));
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(armRequest(int,bool)),this,SLOT(armRequest(int,bool)));
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(radioCalibrate(int,int,bool)),this,SLOT(radioCalibration(int,int,bool)));
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(signalJoystickOverride(int,EnumerationDefinitions::FlightMethods,bool)),this,SLOT(updateRCOverrides(int,EnumerationDefinitions::FlightMethods,bool)));
+        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(signalJoystickReverse(int,EnumerationDefinitions::FlightMethods,bool)),this,SLOT(updateRCReverse(int,EnumerationDefinitions::FlightMethods,bool)));
         m_ROSParser->addVehicle(VehicleID);
     }
 
@@ -137,6 +126,7 @@ void SwarmController_GUI::on_removeVehicleID_clicked()
     //dont know how to remove this pointer
     //delete(m_MapVehicleWidgets[VehicleID]->VehicleDataDisplay.ui);
     m_MapVehicleWidgets.remove(VehicleID);
+    m_MapVehicleRC.remove(VehicleID);
 }
 
 void SwarmController_GUI::updateWarningString(const QString &warningString)
@@ -232,28 +222,43 @@ void::SwarmController_GUI::USBJoystick(const sensor_msgs::Joy &JoystickValues)
 
     else
     {
-        QMapIterator<int, VehicleDataDisplay*> i(m_MapVehicleRC);
+        QMapIterator<int, StructureDefinitions::VehicleRCHL> i(m_MapVehicleRC);
         while(i.hasNext())
         {
             i.next();
-            if(m_MapVehicleRC[i.key()].roll_or == true)
+            StructureDefinitions::RCOverride override_command;
+            if(i.value().roll_or== true)
             {
-
+                double roll_percentage = m_Conversions->USBtoPercent(m_USBJoystickHL,EnumerationDefinitions::Roll,roll);
+                override_command.roll_override = m_Conversions->PercenttoRC(i.value(),EnumerationDefinitions::Roll,roll_percentage);
             }
-            if(m_MapVehicleRC[i.key()].pitch_or == true)
+            else
+                override_command.roll_override = 0;
+
+            if(i.value().pitch_or == true)
             {
-
+                double pitch_percentage = m_Conversions->USBtoPercent(m_USBJoystickHL,EnumerationDefinitions::Pitch,pitch);
+                override_command.pitch_override = m_Conversions->PercenttoRC(i.value(),EnumerationDefinitions::Pitch,pitch_percentage);
             }
-            if(m_MapVehicleRC[i.key()].yaw_or == true)
+            else
+                override_command.pitch_override = 0;
+
+            if(i.value().yaw_or == true)
             {
-
+                double yaw_percentage = m_Conversions->USBtoPercent(m_USBJoystickHL,EnumerationDefinitions::Yaw,yaw);
+                override_command.yaw_override = m_Conversions->PercenttoRC(i.value(),EnumerationDefinitions::Yaw,yaw_percentage);
             }
-            if(m_MapVehicleRC[i.key()].throttle_or == true)
+            else
+                override_command.yaw_override = 0;
+
+            if(i.value().throttle_or == true)
             {
-
+                double throttle_percentage = m_Conversions->USBtoPercent(m_USBJoystickHL,EnumerationDefinitions::Throttle,throttle);
+                override_command.throttle_override = m_Conversions->PercenttoRC(i.value(),EnumerationDefinitions::Roll,throttle_percentage);
             }
+            else
+                override_command.throttle_override = 0;
         }
-
     }
 }
 
@@ -276,6 +281,19 @@ void SwarmController_GUI::updateRCOverrides(const int &VehicleID, const Enumerat
         m_MapVehicleRC[VehicleID].yaw_or = boolOverrride;
     else if(FlightMode == EnumerationDefinitions::Throttle)
         m_MapVehicleRC[VehicleID].throttle_or = boolOverrride;
+
+}
+
+void SwarmController_GUI::updateRCReverse(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolReverse)
+{
+    if(FlightMode == EnumerationDefinitions::Roll)
+        m_MapVehicleRC[VehicleID].roll_reverse = boolReverse;
+    else if(FlightMode == EnumerationDefinitions::Pitch)
+        m_MapVehicleRC[VehicleID].pitch_reverse = boolReverse;
+    else if(FlightMode == EnumerationDefinitions::Yaw)
+        m_MapVehicleRC[VehicleID].yaw_reverse = boolReverse;
+    else if(FlightMode == EnumerationDefinitions::Throttle)
+        m_MapVehicleRC[VehicleID].throttle_reverse = boolReverse;
 
 }
 
@@ -307,4 +325,25 @@ void SwarmController_GUI::on_doubleSpinBox_AltHome_valueChanged(double arg1)
         i.next();
         m_MapVehicleWidgets[i.key()]->updateHomeCoordinate(EnumerationDefinitions::Alt,arg1);
     }
+}
+
+void SwarmController_GUI::on_pushButton_USBJOY_Enable_clicked()
+{
+    JoystickEnabled = !JoystickEnabled;
+    if(JoystickEnabled == true)
+    {
+        ui->pushButton_USBCalibrate->setDisabled(false);
+        ui->pushButton_USBJOY_Enable->setText("DISABLE");
+    }
+    else
+    {
+        ui->pushButton_USBCalibrate->setDisabled(true);
+        ui->pushButton_USBJOY_Enable->setText("ENABLE");
+    }
+    m_ROSParser->joystickMode(JoystickEnabled);
+}
+
+void SwarmController_GUI::on_pushButton_ImportHome_clicked()
+{
+
 }

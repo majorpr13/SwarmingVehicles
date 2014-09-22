@@ -34,6 +34,8 @@ public:
 
     void updateHomeCoordinate(const EnumerationDefinitions::GPS_Params GPS_Method, const double value);
 
+    StructureDefinitions::GPS_Params requestPosition();
+
 public slots:
 
     void updateAttitude(const mavlink_common::ATTITUDE &VehicleAttitude);
@@ -47,8 +49,8 @@ signals:
     void requestStream(const int &VehicleID, const int &StreamType, const int &StreamRate);
     void radioCalibrate(const int &VehicleID, const int &StreamID, const bool &boolStream);
     void armRequest(const int &VehicleID, const bool &armValue);
-    void signalJoystickOverride(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolOverrride);
-
+    void signalJoystickOverride(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolOverride);
+    void signalJoystickReverse(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolReverse);
 private slots:
 
     void on_comboBox_DesiredFlightMode_activated(const QString &arg1);
@@ -61,18 +63,29 @@ private slots:
 
     void on_pushButton_DISARM_clicked();
 
-    void on_radioButton_RollOverride_clicked(bool checked);
+    void on_checkBox_RollOverride_clicked(bool checked);
 
-    void on_radioButton_PitchOverride_clicked(bool checked);
+    void on_checkBox_PitchOverride_clicked(bool checked);
 
-    void on_radioButton_YawOverride_clicked(bool checked);
+    void on_checkBox_YawOverride_clicked(bool checked);
 
-    void on_radioButton_ThrottleOverride_clicked(bool checked);
+    void on_checkBox_ThrottleOverride_clicked(bool checked);
+
+    void on_checkBox_RollRev_clicked(bool checked);
+
+    void on_checkBox_PitchRev_clicked(bool checked);
+
+    void on_checkBox_YawRev_clicked(bool checked);
+
+    void on_checkBox_ThrottleRev_clicked(bool checked);
 
 private:
     Ui::VehicleDataDisplay *ui;
 
     StructureDefinitions::VehicleRCHL m_RCCalibration;
+    StructureDefinitions::HomeDefinition m_HomeCoordinate;
+    StructureDefinitions::VehicleStateV m_VehicleState;
+
 
     bool boolean_Calibration;
 
@@ -80,9 +93,6 @@ private:
 
     Conversions *m_Conversion;
     Initialization *m_Initialization;
-
-    StructureDefinitions::HomeDefinition m_HomeCoordinate;
-
 
 };
 

@@ -53,10 +53,15 @@
 #include <QGraphicsView>
 #include <QGraphicsSvgItem>
 
+#include "qtflightview_global.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace QTFlightView
+{
+
 /** Airspeed Indicator widget. */
-class qfi_ASI : public QGraphicsView
+class QTFLIGHTVIEWSHARED_EXPORT qfi_ASI : public QGraphicsView
 {
     Q_OBJECT
 
@@ -111,5 +116,7 @@ private:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
+}
 
 #endif // QFI_ASI_H

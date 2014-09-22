@@ -26,6 +26,7 @@
 #include <mavlink_common/E_MAV_DATA_STREAM.h>
 #include <mavlink_common/E_MAV_CMD.h>
 #include <mavlink_common/COMMAND_LONG.h>
+#include <mavlink_common/RC_CHANNELS_OVERRIDE.h>
 
 class ROSParse : public QThread
 {
@@ -46,7 +47,10 @@ public:
     void publishDesiredFlightMode(const int &VehicleID, const int &FlightMode);
 
     void publishArmDisarm(const int &VehicleID, const bool &ArmStatus);
-    int m_value;
+
+    void publishJoystickOverride(const int &VehicleID, const StructureDefinitions::RCOverride &RCOverride);
+
+    void joystickMode(const bool &joystickOperations);
 
 signals:
 
@@ -84,6 +88,7 @@ private:
     ros::Publisher arduPub_requestDataStreams;
     ros::Publisher arduPub_desiredFlightMode;
     ros::Publisher arduPub_armRequest;
+    ros::Publisher arduPub_rcOverride;
 
     ros::Subscriber arduSub_Heartbeat;
     ros::Subscriber arduSub_Attitude;

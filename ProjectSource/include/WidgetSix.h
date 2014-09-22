@@ -59,6 +59,8 @@
 #include "WidgetTC.h"
 #include "WidgetVSI.h"
 
+#include "qtflightview_global.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace Ui
@@ -66,9 +68,13 @@ namespace Ui
     class WidgetSix;
 }
 
+namespace QTFlightView
+{
+
+
 ////////////////////////////////////////////////////////////////////////////////
 
-class WidgetSix : public QWidget
+class QTFLIGHTVIEWSHARED_EXPORT WidgetSix : public QWidget
 {
     Q_OBJECT
 
@@ -138,5 +144,7 @@ private:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
+}
 
 #endif // WIDGETSIX_H

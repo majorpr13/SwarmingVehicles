@@ -12,6 +12,12 @@ struct GCSDefinition
     int compid;
 };
 
+struct GPS_Params{
+    double Lat;
+    double Lon;
+    double Alt;
+};
+
 struct HomeDefinition
 {
     HomeDefinition() : HLatitude(0.0),HLongitude(0.0),HAltitude(0.0){}
@@ -34,15 +40,25 @@ struct TableDefinition
     double Battery_AH;
 };
 
+struct RCOverride
+{
+    RCOverride(): roll_override(0),pitch_override(0),yaw_override(0),throttle_override(0){}
+    int roll_override;
+    int pitch_override;
+    int yaw_override;
+    int throttle_override;
+};
+
 struct VehicleStateV
 {
-    VehicleStateV(): roll(0.0),rollrate(0.0),pitch(0.0),pitchrate(0.0),yaw(0.0),yawrate(0.0),Cur_Lat(0.0),Cur_Lon(0.0),Cur_Heading(0.0),Cur_Altitude(0.0),Goal_Lat(0.0),Goal_Lon(0.0),Goal_Heading(0.0),Goal_Altitude(0.0){}
+    VehicleStateV(): roll(0.0),rollrate(0.0),pitch(0.0),pitchrate(0.0),yaw(0.0),yawrate(0.0),climbrate(0.0),Cur_Lat(0.0),Cur_Lon(0.0),Cur_Heading(0.0),Cur_Altitude(0.0),Goal_Lat(0.0),Goal_Lon(0.0),Goal_Heading(0.0),Goal_Altitude(0.0){}
     double roll;
     double rollrate;
     double pitch;
     double pitchrate;
     double yaw;
     double yawrate;
+    double climbrate;
     double Cur_Lat;
     double Cur_Lon;
     double Cur_Heading;
@@ -54,7 +70,8 @@ struct VehicleStateV
 };
 struct VehicleRCHL
 {
-    VehicleRCHL(): throttle_low(1500),throttle_high(1500),throttle_or(false),yaw_low(1500),yaw_high(1500),yaw_or(false),pitch_low(1500),pitch_high(1500),pitch_or(false),roll_low(1500),roll_high(1500),roll_or(false){}
+    VehicleRCHL(): throttle_low(1100),throttle_high(1900),throttle_or(false),yaw_low(1100),yaw_high(1900),yaw_or(false),pitch_low(1100),pitch_high(1900),pitch_or(false),roll_low(1100),roll_high(1900),roll_or(false),roll_reverse(false),pitch_reverse(false),yaw_reverse(false),throttle_reverse(false){}
+    //VehicleRCHL(): throttle_low(1500),throttle_high(1500),throttle_or(false),yaw_low(1500),yaw_high(1500),yaw_or(false),pitch_low(1500),pitch_high(1500),pitch_or(false),roll_low(1500),roll_high(1500),roll_or(false),roll_reverse(false),pitch_reverse(false),yaw_reverse(false),throttle_reverse(false){}
     int throttle_low;
     int throttle_high;
     bool throttle_or;
@@ -67,6 +84,10 @@ struct VehicleRCHL
     int roll_low;
     int roll_high;
     bool roll_or;
+    bool roll_reverse;
+    bool pitch_reverse;
+    bool yaw_reverse;
+    bool throttle_reverse;
 };
 struct JoystickHL
 {

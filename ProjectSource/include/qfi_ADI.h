@@ -53,10 +53,15 @@
 #include <QGraphicsView>
 #include <QGraphicsSvgItem>
 
+#include "qtflightview_global.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace QTFlightView
+{
+
 /** Attitude Director Indicator widget. */
-class qfi_ADI : public QGraphicsView
+class QTFLIGHTVIEWSHARED_EXPORT qfi_ADI : public QGraphicsView
 {
     Q_OBJECT
 
@@ -124,5 +129,7 @@ private:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
+}
 
 #endif // QFI_ADI_H

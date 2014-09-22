@@ -53,10 +53,15 @@
 #include <QGraphicsView>
 #include <QGraphicsSvgItem>
 
+#include "qtflightview_global.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace QTFlightView
+{
+
 /** Vertical Speed Indicator widget. */
-class qfi_VSI : public QGraphicsView
+class QTFLIGHTVIEWSHARED_EXPORT qfi_VSI : public QGraphicsView
 {
     Q_OBJECT
 
@@ -111,5 +116,7 @@ private:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
+}
 
 #endif // QFI_VSI_H
