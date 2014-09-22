@@ -124,3 +124,5 @@ QString Conversions::StreamMode_EnumtoString(const int &StreamMode)
     else
         return "";
 }
+
+

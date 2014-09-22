@@ -189,3 +189,41 @@ void VehicleDataDisplay::on_pushButton_DISARM_clicked()
 {
     emit(armRequest(m_currentVehicleID,false));
 }
+
+void VehicleDataDisplay::on_radioButton_RollOverride_clicked(bool checked)
+{
+    emit(signalJoystickOverride(m_currentVehicleID,EnumerationDefinitions::Roll,checked));
+}
+
+void VehicleDataDisplay::on_radioButton_PitchOverride_clicked(bool checked)
+{
+    emit(signalJoystickOverride(m_currentVehicleID,EnumerationDefinitions::Pitch,checked));
+}
+
+void VehicleDataDisplay::on_radioButton_YawOverride_clicked(bool checked)
+{
+    emit(signalJoystickOverride(m_currentVehicleID,EnumerationDefinitions::Yaw,checked));
+}
+
+void VehicleDataDisplay::on_radioButton_ThrottleOverride_clicked(bool checked)
+{
+    emit(signalJoystickOverride(m_currentVehicleID,EnumerationDefinitions::Throttle,checked));
+}
+
+void VehicleDataDisplay::updateHomeCoordinate(const EnumerationDefinitions::GPS_Params GPS_Method, const double value)
+{
+    switch(GPS_Method)
+    {
+    case EnumerationDefinitions::Lat:
+        m_HomeCoordinate.HLatitude = value;
+        break;
+    case EnumerationDefinitions::Lon:
+        m_HomeCoordinate.HLongitude = value;
+        break;
+    case EnumerationDefinitions::Alt:
+        m_HomeCoordinate.HAltitude = value;
+        break;
+    default:
+        break;
+    }
+}

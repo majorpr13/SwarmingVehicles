@@ -11,17 +11,20 @@ ROSParse::ROSParse(const int &GCSID)
 
         ros::NodeHandle node_handler;
 
-        arduSub_Heartbeat = node_handler.subscribe("/from_mav_heartbeat",10,&ROSParse::UAVHeartbeat,this);
-        arduSub_Attitude = node_handler.subscribe("/from_mav_attitude",10,&ROSParse::UAVAttitude,this);
-        arduSub_GPSPositionRaw = node_handler.subscribe("/from_mav_gps_raw_int",10,&ROSParse::UAVPositionRaw,this);
+        arduSub_Heartbeat = node_handler.subscribe("/from_mav_heartbeat", 10, &ROSParse::UAVHeartbeat,this);
+        arduSub_Attitude = node_handler.subscribe("/from_mav_attitude", 10, &ROSParse::UAVAttitude,this);
+        arduSub_GPSPositionRaw = node_handler.subscribe("/from_mav_gps_raw_int", 10, &ROSParse::UAVPositionRaw,this);
         arduSub_GPSPositionScaled = node_handler.subscribe("/from_mav_global_position_int",10, &ROSParse::UAVPositionScaled,this);
-        arduSub_SysStatus = node_handler.subscribe("/from_mav_sys_status",10,&ROSParse::UAVSysStatus,this);
-        arduSub_RCRawValue = node_handler.subscribe("/from_mav_rc_channels_raw",10,&ROSParse::UAVRCValue,this);
+        arduSub_SysStatus = node_handler.subscribe("/from_mav_sys_status", 10, &ROSParse::UAVSysStatus,this);
+        arduSub_RCRawValue = node_handler.subscribe("/from_mav_rc_channels_raw", 10, &ROSParse::UAVRCValue,this);
+
+        joySub_Value = node_handler.subscribe("/joy", 2, &ROSParse::JoystickValues, this);
 
         arduPub_desiredFlightMode = node_handler.advertise<mavlink_common::SET_MODE>("to_mav_set_mode",10);
         arduPub_requestDataStreams = node_handler.advertise<mavlink_common::REQUEST_DATA_STREAM>("to_mav_request_data_stream",10);
         arduPub_armRequest = node_handler.advertise<mavlink_common::COMMAND_LONG>("to_mav_command_long",10);
         //arduPub_gcsHeartbeat = node_handler.advertise<mavlink_common::HEARTBEAT>("to_mav_heartbeat",2);
+
 
         m_value = 0;
         //connect(m_TimerHeartbeat,SIGNAL(timeout()),this,SLOT(publishGCSHeartbeat()));
@@ -170,4 +173,9 @@ void ROSParse::publishArmDisarm(const int &VehicleID, const bool &ArmStatus)
         msg.param1 = 01;
 
     arduPub_armRequest.publish(msg);
+}
+
+void ROSParse::JoystickValues(const sensor_msgs::Joy &msg)
+{
+    emit(newJoystickValues(msg));
 }

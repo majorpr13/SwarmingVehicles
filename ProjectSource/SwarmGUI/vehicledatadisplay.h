@@ -32,6 +32,8 @@ public:
 
     void updateRCValues(const mavlink_common::RC_CHANNELS_RAW &RCValues);
 
+    void updateHomeCoordinate(const EnumerationDefinitions::GPS_Params GPS_Method, const double value);
+
 public slots:
 
     void updateAttitude(const mavlink_common::ATTITUDE &VehicleAttitude);
@@ -45,6 +47,7 @@ signals:
     void requestStream(const int &VehicleID, const int &StreamType, const int &StreamRate);
     void radioCalibrate(const int &VehicleID, const int &StreamID, const bool &boolStream);
     void armRequest(const int &VehicleID, const bool &armValue);
+    void signalJoystickOverride(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolOverrride);
 
 private slots:
 
@@ -58,6 +61,14 @@ private slots:
 
     void on_pushButton_DISARM_clicked();
 
+    void on_radioButton_RollOverride_clicked(bool checked);
+
+    void on_radioButton_PitchOverride_clicked(bool checked);
+
+    void on_radioButton_YawOverride_clicked(bool checked);
+
+    void on_radioButton_ThrottleOverride_clicked(bool checked);
+
 private:
     Ui::VehicleDataDisplay *ui;
 
@@ -69,6 +80,8 @@ private:
 
     Conversions *m_Conversion;
     Initialization *m_Initialization;
+
+    StructureDefinitions::HomeDefinition m_HomeCoordinate;
 
 
 };

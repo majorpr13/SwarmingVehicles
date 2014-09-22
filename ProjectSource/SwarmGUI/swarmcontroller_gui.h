@@ -5,6 +5,7 @@
 #include <QMap>
 #include <QDateTime>
 #include <QTimer>
+#include <QMapIterator>
 
 #include "Definitions.h"
 #include "heartbeattimer.h"
@@ -57,6 +58,17 @@ private slots:
 
     void armRequest(const int &VehicleID, const bool &armValue);
 
+    void USBJoystick(const sensor_msgs::Joy &JoystickValues);
+
+    void updateRCOverrides(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolOverrride);
+
+    void on_pushButton_USBCalibrate_clicked();
+
+    void on_doubleSpinBox_LatHome_valueChanged(double arg1);
+
+    void on_doubleSpinBox_LonHome_valueChanged(double arg1);
+
+    void on_doubleSpinBox_AltHome_valueChanged(double arg1);
 
 private:
     QTimer *m_Timer;
@@ -68,6 +80,10 @@ private:
 
     QMap<int, VehicleDataDisplay*> m_MapVehicleWidgets;
     QMap<int, StructureDefinitions::VehicleRCHL> m_MapVehicleRC;
+
+    StructureDefinitions::JoystickHL m_USBJoystickHL;
+
+    bool JoystickCalibrate;
 
     int warningCounter;
 

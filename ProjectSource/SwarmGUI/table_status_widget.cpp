@@ -230,17 +230,17 @@ void TableStatusWidget::ChangeBatteryVoltage(const mavlink_common::SYS_STATUS &s
     //Check amperage consumption and update background
 //    if(battery_current < (m_VehicleInformationFull[VehicleID].Battery_A - 0.25 * m_VehicleInformationFull[VehicleID].Battery_A))
 //    {
-//        m_VehicleInformationP[VehicleID].Battery_V->setBackgroundColor(Qt::white);
+//        m_VehicleInformationP[VehicleID].Battery_A->setBackgroundColor(Qt::white);
 //    }
 
 //    else if(status.voltage_battery < (m_VehicleInformationFull[VehicleID].Battery_A - 0.1 * m_VehicleInformationFull[VehicleID].Battery_A))
 //    {
-//        m_VehicleInformationP[VehicleID].Battery_V->setBackgroundColor(Qt::yellow);
+//        m_VehicleInformationP[VehicleID].Battery_A->setBackgroundColor(Qt::yellow);
 //    }
 
 //    else
 //    {
-//        m_VehicleInformationP[VehicleID].Battery_V->setBackgroundColor(Qt::red);
+//        m_VehicleInformationP[VehicleID].Battery_A->setBackgroundColor(Qt::red);
 //    }
 
 

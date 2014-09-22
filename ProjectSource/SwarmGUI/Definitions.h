@@ -12,6 +12,14 @@ struct GCSDefinition
     int compid;
 };
 
+struct HomeDefinition
+{
+    HomeDefinition() : HLatitude(0.0),HLongitude(0.0),HAltitude(0.0){}
+    double HLatitude;
+    double HLongitude;
+    double HAltitude;
+};
+
 struct TableDefinition
 {
     TableDefinition(): VehicleID(0),Connection_Status(0),Vehicle_Armed(false),GPS_Sat(0),GPSFix(0),Battery_V(0.0),Cell_Count(3),Battery_A(0.0),Battery_AH(100.0){}
@@ -46,15 +54,31 @@ struct VehicleStateV
 };
 struct VehicleRCHL
 {
-    VehicleRCHL(): throttle_low(1500),throttle_high(1500),yaw_low(1500),yaw_high(1500),pitch_low(1500),pitch_high(1500),roll_low(1500),roll_high(1500){}
+    VehicleRCHL(): throttle_low(1500),throttle_high(1500),throttle_or(false),yaw_low(1500),yaw_high(1500),yaw_or(false),pitch_low(1500),pitch_high(1500),pitch_or(false),roll_low(1500),roll_high(1500),roll_or(false){}
     int throttle_low;
     int throttle_high;
+    bool throttle_or;
     int yaw_low;
     int yaw_high;
+    bool yaw_or;
     int pitch_low;
     int pitch_high;
+    bool pitch_or;
     int roll_low;
     int roll_high;
+    bool roll_or;
+};
+struct JoystickHL
+{
+    JoystickHL(): throttle_low(0.0),throttle_high(0.0),yaw_low(0.0),yaw_high(0.0),pitch_low(0.0),pitch_high(0.0),roll_low(0.0),roll_high(0.0){}
+    double throttle_low;
+    double throttle_high;
+    double yaw_low;
+    double yaw_high;
+    double pitch_low;
+    double pitch_high;
+    double roll_low;
+    double roll_high;
 };
 }
 namespace FlightModeStructure{
@@ -100,5 +124,17 @@ enum GPS_Fix{
     Fix3D
 };
 
+enum GPS_Params{
+    Lat,
+    Lon,
+    Alt
+};
+
+enum FlightMethods{
+    Roll,
+    Pitch,
+    Yaw,
+    Throttle
+};
 }
 #endif // DEFINITIONS_H

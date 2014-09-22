@@ -11,6 +11,7 @@ public:
     int StreamMode_StringtoEnum(const QString &StreamMode);
     QString FlightMode_EnumtoString(const int &FlightMode);
     QString StreamMode_EnumtoString(const int &StreamMode);
+    double USBtoPercent(const StructureDefinitions::JoystickHL &USBRange, const double &USBRCValue);
     Initialization *m_Initialization;
 
 private:

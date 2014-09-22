@@ -9,6 +9,8 @@
 #include <QCoreApplication>
 #include <QThread>
 
+#include <sensor_msgs/Joy.h>
+
 #include <ros/ros.h>
 #include "Definitions.h"
 
@@ -54,6 +56,7 @@ signals:
     void newVehiclePositionScaled(mavlink_common::GLOBAL_POSITION_INT msg);
     void newVehicleStatus(mavlink_common::SYS_STATUS msg);
     void newRCValues(mavlink_common::RC_CHANNELS_RAW msg);
+    void newJoystickValues(sensor_msgs::Joy msg);
 
 public slots:
 
@@ -68,6 +71,7 @@ private slots:
     void UAVPositionScaled(const mavlink_common::GLOBAL_POSITION_INT &msg);
     void UAVSysStatus(const mavlink_common::SYS_STATUS &msg);
     void UAVRCValue(const mavlink_common::RC_CHANNELS_RAW &msg);
+    void JoystickValues(const sensor_msgs::Joy &msg);
 
     void publishGCSHeartbeat();
 
@@ -87,6 +91,8 @@ private:
     ros::Subscriber arduSub_GPSPositionScaled;
     ros::Subscriber arduSub_SysStatus;
     ros::Subscriber arduSub_RCRawValue;
+
+    ros::Subscriber joySub_Value;
 
     ros::AsyncSpinner* rosspinner;
 
