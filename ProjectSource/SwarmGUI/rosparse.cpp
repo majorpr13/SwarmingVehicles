@@ -61,7 +61,6 @@ void ROSParse::UAVAttitude(const mavlink_common::ATTITUDE &msg)
 {
     if(m_MapVehicleIDs.contains(msg.sysid))
     {
-        //m_VehicleState->updateAttitude(msg);
         emit(newVehicleAttitude(msg));
     }
     else
@@ -96,6 +95,14 @@ void ROSParse::UAVRCValue(const mavlink_common::RC_CHANNELS_RAW &msg)
     if(m_MapVehicleIDs.contains(msg.sysid))
     {
         emit(newRCValues(msg));
+    }
+}
+
+void ROSParse::UAVParam(const mavlink_common::PARAM_REQUEST_READ &msg)
+{
+    if(m_MapVehicleIDs.contains(msg.sysid))
+    {
+        //emit(newVehicleParam());
     }
 }
 

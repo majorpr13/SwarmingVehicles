@@ -8,7 +8,14 @@ VehicleDataDisplay::VehicleDataDisplay(QWidget *parent) :
     ui->setupUi(this);
     m_Conversion = new Conversions();
     m_Initialization = new Initialization();
-    boolean_Calibration = false;
+    boolUSBCalibraiton = false;
+    boolRCCalibration = false;
+
+    ui->checkBox_RollOverride->setDisabled(true);
+    ui->checkBox_PitchOverride->setDisabled(true);
+    ui->checkBox_YawOverride->setDisabled(true);
+    ui->checkBox_ThrottleOverride->setDisabled(true);
+
 }
 
 VehicleDataDisplay::~VehicleDataDisplay()
@@ -150,8 +157,8 @@ void VehicleDataDisplay::on_pushButton_STREAM_clicked()
 
 void VehicleDataDisplay::on_pushButton_Cal_released()
 {
-    boolean_Calibration = !boolean_Calibration;
-    emit(radioCalibrate(m_currentVehicleID , m_Initialization->m_StreamModeV.RCChannels , boolean_Calibration));
+    //boolean_Calibration = !boolean_Calibration;
+    //emit(radioCalibrate(m_currentVehicleID , m_Initialization->m_StreamModeV.RCChannels , boolean_Calibration));
 }
 
 void VehicleDataDisplay::updateRCValues(const mavlink_common::RC_CHANNELS_RAW &RCValues)
@@ -160,51 +167,6 @@ void VehicleDataDisplay::updateRCValues(const mavlink_common::RC_CHANNELS_RAW &R
     ui->lineEdit_RollCurrent->setText(QString::number(RCValues.chan1_raw));
     ui->lineEdit_ThrottleCurrent->setText(QString::number(RCValues.chan3_raw));
     ui->lineEdit_YawCurrent->setText(QString::number(RCValues.chan4_raw));
-
-    if(RCValues.chan1_raw > m_RCCalibration.roll_high)
-    {
-        m_RCCalibration.roll_high = RCValues.chan1_raw;
-        ui->lineEdit_RollHigh->setText(QString::number(m_RCCalibration.roll_high));
-    }
-    if(RCValues.chan1_raw < m_RCCalibration.roll_low)
-    {
-        m_RCCalibration.roll_low = RCValues.chan1_raw;
-        ui->lineEdit_RollLow->setText(QString::number(m_RCCalibration.roll_low));
-    }
-
-    if(RCValues.chan2_raw > m_RCCalibration.pitch_high)
-    {
-        m_RCCalibration.pitch_high = RCValues.chan2_raw;
-        ui->lineEdit_PitchHigh->setText(QString::number(m_RCCalibration.pitch_high));
-    }
-    if(RCValues.chan2_raw < m_RCCalibration.pitch_low)
-    {
-        m_RCCalibration.pitch_low = RCValues.chan2_raw;
-        ui->lineEdit_PitchLow->setText(QString::number(m_RCCalibration.pitch_low));
-    }
-
-    if(RCValues.chan3_raw > m_RCCalibration.throttle_high)
-    {
-        m_RCCalibration.throttle_high = RCValues.chan3_raw;
-        ui->lineEdit_ThrottleHigh->setText(QString::number(m_RCCalibration.throttle_high));
-    }
-    if(RCValues.chan3_raw < m_RCCalibration.throttle_low)
-    {
-        m_RCCalibration.throttle_low = RCValues.chan3_raw;
-        ui->lineEdit_ThrottleLow->setText(QString::number(m_RCCalibration.throttle_low));
-    }
-
-    if(RCValues.chan4_raw > m_RCCalibration.yaw_high)
-    {
-        m_RCCalibration.yaw_high = RCValues.chan4_raw;
-        ui->lineEdit_YawHigh->setText(QString::number(m_RCCalibration.yaw_high));
-    }
-    if(RCValues.chan4_raw < m_RCCalibration.yaw_low)
-    {
-        m_RCCalibration.yaw_low = RCValues.chan4_raw;
-        ui->lineEdit_YawLow->setText(QString::number(m_RCCalibration.yaw_low));
-    }
-
 }
 
 
@@ -218,22 +180,11 @@ void VehicleDataDisplay::on_pushButton_DISARM_clicked()
     emit(armRequest(m_currentVehicleID,false));
 }
 
-void VehicleDataDisplay::updateHomeCoordinate(const EnumerationDefinitions::GPS_Params GPS_Method, const double value)
+void VehicleDataDisplay::updateHomeCoordinate(const StructureDefinitions::GPS_Params &homeValue)
 {
-    switch(GPS_Method)
-    {
-    case EnumerationDefinitions::Lat:
-        m_HomeCoordinate.HLatitude = value;
-        break;
-    case EnumerationDefinitions::Lon:
-        m_HomeCoordinate.HLongitude = value;
-        break;
-    case EnumerationDefinitions::Alt:
-        m_HomeCoordinate.HAltitude = value;
-        break;
-    default:
-        break;
-    }
+        m_HomeCoordinate.HLatitude = homeValue.Lat;
+        m_HomeCoordinate.HLongitude = homeValue.Lon;
+        m_HomeCoordinate.HAltitude = homeValue.Alt;
 }
 
 void VehicleDataDisplay::on_checkBox_RollOverride_clicked(bool checked)
@@ -290,3 +241,91 @@ StructureDefinitions::GPS_Params VehicleDataDisplay::requestPosition()
 //QByteArray ba = str1.toLocal8Bit();
 //const char *c_str2 = ba.data();
 //printf("str2: %s ",c_str2);
+
+void VehicleDataDisplay::on_pushButton_RCRequestParameters_clicked()
+{
+
+}
+
+void VehicleDataDisplay::USBcalibrationCompleted()
+{
+    boolUSBCalibraiton = true;
+}
+
+void VehicleDataDisplay::updateOverrideCheckbox()
+{
+    if((boolUSBCalibraiton == true) && (boolRCCalibration == true))
+    {
+        ui->checkBox_RollOverride->setDisabled(false);
+        ui->checkBox_PitchOverride->setDisabled(false);
+        ui->checkBox_YawOverride->setDisabled(false);
+        ui->checkBox_ThrottleOverride->setDisabled(false);
+    }
+}
+
+void VehicleDataDisplay::updateRCParam(const QString &Parameter, const double value)
+{
+    if(Parameter == "RC1_Max")
+    {
+        m_RCCalibration.roll_high = (int)value;
+        ui->lineEdit_RollHigh->setText(QString::number(m_RCCalibration.roll_high));
+    }
+    else if(Parameter == "RC1_Min")
+    {
+        m_RCCalibration.roll_low = (int)value;
+        ui->lineEdit_RollLow->setText(QString::number(m_RCCalibration.roll_low));
+    }
+
+    else if(Parameter == "RC2_Max")
+    {
+        m_RCCalibration.pitch_high = (int)value;
+        ui->lineEdit_PitchHigh->setText(QString::number(m_RCCalibration.pitch_high));
+    }
+    else if(Parameter == "RC2_Min")
+    {
+        m_RCCalibration.pitch_low = (int)value;
+        ui->lineEdit_PitchLow->setText(QString::number(m_RCCalibration.pitch_low));
+    }
+
+    else if(Parameter == "RC3_Max")
+    {
+        m_RCCalibration.throttle_high = (int)value;
+        ui->lineEdit_ThrottleHigh->setText(QString::number(m_RCCalibration.throttle_high));
+    }
+    else if(Parameter == "RC3_Min")
+    {
+        m_RCCalibration.throttle_low = (int)value;
+        ui->lineEdit_ThrottleLow->setText(QString::number(m_RCCalibration.throttle_low));
+    }
+
+    else if(Parameter == "RC4_Max")
+    {
+        m_RCCalibration.yaw_high = (int)value;
+        ui->lineEdit_YawHigh->setText(QString::number(m_RCCalibration.yaw_high));
+    }
+    else if(Parameter == "RC4_Min")
+    {
+        m_RCCalibration.yaw_low = (int)value;
+        ui->lineEdit_YawLow->setText(QString::number(m_RCCalibration.yaw_low));
+    }
+}
+
+void VehicleDataDisplay::checkRCParams()
+{
+    if(m_RCCalibration.pitch_high != 0)
+        if(m_RCCalibration.pitch_low != 0)
+            if(m_RCCalibration.roll_high != 0)
+                if(m_RCCalibration.roll_low != 0)
+                    if(m_RCCalibration.throttle_high != 0)
+                        if(m_RCCalibration.throttle_low != 0)
+                            if(m_RCCalibration.yaw_high != 0)
+                                if(m_RCCalibration.yaw_low != 0)
+                                {
+                                    boolRCCalibration = true;
+                                    updateOverrideCheckbox();
+                                }
+    else
+                                    return;
+
+
+}

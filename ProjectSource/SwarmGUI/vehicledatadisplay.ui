@@ -22,7 +22,6 @@
      <height>321</height>
     </rect>
    </property>
-   <zorder>tabWidget</zorder>
   </widget>
   <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
@@ -34,11 +33,11 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
-     <string>Tab 1</string>
+     <string>General</string>
     </attribute>
     <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
@@ -319,13 +318,10 @@
       </item>
      </layout>
     </widget>
-    <zorder>layoutWidget</zorder>
-    <zorder>widget_MainFlightInstrument</zorder>
-    <zorder>layoutWidget</zorder>
    </widget>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
-     <string>Tab 2</string>
+     <string>Positioning</string>
     </attribute>
     <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
@@ -632,9 +628,9 @@
    </widget>
    <widget class="QWidget" name="tab_3">
     <attribute name="title">
-     <string>Page</string>
+     <string>RC Parameters</string>
     </attribute>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1113,7 +1109,7 @@
          </layout>
         </item>
         <item row="0" column="1">
-         <widget class="QPushButton" name="pushButton_ARM_2">
+         <widget class="QPushButton" name="pushButton_RCRequestParameters">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -1122,11 +1118,11 @@
           </property>
           <property name="font">
            <font>
-            <pointsize>13</pointsize>
+            <pointsize>12</pointsize>
            </font>
           </property>
           <property name="text">
-           <string>SAVE</string>
+           <string>REQUEST</string>
           </property>
          </widget>
         </item>
@@ -1134,25 +1130,6 @@
       </item>
      </layout>
     </widget>
-    <zorder>layoutWidget</zorder>
-    <zorder>pushButton_ARM_2</zorder>
-    <zorder>layoutWidget</zorder>
-    <zorder>layoutWidget</zorder>
-    <zorder>layoutWidget</zorder>
-    <zorder>label_31</zorder>
-    <zorder>checkBox_RollOverride</zorder>
-    <zorder>checkBox_PitchOverride</zorder>
-    <zorder>checkBox_YawOverride</zorder>
-    <zorder>checkBox_ThrottleOverride</zorder>
-    <zorder>checkBox_PitchRev</zorder>
-    <zorder>checkBox_RollRev</zorder>
-    <zorder>checkBox_ThrottleRev</zorder>
-    <zorder>checkBox_YawRev</zorder>
-    <zorder>label_33</zorder>
-    <zorder>horizontalSpacer</zorder>
-    <zorder>horizontalSpacer_2</zorder>
-    <zorder>horizontalSpacer_3</zorder>
-    <zorder>horizontalSpacer_6</zorder>
    </widget>
   </widget>
   <widget class="QWidget" name="layoutWidget">

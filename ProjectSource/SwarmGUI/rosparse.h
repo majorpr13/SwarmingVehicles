@@ -20,7 +20,9 @@
 #include <mavlink_common/SYS_STATUS.h>
 #include <mavlink_common/GLOBAL_POSITION_INT.h>
 #include <mavlink_common/RC_CHANNELS_RAW.h>
+#include <mavlink_common/PARAM_VALUE.h>
 
+#include <mavlink_common/PARAM_REQUEST_READ.h>
 #include <mavlink_common/SET_MODE.h>
 #include <mavlink_common/REQUEST_DATA_STREAM.h>
 #include <mavlink_common/E_MAV_DATA_STREAM.h>
@@ -60,6 +62,8 @@ signals:
     void newVehiclePositionScaled(mavlink_common::GLOBAL_POSITION_INT msg);
     void newVehicleStatus(mavlink_common::SYS_STATUS msg);
     void newRCValues(mavlink_common::RC_CHANNELS_RAW msg);
+    void newVehicleParam(mavlink_common::PARAM_REQUEST_READ msg);
+
     void newJoystickValues(sensor_msgs::Joy msg);
 
 public slots:
@@ -75,6 +79,7 @@ private slots:
     void UAVPositionScaled(const mavlink_common::GLOBAL_POSITION_INT &msg);
     void UAVSysStatus(const mavlink_common::SYS_STATUS &msg);
     void UAVRCValue(const mavlink_common::RC_CHANNELS_RAW &msg);
+    void UAVParam(const mavlink_common::PARAM_REQUEST_READ &msg);
     void JoystickValues(const sensor_msgs::Joy &msg);
 
     void publishGCSHeartbeat();
@@ -89,6 +94,7 @@ private:
     ros::Publisher arduPub_desiredFlightMode;
     ros::Publisher arduPub_armRequest;
     ros::Publisher arduPub_rcOverride;
+    ros::Publisher arduPub_paramReq;
 
     ros::Subscriber arduSub_Heartbeat;
     ros::Subscriber arduSub_Attitude;
@@ -96,6 +102,7 @@ private:
     ros::Subscriber arduSub_GPSPositionScaled;
     ros::Subscriber arduSub_SysStatus;
     ros::Subscriber arduSub_RCRawValue;
+    ros::Subscriber arduSub_ParamReq;
 
     ros::Subscriber joySub_Value;
 

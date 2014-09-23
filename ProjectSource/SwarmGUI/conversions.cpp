@@ -192,6 +192,173 @@ int Conversions::PercenttoRC(const StructureDefinitions::VehicleRCHL &RCRange, c
      return(RC_Value);
 }
 
+int Conversions::VehicleParam_StringtoEnum(const QString &Parameter)
+{
+    int return_int = -1;
+    if(Parameter == "RC1_Min")
+        return_int = EnumerationDefinitions::RC1_Min;
+    else if(Parameter == "RC1_Max")
+        return_int = EnumerationDefinitions::RC1_Max;
+    else if(Parameter == "RC2_Min")
+        return_int = EnumerationDefinitions::RC2_Min;
+    else if(Parameter == "RC2_Max")
+        return_int = EnumerationDefinitions::RC2_Max;
+    else if(Parameter == "RC3_Min")
+        return_int = EnumerationDefinitions::RC3_Min;
+    else if(Parameter == "RC3_Max")
+        return_int = EnumerationDefinitions::RC3_Max;
+    else if(Parameter == "RC4_Min")
+        return_int = EnumerationDefinitions::RC4_Min;
+    else if(Parameter == "RC4_Max")
+        return_int = EnumerationDefinitions::RC4_Max;
+
+    else if(Parameter == "RC5_Min")
+        return_int = EnumerationDefinitions::RC5_Min;
+    else if(Parameter == "RC5_Max")
+        return_int = EnumerationDefinitions::RC5_Max;
+    else if(Parameter == "RC6_Min")
+        return_int = EnumerationDefinitions::RC6_Min;
+    else if(Parameter == "RC6_Max")
+        return_int = EnumerationDefinitions::RC6_Max;
+    else if(Parameter == "RC7_Min")
+        return_int = EnumerationDefinitions::RC7_Min;
+    else if(Parameter == "RC7_Max")
+        return_int = EnumerationDefinitions::RC7_Max;
+    else if(Parameter == "RC8_Min")
+        return_int = EnumerationDefinitions::RC8_Min;
+    else if(Parameter == "RC8_Max")
+        return_int = EnumerationDefinitions::RC8_Max;
+
+    else if(Parameter == "RC9_Min")
+        return_int = EnumerationDefinitions::RC9_Min;
+    else if(Parameter == "RC9_Max")
+        return_int = EnumerationDefinitions::RC9_Max;
+    else if(Parameter == "RC10_Min")
+        return_int = EnumerationDefinitions::RC10_Min;
+    else if(Parameter == "RC10_Max")
+        return_int = EnumerationDefinitions::RC10_Max;
+    else if(Parameter == "RC11_Min")
+        return_int = EnumerationDefinitions::RC11_Min;
+    else if(Parameter == "RC11_Max")
+        return_int = EnumerationDefinitions::RC11_Max;
+    else if(Parameter == "RC12_Min")
+        return_int = EnumerationDefinitions::RC12_Min;
+    else if(Parameter == "RC12_Max")
+        return_int = EnumerationDefinitions::RC12_Max;
+
+    else if(Parameter == "RC13_Min")
+        return_int = EnumerationDefinitions::RC13_Min;
+    else if(Parameter == "RC13_Max")
+        return_int = EnumerationDefinitions::RC13_Max;
+    else if(Parameter == "RC14_Min")
+        return_int = EnumerationDefinitions::RC14_Min;
+    else if(Parameter == "RC14_Max")
+        return_int = EnumerationDefinitions::RC14_Max;
+    else
+        return_int = -1;
+    return(return_int);
+
+}
+
+QString Conversions::VehicleParam_EnumtoString(const int &Parameter)
+{
+    QString string_return = "";
+    switch(Parameter)
+    {
+    case(EnumerationDefinitions::RC1_Min):
+        string_return = "RC1_Min";
+        break;
+    case(EnumerationDefinitions::RC1_Max):
+        string_return = "RC1_Max";
+        break;
+    case(EnumerationDefinitions::RC2_Min):
+        string_return = "RC2_Min";
+        break;
+    case(EnumerationDefinitions::RC2_Max):
+        string_return = "RC2_Max";
+        break;
+    case(EnumerationDefinitions::RC3_Min):
+        string_return = "RC3_Min";
+        break;
+    case(EnumerationDefinitions::RC3_Max):
+        string_return = "RC3_Max";
+        break;
+    case(EnumerationDefinitions::RC4_Min):
+        string_return = "RC4_Min";
+        break;
+    case(EnumerationDefinitions::RC4_Max):
+        string_return = "RC4_Max";
+        break;
+
+    case(EnumerationDefinitions::RC5_Min):
+        string_return = "RC5_Min";
+        break;
+    case(EnumerationDefinitions::RC5_Max):
+        string_return = "RC5_Max";
+        break;
+    case(EnumerationDefinitions::RC6_Min):
+        string_return = "RC6_Min";
+        break;
+    case(EnumerationDefinitions::RC6_Max):
+        string_return = "RC6_Max";
+        break;
+    case(EnumerationDefinitions::RC7_Min):
+        string_return = "RC7_Min";
+        break;
+    case(EnumerationDefinitions::RC7_Max):
+        string_return = "RC7_Max";
+        break;
+    case(EnumerationDefinitions::RC8_Min):
+        string_return = "RC8_Min";
+        break;
+    case(EnumerationDefinitions::RC8_Max):
+        string_return = "RC8_Max";
+        break;
+
+    case(EnumerationDefinitions::RC9_Min):
+        string_return = "RC9_Min";
+        break;
+    case(EnumerationDefinitions::RC9_Max):
+        string_return = "RC9_Max";
+        break;
+    case(EnumerationDefinitions::RC10_Min):
+        string_return = "RC10_Min";
+        break;
+    case(EnumerationDefinitions::RC10_Max):
+        string_return = "RC10_Max";
+        break;
+    case(EnumerationDefinitions::RC11_Min):
+        string_return = "RC11_Min";
+        break;
+    case(EnumerationDefinitions::RC11_Max):
+        string_return = "RC11_Max";
+        break;
+    case(EnumerationDefinitions::RC12_Min):
+        string_return = "RC12_Min";
+        break;
+    case(EnumerationDefinitions::RC12_Max):
+        string_return = "RC12_Max";
+        break;
+
+    case(EnumerationDefinitions::RC13_Min):
+        string_return = "RC13_Min";
+        break;
+    case(EnumerationDefinitions::RC13_Max):
+        string_return = "RC13_Max";
+        break;
+    case(EnumerationDefinitions::RC14_Min):
+        string_return = "RC14_Min";
+        break;
+    case(EnumerationDefinitions::RC14_Max):
+        string_return = "RC14_Max";
+        break;
+
+    default:
+        string_return = "";
+    }
+    return(string_return);
+}
+
 double Conversions::DistanceGPS(const StructureDefinitions::GPS_Params &Beg, const StructureDefinitions::GPS_Params &End)
 {
     StructureDefinitions::GPS_Params GPS1;
@@ -254,6 +421,26 @@ double Conversions::BearingGPS(const StructureDefinitions::GPS_Params &Beg, cons
             bearing = 270.0;
     }
     return bearing;
+}
+
+StructureDefinitions::GPS_Params Conversions::FinalGPS(const StructureDefinitions::GPS_Params &Beg, const double &bearing, const double &distance)
+{
+    StructureDefinitions::GPS_Params GPS1;
+    StructureDefinitions::GPS_Params GPS2;
+    double heading = 0.0;
+
+    GPS1.Lat = DegreestoRadians(Beg.Lat);
+    GPS1.Lon = DegreestoRadians(Beg.Lon);
+    heading = DegreestoRadians(bearing);
+
+    GPS2.Lat = asin(sin(GPS1.Lat) * cos(distance/(6371.0 * 1000)) + cos(GPS1.Lat) * sin(distance/(6371.0 * 1000)) * cos(heading));
+    GPS2.Lon = GPS1.Lon + atan2((sin(heading) * sin(distance/(6371.0 * 1000)) * cos(GPS1.Lat)) , (cos(distance/(6371.0 * 1000)) - sin(GPS1.Lat) * sin(GPS2.Lat)));
+
+    GPS2.Lat = RadianstoDegrees(GPS2.Lat);
+    GPS2.Lon = RadianstoDegrees(GPS2.Lon);
+    GPS2.Alt = Beg.Alt;
+
+    return (GPS2);
 }
 
 double Conversions::DegreestoRadians(const double &valueDegrees)

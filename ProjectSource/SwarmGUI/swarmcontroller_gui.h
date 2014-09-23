@@ -76,6 +76,8 @@ private slots:
 
     void on_pushButton_ImportHome_clicked();
 
+    void on_pushButton_ExportHome_clicked();
+
 private:
     QTimer *m_Timer;
     Ui::SwarmController_GUI *ui;
@@ -90,15 +92,12 @@ private:
     QMap<int, StructureDefinitions::VehicleRCHL> m_MapVehicleRC;
 
     StructureDefinitions::JoystickHL m_USBJoystickHL;
+    StructureDefinitions::HomeDefinition m_GlobalHome;
 
     bool JoystickCalibrate;
     bool JoystickEnabled;
 
     int warningCounter;
-
-    double roll_counter;
-
-    double pitch_counter;
 };
 
 #endif // SWARMCONTROLLER_GUI_H

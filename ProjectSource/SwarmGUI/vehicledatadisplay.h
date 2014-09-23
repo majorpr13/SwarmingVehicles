@@ -32,7 +32,11 @@ public:
 
     void updateRCValues(const mavlink_common::RC_CHANNELS_RAW &RCValues);
 
-    void updateHomeCoordinate(const EnumerationDefinitions::GPS_Params GPS_Method, const double value);
+    void updateHomeCoordinate(const StructureDefinitions::GPS_Params &homeValue);
+
+    void USBcalibrationCompleted();
+
+    void updateRCParam(const QString &Parameter, const double value);
 
     StructureDefinitions::GPS_Params requestPosition();
 
@@ -79,7 +83,14 @@ private slots:
 
     void on_checkBox_ThrottleRev_clicked(bool checked);
 
+    void on_pushButton_RCRequestParameters_clicked();
+
 private:
+
+    void checkRCParams();
+
+    void updateOverrideCheckbox();
+
     Ui::VehicleDataDisplay *ui;
 
     StructureDefinitions::VehicleRCHL m_RCCalibration;
@@ -87,7 +98,8 @@ private:
     StructureDefinitions::VehicleStateV m_VehicleState;
 
 
-    bool boolean_Calibration;
+    bool boolUSBCalibraiton;
+    bool boolRCCalibration;
 
     int m_currentVehicleID;
 

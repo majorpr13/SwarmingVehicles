@@ -157,5 +157,36 @@ enum FlightMethods{
     Yaw,
     Throttle
 };
+
+enum Vehicle_Params{
+    RC1_Min,
+    RC1_Max,
+    RC2_Min,
+    RC2_Max,
+    RC3_Min,
+    RC3_Max,
+    RC4_Min,
+    RC4_Max,
+    RC5_Min,
+    RC5_Max,
+    RC6_Min,
+    RC6_Max,
+    RC7_Min,
+    RC7_Max,
+    RC8_Min,
+    RC8_Max,
+    RC9_Min,
+    RC9_Max,
+    RC10_Min,
+    RC10_Max,
+    RC11_Min,
+    RC11_Max,
+    RC12_Min,
+    RC12_Max,
+    RC13_Min,
+    RC13_Max,
+    RC14_Min,
+    RC14_Max
+};
 }
 #endif // DEFINITIONS_H
