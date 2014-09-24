@@ -39,27 +39,13 @@ private slots:
 
     void updateElapsedHearbeat(const int VehicleID, const int elapsedTime);
 
-    void updateWarningString(const QString &warningString);
-
-    void updateStreamRequest(const int &VehicleID, const int &StreamType, const int &StreamRate);
-
-    void updateDesiredFlightMode(const int &VehicleID, const int &DesiredFlightMode);
-
-    void radioCalibration(const int &VehicleID, const int &MessageStream, const bool &boolStream);
-
-    void armRequest(const int &VehicleID, const bool &armValue);
+    void radioCalibration(const int &VehicleID);
 
     void updateRCOverrides(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolOverrride);
 
     void updateRCReverse(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolReverse);
 
     void on_pushButton_USBCalibrate_clicked();
-
-    void on_doubleSpinBox_LatHome_valueChanged(double arg1);
-
-    void on_doubleSpinBox_LonHome_valueChanged(double arg1);
-
-    void on_doubleSpinBox_AltHome_valueChanged(double arg1);
 
     void on_pushButton_USBJOY_Enable_clicked();
 

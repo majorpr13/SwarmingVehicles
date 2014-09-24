@@ -134,14 +134,9 @@ StructureDefinitions::GPS_Params VehicleDataDisplay::requestPosition()
     return(returnGPS);
 }
 
-//QString str1 = "Test";
-//QByteArray ba = str1.toLocal8Bit();
-//const char *c_str2 = ba.data();
-//printf("str2: %s ",c_str2);
-
 void VehicleDataDisplay::on_pushButton_RCRequestParameters_clicked()
 {
-
+    emit(requestRCConfiguration(m_currentVehicleID));
 }
 
 void VehicleDataDisplay::USBcalibrationCompleted()
@@ -162,49 +157,45 @@ void VehicleDataDisplay::updateOverrideCheckbox()
 
 void VehicleDataDisplay::updateRCParam(const QString &Parameter, const double value)
 {
-    if(Parameter == "RC1_Max")
+    int returnEnum = m_Conversion->VehicleParam_StringtoEnum(Parameter);
+
+    switch(returnEnum)
     {
-        m_RCCalibration.roll_high = (int)value;
-        ui->lineEdit_RollHigh->setText(QString::number(m_RCCalibration.roll_high));
-    }
-    else if(Parameter == "RC1_Min")
-    {
+    case(EnumerationDefinitions::RC1_Min):
         m_RCCalibration.roll_low = (int)value;
         ui->lineEdit_RollLow->setText(QString::number(m_RCCalibration.roll_low));
-    }
-
-    else if(Parameter == "RC2_Max")
-    {
-        m_RCCalibration.pitch_high = (int)value;
-        ui->lineEdit_PitchHigh->setText(QString::number(m_RCCalibration.pitch_high));
-    }
-    else if(Parameter == "RC2_Min")
-    {
+        break;
+    case(EnumerationDefinitions::RC1_Max):
+        m_RCCalibration.roll_high = (int)value;
+        ui->lineEdit_RollHigh->setText(QString::number(m_RCCalibration.roll_high));
+        break;
+    case(EnumerationDefinitions::RC2_Min):
         m_RCCalibration.pitch_low = (int)value;
         ui->lineEdit_PitchLow->setText(QString::number(m_RCCalibration.pitch_low));
-    }
-
-    else if(Parameter == "RC3_Max")
-    {
-        m_RCCalibration.throttle_high = (int)value;
-        ui->lineEdit_ThrottleHigh->setText(QString::number(m_RCCalibration.throttle_high));
-    }
-    else if(Parameter == "RC3_Min")
-    {
+        break;
+    case(EnumerationDefinitions::RC2_Max):
+        m_RCCalibration.pitch_high = (int)value;
+        ui->lineEdit_PitchHigh->setText(QString::number(m_RCCalibration.pitch_high));
+        break;
+    case(EnumerationDefinitions::RC3_Min):
         m_RCCalibration.throttle_low = (int)value;
         ui->lineEdit_ThrottleLow->setText(QString::number(m_RCCalibration.throttle_low));
-    }
-
-    else if(Parameter == "RC4_Max")
-    {
-        m_RCCalibration.yaw_high = (int)value;
-        ui->lineEdit_YawHigh->setText(QString::number(m_RCCalibration.yaw_high));
-    }
-    else if(Parameter == "RC4_Min")
-    {
+        break;
+    case(EnumerationDefinitions::RC3_Max):
+        m_RCCalibration.throttle_high = (int)value;
+        ui->lineEdit_ThrottleHigh->setText(QString::number(m_RCCalibration.throttle_high));
+        break;
+    case(EnumerationDefinitions::RC4_Min):
         m_RCCalibration.yaw_low = (int)value;
         ui->lineEdit_YawLow->setText(QString::number(m_RCCalibration.yaw_low));
+        break;
+    case(EnumerationDefinitions::RC4_Max):
+        m_RCCalibration.yaw_high = (int)value;
+        ui->lineEdit_YawHigh->setText(QString::number(m_RCCalibration.yaw_high));
+        break;
     }
+
+
 }
 
 void VehicleDataDisplay::checkRCParams()

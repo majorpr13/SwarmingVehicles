@@ -60,10 +60,12 @@ signals:
 
     void desiredFlightMode(const int &VehicleID, const int &FlightMode);
     void requestStream(const int &VehicleID, const int &StreamType, const int &StreamRate);
-    void radioCalibrate(const int &VehicleID, const int &StreamID, const bool &boolStream);
     void armRequest(const int &VehicleID, const bool &armValue);
+
+    void requestRCConfiguration(const int &vehicleID);
     void signalJoystickOverride(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolOverride);
     void signalJoystickReverse(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolReverse);
+
 private slots:
 
     void on_comboBox_DesiredFlightMode_activated(const QString &arg1);

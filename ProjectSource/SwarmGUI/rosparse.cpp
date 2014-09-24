@@ -22,10 +22,12 @@ ROSParse::ROSParse(const int &GCSID)
         arduSub_SysStatus = node_handler.subscribe("/from_mav_sys_status", 10, &ROSParse::UAVSysStatus,this);
         arduSub_RCRawValue = node_handler.subscribe("/from_mav_rc_channels_raw", 10, &ROSParse::UAVRCValue,this);
 
+
         arduPub_desiredFlightMode = node_handler.advertise<mavlink_common::SET_MODE>("to_mav_set_mode",10);
         arduPub_requestDataStreams = node_handler.advertise<mavlink_common::REQUEST_DATA_STREAM>("to_mav_request_data_stream",10);
         arduPub_armRequest = node_handler.advertise<mavlink_common::COMMAND_LONG>("to_mav_command_long",10);
         arduPub_rcOverride = node_handler.advertise<mavlink_common::RC_CHANNELS_OVERRIDE>("to_mav_rc_channels_override",10);
+        arduPub_paramReq = node_handler.advertise<mavlink_common::PARAM_REQUEST_READ>("",20);
 
         //arduPub_gcsHeartbeat = node_handler.advertise<mavlink_common::HEARTBEAT>("to_mav_heartbeat",2);
 
@@ -102,11 +104,11 @@ void ROSParse::UAVRCValue(const mavlink_common::RC_CHANNELS_RAW &msg)
     }
 }
 
-void ROSParse::UAVParam(const mavlink_common::PARAM_REQUEST_READ &msg)
+void ROSParse::UAVParam(const mavlink_common::PARAM_VALUE &msg)
 {
     if(m_MapVehicleIDs.contains(msg.sysid))
     {
-        //emit(newVehicleParam());
+        emit(newVehicleParam(msg));
     }
 }
 
@@ -124,6 +126,32 @@ void ROSParse::publishGCSHeartbeat()
     msg.mavlink_version = 3;
 
     arduPub_gcsHeartbeat.publish(msg);
+}
+
+void ROSParse::publishParameterRequest(const int &VehicleID, const QString &msgString)
+{
+    StructureDefinitions::GCSDefinition GCSParameters;
+    mavlink_common::PARAM_REQUEST_READ msg;
+
+    msg.sysid = GCSParameters.sysid;
+    msg.compid = GCSParameters.compid;
+
+    msg.target_system = VehicleID;
+    msg.target_component = 0;
+
+    boost::array<u_int8_t, 16> stringArray;
+    QByteArray ba = msgString.toLocal8Bit();
+
+    for(int i = 0; i < ba.length(); i++)
+    {
+        stringArray[i] = ba.at(i);
+    }
+
+    msg.param_id = stringArray;
+    msg.param_index = 0;
+
+    arduPub_paramReq.publish(msg);
+
 }
 
 void ROSParse::publishDataStreamRequest(const int &VehicleID, const int &StreamType, const int &StreamRate)
