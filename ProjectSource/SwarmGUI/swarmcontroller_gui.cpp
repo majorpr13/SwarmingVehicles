@@ -8,6 +8,8 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    initialization();
+
     m_ROSParser = new ROSParse(10);
     m_MapVehicleWidgets.clear();
     m_MapVehicleRC.clear();
@@ -26,6 +28,28 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
 
     JoystickCalibrate = false;
     JoystickEnabled = false;
+
+}
+
+void SwarmController_GUI::initialization()
+{
+    ui->pushButton_ImportHome->setDisabled(true);
+    ui->pushButton_ExportHome->setDisabled(true);
+    ui->pushButton_USBCalibrate->setDisabled(true);
+}
+
+void SwarmController_GUI::updateButtons()
+{
+    if(m_MapVehicleWidgets.size() > 0)
+    {
+        ui->pushButton_ImportHome->setDisabled(false);
+        ui->pushButton_ExportHome->setDisabled(false);
+    }
+    else
+    {
+        ui->pushButton_ImportHome->setDisabled(true);
+        ui->pushButton_ExportHome->setDisabled(true);
+    }
 }
 
 //SwarmController_GUI::SwarmController_GUI()
@@ -36,7 +60,6 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
 SwarmController_GUI::~SwarmController_GUI()
 {
     delete ui;
-
     delete m_ROSParser;
 }
 
@@ -57,6 +80,8 @@ void SwarmController_GUI::on_addVehicleID_clicked()
         m_MapVehicleWidgets.insert(VehicleID,newWidget);
         m_MapVehicleWidgets[VehicleID]->addVehicle(VehicleID);
 
+        ui->comboBox_VehicleHome->addItem(QString::number(VehicleID));
+
         StructureDefinitions::VehicleRCHL default_value;
         m_MapVehicleRC.insert(VehicleID,default_value);
         std::cout<<"The vehicle has been inserted:"<<m_MapVehicleRC.value(VehicleID).pitch_high<<std::endl;
@@ -69,6 +94,8 @@ void SwarmController_GUI::on_addVehicleID_clicked()
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(signalJoystickReverse(int,EnumerationDefinitions::FlightMethods,bool)),this,SLOT(updateRCReverse(int,EnumerationDefinitions::FlightMethods,bool)));
 
         m_ROSParser->addVehicle(VehicleID);
+
+        updateButtons();
     }
 
 }
@@ -128,6 +155,10 @@ void SwarmController_GUI::on_removeVehicleID_clicked()
     //delete(m_MapVehicleWidgets[VehicleID]->VehicleDataDisplay.ui);
     m_MapVehicleWidgets.remove(VehicleID);
     m_MapVehicleRC.remove(VehicleID);
+
+    ui->comboBox_VehicleHome->removeItem(ui->comboBox_VehicleHome->findText(QString::number(VehicleID)));
+
+    updateButtons();
 }
 
 void SwarmController_GUI::updateWarningString(const QString &warningString)
@@ -360,13 +391,15 @@ void SwarmController_GUI::on_pushButton_USBJOY_Enable_clicked()
 void SwarmController_GUI::on_pushButton_ImportHome_clicked()
 {
     StructureDefinitions::GPS_Params HomePosition;
-    int VehicleID = ui->spinBox_VehicleHome->value();
+    QString string_VehicleID = ui->comboBox_VehicleHome->currentText();
+    if(string_VehicleID != "ALL")
+    {
+        HomePosition = m_MapVehicleWidgets[string_VehicleID.toInt()]->requestPosition();
 
-    HomePosition = m_MapVehicleWidgets[VehicleID]->requestPosition();
-
-    ui->doubleSpinBox_LatHome->setValue(HomePosition.Lat);
-    ui->doubleSpinBox_LonHome->setValue(HomePosition.Lon);
-    ui->doubleSpinBox_AltHome->setValue(HomePosition.Alt);
+        ui->doubleSpinBox_LatHome->setValue(HomePosition.Lat);
+        ui->doubleSpinBox_LonHome->setValue(HomePosition.Lon);
+        ui->doubleSpinBox_AltHome->setValue(HomePosition.Alt);
+    }
 }
 
 void SwarmController_GUI::on_pushButton_ExportHome_clicked()
@@ -382,12 +415,18 @@ void SwarmController_GUI::on_pushButton_ExportHome_clicked()
     swarmHome.Lon = ui->doubleSpinBox_LonHome->value();
     swarmHome.Alt = ui->doubleSpinBox_AltHome->value();
 
-    QMapIterator<int, VehicleDataDisplay*> i(m_MapVehicleWidgets);
-    while(i.hasNext())
+    QString string_VehicleID = ui->comboBox_VehicleHome->currentText();
+    if(string_VehicleID == "ALL")
     {
-        i.next();
-        VehicleHome = m_Conversions->FinalGPS(swarmHome,start,distance);
-        m_MapVehicleWidgets[i.key()]->updateHomeCoordinate(VehicleHome);
-        start = start + degreeSeperation;
+        QMapIterator<int, VehicleDataDisplay*> i(m_MapVehicleWidgets);
+        while(i.hasNext())
+        {
+            i.next();
+            VehicleHome = m_Conversions->FinalGPS(swarmHome,start,distance);
+            m_MapVehicleWidgets[i.key()]->updateHomeCoordinate(VehicleHome);
+            start = start + degreeSeperation;
+        }
     }
+    else
+        m_MapVehicleWidgets[string_VehicleID.toInt()]->updateHomeCoordinate(swarmHome);
 }

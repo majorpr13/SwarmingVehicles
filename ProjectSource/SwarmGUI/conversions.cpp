@@ -374,7 +374,7 @@ double Conversions::DistanceGPS(const StructureDefinitions::GPS_Params &Beg, con
 
     double a = sin(deltaLat/2.0)*sin(deltaLat/2.0) + cos(GPS1.Lat)*cos(GPS2.Lat)*sin(deltaLon/2.0)*sin(deltaLon/2.0);
     double c = 2 * atan2(sqrt(a),sqrt(1-a));
-    return (6371.0 * c);
+    return (6371000 * c);
 }
 
 double Conversions::BearingGPS(const StructureDefinitions::GPS_Params &Beg, const StructureDefinitions::GPS_Params &End)

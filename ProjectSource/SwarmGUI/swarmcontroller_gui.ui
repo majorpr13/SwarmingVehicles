@@ -29,7 +29,7 @@
      </font>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -51,12 +51,12 @@
        <number>5</number>
       </property>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>11</x>
-        <y>11</y>
-        <width>358</width>
+        <x>0</x>
+        <y>0</y>
+        <width>412</width>
         <height>130</height>
        </rect>
       </property>
@@ -113,6 +113,15 @@
                <property name="alignment">
                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                </property>
+               <property name="decimals">
+                <number>10</number>
+               </property>
+               <property name="minimum">
+                <double>-180.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>180.000000000000000</double>
+               </property>
               </widget>
              </item>
             </layout>
@@ -146,6 +155,15 @@
                 <font>
                  <pointsize>12</pointsize>
                 </font>
+               </property>
+               <property name="decimals">
+                <number>10</number>
+               </property>
+               <property name="minimum">
+                <double>-180.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>180.000000000000000</double>
                </property>
               </widget>
              </item>
@@ -199,7 +217,16 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="spinBox_VehicleHome"/>
+          <widget class="QComboBox" name="comboBox_VehicleHome">
+           <property name="layoutDirection">
+            <enum>Qt::RightToLeft</enum>
+           </property>
+           <item>
+            <property name="text">
+             <string>ALL</string>
+            </property>
+           </item>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="pushButton_ImportHome">
@@ -222,7 +249,7 @@
        <rect>
         <x>440</x>
         <y>10</y>
-        <width>108</width>
+        <width>105</width>
         <height>31</height>
        </rect>
       </property>

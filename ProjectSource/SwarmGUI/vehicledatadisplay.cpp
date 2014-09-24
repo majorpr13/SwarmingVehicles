@@ -43,15 +43,15 @@ void VehicleDataDisplay::updateAttitude(const mavlink_common::ATTITUDE &VehicleA
 
 void VehicleDataDisplay::updatePositioning(const mavlink_common::GLOBAL_POSITION_INT &VehiclePositionGPS)
 {
-    double GPSdivisor = 10000000.0;
+    double GPSdivisor = 10000000.00000;
     StructureDefinitions::GPS_Params New;
     StructureDefinitions::GPS_Params Home;
     Home.Lat = m_HomeCoordinate.HLatitude;
     Home.Lon = m_HomeCoordinate.HLongitude;
     Home.Alt = m_HomeCoordinate.HAltitude;
 
-    New.Lat = VehiclePositionGPS.lat;
-    New.Lon = VehiclePositionGPS.lon;
+    New.Lat = VehiclePositionGPS.lat / GPSdivisor;
+    New.Lon = VehiclePositionGPS.lon / GPSdivisor;
 
     double distance = m_Conversion->DistanceGPS(Home,New);
     double bearing_degrees = m_Conversion->BearingGPS(Home,New);
@@ -63,10 +63,10 @@ void VehicleDataDisplay::updatePositioning(const mavlink_common::GLOBAL_POSITION
     ui->lineEdit_relativeAlt->setText(QString::number(VehiclePositionGPS.relative_alt / 1000.0));
     m_VehicleState.Cur_Altitude = VehiclePositionGPS.relative_alt / 1000.0;
 
-    ui->lineEdit_Latitude->setText(QString::number(VehiclePositionGPS.lat / GPSdivisor));
+    ui->lineEdit_Latitude->setText(QString::number(New.Lat));
     m_VehicleState.Cur_Lat = VehiclePositionGPS.lat / GPSdivisor;
 
-    ui->lineEdit_Longitude->setText(QString::number(VehiclePositionGPS.lon / GPSdivisor));
+    ui->lineEdit_Longitude->setText(QString::number(New.Lon));
     m_VehicleState.Cur_Lon = VehiclePositionGPS.lon / GPSdivisor;
 
     ui->widget_MainFlightInstrument->setHeading(VehiclePositionGPS.hdg / 100.0);

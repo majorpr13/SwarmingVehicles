@@ -46,31 +46,30 @@ DEPENDPATH += $$PWD/../QTFlightView
 INCLUDEPATH += $$PWD/../include
 
 
-INCLUDEPATH += /home/dempsy/catkin_ws/devel/include
-INCLUDEPATH += /home/dempsy/catkin_ws/src/Ardupilot_ROS/ardupilotmega-ros/mavlink_ardupilotmega/include/mavlink_ardupilotmega
+INCLUDEPATH += /home/scoriolinux/catkin_ws/devel/include
+INCLUDEPATH += /home/scoriolinux/catkin_ws/src/Ardupilot_ROS/ardupilotmega-ros/mavlink_ardupilotmega/include/mavlink_ardupilotmega
 
 
 unix {
-exists(/opt/ros/hydro/lib/) {
-    message( "Building kinect test executables" )
-    INCLUDEPATH += /opt/ros/hydro/include
-    INCLUDEPATH += /opt/ros/hydro/lib
+exists(/opt/ros/indigo/lib/) {
+    INCLUDEPATH += /opt/ros/indigo/include
+    INCLUDEPATH += /opt/ros/indigo/lib
 
-        LIBS += -L/opt/ros/hydro/lib -lroscpp
-        LIBS += -L/opt/ros/hydro/lib -lroscpp_serialization
-        LIBS += -L/opt/ros/hydro/lib -lrostime
-        LIBS += -L/opt/ros/hydro/lib -lxmlrpcpp
-        LIBS += -L/opt/ros/hydro/lib -lcpp_common
-        LIBS += -L/opt/ros/hydro/lib -lrosconsole_log4cxx
-        LIBS += -L/opt/ros/hydro/lib -lrosconsole_backend_interface
-        LIBS += -L/opt/ros/hydro/lib -lroslib
-        LIBS += -L/opt/ros/hydro/lib -lrospack
-        LIBS += -L/opt/ros/hydro/lib -lmessage_filters
-        LIBS += -L/opt/ros/hydro/lib -lclass_loader
-        LIBS += -L/opt/ros/hydro/lib -lconsole_bridge
-        LIBS += -L/opt/ros/hydro/lib -lrosconsole
-        LIBS += -L/opt/ros/hydro/lib -limage_transport
-        LIBS += -L/opt/ros/hydro/lib -lcv_bridge
+        LIBS += -L/opt/ros/indigo/lib -lroscpp
+        LIBS += -L/opt/ros/indigo/lib -lroscpp_serialization
+        LIBS += -L/opt/ros/indigo/lib -lrostime
+        LIBS += -L/opt/ros/indigo/lib -lxmlrpcpp
+        LIBS += -L/opt/ros/indigo/lib -lcpp_common
+        LIBS += -L/opt/ros/indigo/lib -lrosconsole_log4cxx
+        LIBS += -L/opt/ros/indigo/lib -lrosconsole_backend_interface
+        LIBS += -L/opt/ros/indigo/lib -lroslib
+        LIBS += -L/opt/ros/indigo/lib -lrospack
+        LIBS += -L/opt/ros/indigo/lib -lmessage_filters
+        LIBS += -L/opt/ros/indigo/lib -lclass_loader
+        LIBS += -L/opt/ros/indigo/lib -lconsole_bridge
+        LIBS += -L/opt/ros/indigo/lib -lrosconsole
+        LIBS += -L/opt/ros/indigo/lib -limage_transport
+        LIBS += -L/opt/ros/indigo/lib -lcv_bridge
 
 }
 }

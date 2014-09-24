@@ -79,6 +79,11 @@ private slots:
     void on_pushButton_ExportHome_clicked();
 
 private:
+    void initialization();
+    void updateButtons();
+
+private:
+
     QTimer *m_Timer;
     Ui::SwarmController_GUI *ui;
 
