@@ -94,16 +94,17 @@ void SwarmController_GUI::on_addVehicleID_clicked()
         StructureDefinitions::VehicleRCHL default_value;
         m_MapVehicleRC.insert(VehicleID,default_value);
 
-        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(requestStream(int,int,int)),m_ROSParser,SLOT(publishDataStreamRequest(int,int,int)));
-        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(desiredFlightMode(int,int)),m_ROSParser,SLOT(publishDesiredFlightMode(int,int)));
-        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(armRequest(int,bool)),m_ROSParser,SLOT(publishArmDisarm(int,bool)));
-
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(requestRCConfiguration(int)),this,SLOT(radioCalibration(int)));
 
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(signalJoystickOverride(int,EnumerationDefinitions::FlightMethods,bool)),this,SLOT(updateRCOverrides(int,EnumerationDefinitions::FlightMethods,bool)));
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(signalJoystickReverse(int,EnumerationDefinitions::FlightMethods,bool)),this,SLOT(updateRCReverse(int,EnumerationDefinitions::FlightMethods,bool)));
+
 #ifdef ROS_LIBS
         m_ROSParser->addVehicle(VehicleID);
+
+        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(requestStream(int,int,int)),m_ROSParser,SLOT(publishDataStreamRequest(int,int,int)));
+        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(desiredFlightMode(int,int)),m_ROSParser,SLOT(publishDesiredFlightMode(int,int)));
+        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(armRequest(int,bool)),m_ROSParser,SLOT(publishArmDisarm(int,bool)));
 #endif
 
         updateButtons();
@@ -142,7 +143,9 @@ void SwarmController_GUI::radioCalibration(const int &VehicleID)
     QList<QString> listRC = m_Conversions->parameterList_RC();
     for(int i = 0; i < listRC.length(); i++)
     {
+#ifdef ROS_LIBS
         m_ROSParser->publishParameterRequest(VehicleID,listRC.at(i));
+#endif
     }
 }
 
@@ -150,9 +153,9 @@ void SwarmController_GUI::on_pushButton_USBCalibrate_clicked()
 {
     JoystickCalibrate = !JoystickCalibrate;
     if(JoystickCalibrate == true)
-        ui->pushButton_USBCalibrate->setText("DONE");
+        ui->pushButton_USBCalibrate->setText("Done");
     else
-        ui->pushButton_USBCalibrate->setText("CALIBRATE");
+        ui->pushButton_USBCalibrate->setText("Calibrate");
 }
 
 void SwarmController_GUI::updateRCOverrides(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolOverrride)
