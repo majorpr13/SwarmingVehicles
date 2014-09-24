@@ -2,11 +2,6 @@
 #define VEHICLEDATADISPLAY_H
 
 #include <QWidget>
-#include <mavlink_common/ATTITUDE.h>
-#include <mavlink_common/GPS_RAW_INT.h>
-#include <mavlink_common/HEARTBEAT.h>
-#include <mavlink_common/GLOBAL_POSITION_INT.h>
-#include <mavlink_common/RC_CHANNELS_RAW.h>
 
 #include "WidgetPFD.h"
 #include "qfi_PFD.h"
@@ -14,6 +9,15 @@
 #include "initialization.h"
 #include "conversions.h"
 #include "Definitions.h"
+
+
+#ifdef ROS_LIBS
+#include <mavlink_common/ATTITUDE.h>
+#include <mavlink_common/GPS_RAW_INT.h>
+#include <mavlink_common/HEARTBEAT.h>
+#include <mavlink_common/GLOBAL_POSITION_INT.h>
+#include <mavlink_common/RC_CHANNELS_RAW.h>
+#endif
 
 namespace Ui {
 class VehicleDataDisplay;
@@ -30,8 +34,6 @@ public:
 
     void addVehicle(const int &VehicleID);
 
-    void updateRCValues(const mavlink_common::RC_CHANNELS_RAW &RCValues);
-
     void updateHomeCoordinate(const StructureDefinitions::GPS_Params &homeValue);
 
     void USBcalibrationCompleted();
@@ -40,12 +42,19 @@ public:
 
     StructureDefinitions::GPS_Params requestPosition();
 
+#ifdef ROS_LIBS
+    void updateRCValues(const mavlink_common::RC_CHANNELS_RAW &RCValues);
+#endif
+
 public slots:
 
+    void updateArmStatus(const bool &Armed);
+
+#ifdef ROS_LIBS
     void updateAttitude(const mavlink_common::ATTITUDE &VehicleAttitude);
     void updatePositioning(const mavlink_common::GLOBAL_POSITION_INT &VehiclePositionGPS);
     void updateFlightMode(const mavlink_common::HEARTBEAT &VehicleHeartbeat);
-    void updateArmStatus(const bool &Armed);
+#endif
 
 signals:
 

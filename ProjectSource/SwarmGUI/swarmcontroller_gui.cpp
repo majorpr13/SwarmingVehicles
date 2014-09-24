@@ -10,7 +10,6 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
 
     initialization();
 
-    m_ROSParser = new ROSParse(10);
     m_MapVehicleWidgets.clear();
     m_MapVehicleRC.clear();
     m_HeartBeatTimer = new HeartBeatTimer();
@@ -18,6 +17,12 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
     warningCounter = 0;
 
     connect(m_HeartBeatTimer,SIGNAL(elapsedUpdate(int,int)),this,SLOT(updateElapsedHearbeat(int,int)));
+
+    JoystickCalibrate = false;
+    JoystickEnabled = false;
+
+#ifdef ROS_LIBS
+    m_ROSParser = new ROSParse(10);
     connect(m_ROSParser,SIGNAL(newVehicleHeartbeat(mavlink_common::HEARTBEAT)),this,SLOT(updateVehicleHeartbeat(mavlink_common::HEARTBEAT)));
     connect(m_ROSParser,SIGNAL(newVehicleAttitude(mavlink_common::ATTITUDE)), this, SLOT(updateVehicleAttitude(mavlink_common::ATTITUDE)));
     connect(m_ROSParser,SIGNAL(newVehicleStatus(mavlink_common::SYS_STATUS)), this, SLOT(updateVehicleSysStatus(mavlink_common::SYS_STATUS)));
@@ -25,10 +30,7 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
     connect(m_ROSParser,SIGNAL(newVehiclePositionScaled(mavlink_common::GLOBAL_POSITION_INT)), this, SLOT(updateVehiclePositionScaled(mavlink_common::GLOBAL_POSITION_INT)));
     connect(m_ROSParser,SIGNAL(newRCValues(mavlink_common::RC_CHANNELS_RAW)),this, SLOT(updateRadioValues(mavlink_common::RC_CHANNELS_RAW)));
     connect(m_ROSParser,SIGNAL(newJoystickValues(sensor_msgs::Joy)),this, SLOT(USBJoystick(sensor_msgs::Joy)));
-
-    JoystickCalibrate = false;
-    JoystickEnabled = false;
-
+#endif
 }
 
 void SwarmController_GUI::initialization()
@@ -60,7 +62,10 @@ void SwarmController_GUI::updateButtons()
 SwarmController_GUI::~SwarmController_GUI()
 {
     delete ui;
+
+#ifdef ROS_LIBS
     delete m_ROSParser;
+#endif
 }
 
 void SwarmController_GUI::on_addVehicleID_clicked()
@@ -84,7 +89,7 @@ void SwarmController_GUI::on_addVehicleID_clicked()
 
         StructureDefinitions::VehicleRCHL default_value;
         m_MapVehicleRC.insert(VehicleID,default_value);
-        std::cout<<"The vehicle has been inserted:"<<m_MapVehicleRC.value(VehicleID).pitch_high<<std::endl;
+
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(requestStream(int,int,int)),this,SLOT(updateStreamRequest(int,int,int)));
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(desiredFlightMode(int,int)),this,SLOT(updateDesiredFlightMode(int,int)));
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(armRequest(int,bool)),this,SLOT(armRequest(int,bool)));
@@ -93,13 +98,220 @@ void SwarmController_GUI::on_addVehicleID_clicked()
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(signalJoystickOverride(int,EnumerationDefinitions::FlightMethods,bool)),this,SLOT(updateRCOverrides(int,EnumerationDefinitions::FlightMethods,bool)));
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(signalJoystickReverse(int,EnumerationDefinitions::FlightMethods,bool)),this,SLOT(updateRCReverse(int,EnumerationDefinitions::FlightMethods,bool)));
 
+#ifdef ROS_LIBS
         m_ROSParser->addVehicle(VehicleID);
+#endif
 
         updateButtons();
     }
 
 }
 
+
+
+void SwarmController_GUI::updateElapsedHearbeat(const int VehicleID, const int elapsedTime)
+{
+    ui->tableView_VehicleInformation->updateElapsedTime(VehicleID,elapsedTime);
+}
+
+void SwarmController_GUI::on_removeVehicleID_clicked()
+{
+    int VehicleID = ui->spinBoxVehicleID->value();
+    m_HeartBeatTimer->removeVehicle(VehicleID);
+
+#ifdef ROS_LIBS
+    m_ROSParser->removeVehicle(VehicleID);
+#endif
+
+    ui->tableView_VehicleInformation->removeEntry(VehicleID);
+    ui->TabVehicleInfo->removeTab(ui->TabVehicleInfo->indexOf(m_MapVehicleWidgets.value(VehicleID)));
+    //dont know how to remove this pointer
+    //delete(m_MapVehicleWidgets[VehicleID]->VehicleDataDisplay.ui);
+    m_MapVehicleWidgets.remove(VehicleID);
+    m_MapVehicleRC.remove(VehicleID);
+
+    ui->comboBox_VehicleHome->removeItem(ui->comboBox_VehicleHome->findText(QString::number(VehicleID)));
+
+    updateButtons();
+}
+
+void SwarmController_GUI::updateWarningString(const QString &warningString)
+{
+    //ui->textBrowser_Warnings->append(warningString);
+}
+
+void SwarmController_GUI::updateStreamRequest(const int &VehicleID, const int &StreamType, const int &StreamRate)
+{
+#ifdef ROS_LIBS
+    m_ROSParser->publishDataStreamRequest(VehicleID,StreamType,StreamRate);
+#endif
+}
+
+void SwarmController_GUI::updateDesiredFlightMode(const int &VehicleID, const int &DesiredFlightMode)
+{
+#ifdef ROS_LIBS
+    m_ROSParser->publishDesiredFlightMode(VehicleID,DesiredFlightMode);
+#endif
+}
+
+void SwarmController_GUI::radioCalibration(const int &VehicleID, const int &MessageStream, const bool &boolStream)
+{
+    //m_ROSParser->publishDataStreamRequest(VehicleID,MessageStream,10);
+}
+
+
+void SwarmController_GUI::armRequest(const int &VehicleID, const bool &armValue)
+{
+#ifdef ROS_LIBS
+    m_ROSParser->publishArmDisarm(VehicleID,armValue);
+#endif
+}
+
+
+
+void SwarmController_GUI::on_pushButton_USBCalibrate_clicked()
+{
+    JoystickCalibrate = !JoystickCalibrate;
+    if(JoystickCalibrate == true)
+        ui->pushButton_USBCalibrate->setText("DONE");
+    else
+        ui->pushButton_USBCalibrate->setText("CALIBRATE");
+}
+
+void SwarmController_GUI::updateRCOverrides(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolOverrride)
+{
+    StructureDefinitions::RCOverride override_command;
+
+    if(FlightMode == EnumerationDefinitions::Roll)
+    {
+        m_MapVehicleRC[VehicleID].roll_or = boolOverrride;
+        if(boolOverrride == false)
+            override_command.roll_override = 0;
+        else
+            override_command.roll_override = 65535;
+    }
+    else if(FlightMode == EnumerationDefinitions::Pitch)
+    {
+        m_MapVehicleRC[VehicleID].pitch_or = boolOverrride;
+        if(boolOverrride == false)
+            override_command.pitch_override = 0;
+        else
+            override_command.pitch_override = 65535;
+    }
+    else if(FlightMode == EnumerationDefinitions::Yaw)
+    {
+        m_MapVehicleRC[VehicleID].yaw_or = boolOverrride;
+        if(boolOverrride == false)
+            override_command.yaw_override = 0;
+        else
+            override_command.yaw_override = 65535;
+    }
+    else if(FlightMode == EnumerationDefinitions::Throttle)
+    {
+        m_MapVehicleRC[VehicleID].throttle_or = boolOverrride;
+        if(boolOverrride == false)
+            override_command.throttle_override = 0;
+        else
+            override_command.throttle_override = 65535;
+    }
+
+#ifdef ROS_LIBS
+    m_ROSParser->publishJoystickOverride(VehicleID , override_command);
+#endif
+}
+
+void SwarmController_GUI::updateRCReverse(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolReverse)
+{
+    if(FlightMode == EnumerationDefinitions::Roll)
+        m_MapVehicleRC[VehicleID].roll_reverse = boolReverse;
+    else if(FlightMode == EnumerationDefinitions::Pitch)
+        m_MapVehicleRC[VehicleID].pitch_reverse = boolReverse;
+    else if(FlightMode == EnumerationDefinitions::Yaw)
+        m_MapVehicleRC[VehicleID].yaw_reverse = boolReverse;
+    else if(FlightMode == EnumerationDefinitions::Throttle)
+        m_MapVehicleRC[VehicleID].throttle_reverse = boolReverse;
+
+}
+
+void SwarmController_GUI::on_doubleSpinBox_LatHome_valueChanged(double arg1)
+{
+
+}
+
+void SwarmController_GUI::on_doubleSpinBox_LonHome_valueChanged(double arg1)
+{
+
+}
+
+void SwarmController_GUI::on_doubleSpinBox_AltHome_valueChanged(double arg1)
+{
+
+}
+
+void SwarmController_GUI::on_pushButton_USBJOY_Enable_clicked()
+{
+    JoystickEnabled = !JoystickEnabled;
+    if(JoystickEnabled == true)
+    {
+        ui->pushButton_USBCalibrate->setDisabled(false);
+        ui->pushButton_USBJOY_Enable->setText("DISABLE");
+    }
+    else
+    {
+        ui->pushButton_USBCalibrate->setDisabled(true);
+        ui->pushButton_USBJOY_Enable->setText("ENABLE");
+    }
+
+#ifdef ROS_LIBS
+    m_ROSParser->joystickMode(JoystickEnabled);
+#endif
+}
+
+void SwarmController_GUI::on_pushButton_ImportHome_clicked()
+{
+    StructureDefinitions::GPS_Params HomePosition;
+    QString string_VehicleID = ui->comboBox_VehicleHome->currentText();
+    if(string_VehicleID != "ALL")
+    {
+        HomePosition = m_MapVehicleWidgets[string_VehicleID.toInt()]->requestPosition();
+
+        ui->doubleSpinBox_LatHome->setValue(HomePosition.Lat);
+        ui->doubleSpinBox_LonHome->setValue(HomePosition.Lon);
+        ui->doubleSpinBox_AltHome->setValue(HomePosition.Alt);
+    }
+}
+
+void SwarmController_GUI::on_pushButton_ExportHome_clicked()
+{
+    int numVehicles = m_MapVehicleWidgets.size();
+    double degreeSeperation = 360.0 / (double)numVehicles;
+    double start = 0.0;
+    double distance = ui->spinBox_LandingRadius->value();
+
+    StructureDefinitions::GPS_Params swarmHome;
+    StructureDefinitions::GPS_Params VehicleHome;
+    swarmHome.Lat = ui->doubleSpinBox_LatHome->value();
+    swarmHome.Lon = ui->doubleSpinBox_LonHome->value();
+    swarmHome.Alt = ui->doubleSpinBox_AltHome->value();
+
+    QString string_VehicleID = ui->comboBox_VehicleHome->currentText();
+    if(string_VehicleID == "ALL")
+    {
+        QMapIterator<int, VehicleDataDisplay*> i(m_MapVehicleWidgets);
+        while(i.hasNext())
+        {
+            i.next();
+            VehicleHome = m_Conversions->FinalGPS(swarmHome,start,distance);
+            m_MapVehicleWidgets[i.key()]->updateHomeCoordinate(VehicleHome);
+            start = start + degreeSeperation;
+        }
+    }
+    else
+        m_MapVehicleWidgets[string_VehicleID.toInt()]->updateHomeCoordinate(swarmHome);
+}
+
+
+#ifdef ROS_LIBS
 void SwarmController_GUI::updateVehiclePositionRaw(const mavlink_common::GPS_RAW_INT &VehiclePosition)
 {
     ui->tableView_VehicleInformation->ChangeSatellite(VehiclePosition);
@@ -139,56 +351,9 @@ void SwarmController_GUI::updateVehicleHeartbeat(const mavlink_common::HEARTBEAT
     m_MapVehicleWidgets[VehicleID]->updateFlightMode(VehicleHeartbeat);
 }
 
-void SwarmController_GUI::updateElapsedHearbeat(const int VehicleID, const int elapsedTime)
-{
-    ui->tableView_VehicleInformation->updateElapsedTime(VehicleID,elapsedTime);
-}
-
-void SwarmController_GUI::on_removeVehicleID_clicked()
-{
-    int VehicleID = ui->spinBoxVehicleID->value();
-    m_HeartBeatTimer->removeVehicle(VehicleID);
-    m_ROSParser->removeVehicle(VehicleID);
-    ui->tableView_VehicleInformation->removeEntry(VehicleID);
-    ui->TabVehicleInfo->removeTab(ui->TabVehicleInfo->indexOf(m_MapVehicleWidgets.value(VehicleID)));
-    //dont know how to remove this pointer
-    //delete(m_MapVehicleWidgets[VehicleID]->VehicleDataDisplay.ui);
-    m_MapVehicleWidgets.remove(VehicleID);
-    m_MapVehicleRC.remove(VehicleID);
-
-    ui->comboBox_VehicleHome->removeItem(ui->comboBox_VehicleHome->findText(QString::number(VehicleID)));
-
-    updateButtons();
-}
-
-void SwarmController_GUI::updateWarningString(const QString &warningString)
-{
-    //ui->textBrowser_Warnings->append(warningString);
-}
-
-void SwarmController_GUI::updateStreamRequest(const int &VehicleID, const int &StreamType, const int &StreamRate)
-{
-    m_ROSParser->publishDataStreamRequest(VehicleID,StreamType,StreamRate);
-}
-
-void SwarmController_GUI::updateDesiredFlightMode(const int &VehicleID, const int &DesiredFlightMode)
-{
-    m_ROSParser->publishDesiredFlightMode(VehicleID,DesiredFlightMode);
-}
-
-void SwarmController_GUI::radioCalibration(const int &VehicleID, const int &MessageStream, const bool &boolStream)
-{
-    //m_ROSParser->publishDataStreamRequest(VehicleID,MessageStream,10);
-}
-
 void SwarmController_GUI::updateRadioValues(const mavlink_common::RC_CHANNELS_RAW &VehicleRCValues)
 {
     m_MapVehicleWidgets[VehicleRCValues.sysid]->updateRCValues(VehicleRCValues);
-}
-
-void SwarmController_GUI::armRequest(const int &VehicleID, const bool &armValue)
-{
-    m_ROSParser->publishArmDisarm(VehicleID,armValue);
 }
 
 void::SwarmController_GUI::USBJoystick(const sensor_msgs::Joy &JoystickValues)
@@ -294,139 +459,4 @@ void::SwarmController_GUI::USBJoystick(const sensor_msgs::Joy &JoystickValues)
         }
     }
 }
-
-void SwarmController_GUI::on_pushButton_USBCalibrate_clicked()
-{
-    JoystickCalibrate = !JoystickCalibrate;
-    if(JoystickCalibrate == true)
-        ui->pushButton_USBCalibrate->setText("DONE");
-    else
-        ui->pushButton_USBCalibrate->setText("CALIBRATE");
-}
-
-void SwarmController_GUI::updateRCOverrides(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolOverrride)
-{
-    StructureDefinitions::RCOverride override_command;
-
-    if(FlightMode == EnumerationDefinitions::Roll)
-    {
-        m_MapVehicleRC[VehicleID].roll_or = boolOverrride;
-        if(boolOverrride == false)
-            override_command.roll_override = 0;
-        else
-            override_command.roll_override = 65535;
-    }
-    else if(FlightMode == EnumerationDefinitions::Pitch)
-    {
-        m_MapVehicleRC[VehicleID].pitch_or = boolOverrride;
-        if(boolOverrride == false)
-            override_command.pitch_override = 0;
-        else
-            override_command.pitch_override = 65535;
-    }
-    else if(FlightMode == EnumerationDefinitions::Yaw)
-    {
-        m_MapVehicleRC[VehicleID].yaw_or = boolOverrride;
-        if(boolOverrride == false)
-            override_command.yaw_override = 0;
-        else
-            override_command.yaw_override = 65535;
-    }
-    else if(FlightMode == EnumerationDefinitions::Throttle)
-    {
-        m_MapVehicleRC[VehicleID].throttle_or = boolOverrride;
-        if(boolOverrride == false)
-            override_command.throttle_override = 0;
-        else
-            override_command.throttle_override = 65535;
-    }
-
-    m_ROSParser->publishJoystickOverride(VehicleID , override_command);
-}
-
-void SwarmController_GUI::updateRCReverse(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolReverse)
-{
-    if(FlightMode == EnumerationDefinitions::Roll)
-        m_MapVehicleRC[VehicleID].roll_reverse = boolReverse;
-    else if(FlightMode == EnumerationDefinitions::Pitch)
-        m_MapVehicleRC[VehicleID].pitch_reverse = boolReverse;
-    else if(FlightMode == EnumerationDefinitions::Yaw)
-        m_MapVehicleRC[VehicleID].yaw_reverse = boolReverse;
-    else if(FlightMode == EnumerationDefinitions::Throttle)
-        m_MapVehicleRC[VehicleID].throttle_reverse = boolReverse;
-
-}
-
-void SwarmController_GUI::on_doubleSpinBox_LatHome_valueChanged(double arg1)
-{
-
-}
-
-void SwarmController_GUI::on_doubleSpinBox_LonHome_valueChanged(double arg1)
-{
-
-}
-
-void SwarmController_GUI::on_doubleSpinBox_AltHome_valueChanged(double arg1)
-{
-
-}
-
-void SwarmController_GUI::on_pushButton_USBJOY_Enable_clicked()
-{
-    JoystickEnabled = !JoystickEnabled;
-    if(JoystickEnabled == true)
-    {
-        ui->pushButton_USBCalibrate->setDisabled(false);
-        ui->pushButton_USBJOY_Enable->setText("DISABLE");
-    }
-    else
-    {
-        ui->pushButton_USBCalibrate->setDisabled(true);
-        ui->pushButton_USBJOY_Enable->setText("ENABLE");
-    }
-    m_ROSParser->joystickMode(JoystickEnabled);
-}
-
-void SwarmController_GUI::on_pushButton_ImportHome_clicked()
-{
-    StructureDefinitions::GPS_Params HomePosition;
-    QString string_VehicleID = ui->comboBox_VehicleHome->currentText();
-    if(string_VehicleID != "ALL")
-    {
-        HomePosition = m_MapVehicleWidgets[string_VehicleID.toInt()]->requestPosition();
-
-        ui->doubleSpinBox_LatHome->setValue(HomePosition.Lat);
-        ui->doubleSpinBox_LonHome->setValue(HomePosition.Lon);
-        ui->doubleSpinBox_AltHome->setValue(HomePosition.Alt);
-    }
-}
-
-void SwarmController_GUI::on_pushButton_ExportHome_clicked()
-{
-    int numVehicles = m_MapVehicleWidgets.size();
-    double degreeSeperation = 360.0 / (double)numVehicles;
-    double start = 0.0;
-    double distance = ui->spinBox_LandingRadius->value();
-
-    StructureDefinitions::GPS_Params swarmHome;
-    StructureDefinitions::GPS_Params VehicleHome;
-    swarmHome.Lat = ui->doubleSpinBox_LatHome->value();
-    swarmHome.Lon = ui->doubleSpinBox_LonHome->value();
-    swarmHome.Alt = ui->doubleSpinBox_AltHome->value();
-
-    QString string_VehicleID = ui->comboBox_VehicleHome->currentText();
-    if(string_VehicleID == "ALL")
-    {
-        QMapIterator<int, VehicleDataDisplay*> i(m_MapVehicleWidgets);
-        while(i.hasNext())
-        {
-            i.next();
-            VehicleHome = m_Conversions->FinalGPS(swarmHome,start,distance);
-            m_MapVehicleWidgets[i.key()]->updateHomeCoordinate(VehicleHome);
-            start = start + degreeSeperation;
-        }
-    }
-    else
-        m_MapVehicleWidgets[string_VehicleID.toInt()]->updateHomeCoordinate(swarmHome);
-}
+#endif

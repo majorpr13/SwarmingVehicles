@@ -29,3 +29,5 @@ ProjectSource/*/lib*
 
 ProjectSource/*/moc*
 
+*.5pre1
+ProjectSource/Makefile

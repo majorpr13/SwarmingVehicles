@@ -7,9 +7,13 @@
 #include "Definitions.h"
 #include "table_widget_item_status.h"
 
+
+#ifdef ROS_LIBS
 #include <mavlink_common/HEARTBEAT.h>
 #include <mavlink_common/SYS_STATUS.h>
 #include <mavlink_common/GPS_RAW_INT.h>
+#endif
+
 
 class TableStatusWidget : public QTableWidget
 {
@@ -40,13 +44,14 @@ public slots:
 
     void ChangeArmed(const int &VehicleID, const bool &ArmStatus);
 
-    void ChangeBatteryVoltage(const mavlink_common::SYS_STATUS &status);
-
-    void ChangeSatellite(const mavlink_common::GPS_RAW_INT &status);
-
     void ChangeBatteryLow(const int &VehicleID, const double &VoltageLow);
 
     void ChangeAmpHigh(const int &VehicleID, const double &AmperageHigh);
+
+#ifdef ROS_LIBS
+    void ChangeBatteryVoltage(const mavlink_common::SYS_STATUS &status);
+    void ChangeSatellite(const mavlink_common::GPS_RAW_INT &status);
+#endif
 
 private slots:
 

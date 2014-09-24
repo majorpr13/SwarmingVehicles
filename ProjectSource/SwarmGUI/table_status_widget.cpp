@@ -196,6 +196,28 @@ void TableStatusWidget::updateElapsedTime(const int VehicleID, const int elapsed
 
 }
 
+
+
+
+
+
+void TableStatusWidget::ChangeBatteryLow(const int &VehicleID, const double &VoltageLow)
+{
+    if(!m_VehicleInformationFull.contains(VehicleID))
+        return;
+
+    m_VehicleInformationFull[VehicleID].Cell_Count = VoltageLow;
+}
+
+void TableStatusWidget::ChangeAmpHigh(const int &VehicleID, const double &AmperageHigh)
+{
+    if(!m_VehicleInformationFull.contains(VehicleID))
+        return;
+
+    m_VehicleInformationFull[VehicleID].Battery_AH = AmperageHigh;
+}
+
+#ifdef ROS_LIBS
 void TableStatusWidget::ChangeBatteryVoltage(const mavlink_common::SYS_STATUS &status)
 {
     int VehicleID = status.sysid;
@@ -271,19 +293,4 @@ void TableStatusWidget::ChangeSatellite(const mavlink_common::GPS_RAW_INT &statu
     m_VehicleInformationFull[VehicleID].GPS_Sat = status.satellites_visible;
     m_VehicleInformationFull[VehicleID].GPSFix = status.fix_type;
 }
-
-void TableStatusWidget::ChangeBatteryLow(const int &VehicleID, const double &VoltageLow)
-{
-    if(!m_VehicleInformationFull.contains(VehicleID))
-        return;
-
-    m_VehicleInformationFull[VehicleID].Cell_Count = VoltageLow;
-}
-
-void TableStatusWidget::ChangeAmpHigh(const int &VehicleID, const double &AmperageHigh)
-{
-    if(!m_VehicleInformationFull.contains(VehicleID))
-        return;
-
-    m_VehicleInformationFull[VehicleID].Battery_AH = AmperageHigh;
-}
+#endif

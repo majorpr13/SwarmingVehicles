@@ -1,6 +1,10 @@
 #include "rosparse.h"
 #include <QString>
 #include <QDebug>
+
+
+
+#ifdef ROS_LIBS
 ROSParse::ROSParse(){
 
 }
@@ -212,3 +216,6 @@ void ROSParse::joystickMode(const bool &joystickOperations)
     else
         joySub_Value.shutdown();
 }
+
+
+#endif

@@ -16,6 +16,13 @@ void VehicleState::removeVehicle(const int &VehicleID)
     m_MapVehicleState.remove(VehicleID);
 }
 
+void VehicleState::updateGoal()
+{
+
+}
+
+
+#ifdef ROS_LIBS
 void VehicleState::updateAttitude(const mavlink_common::ATTITUDE &msg)
 {
     m_MapVehicleState[msg.sysid]->roll = msg.roll;
@@ -35,7 +42,4 @@ void VehicleState::updatePosition(const mavlink_common::GLOBAL_POSITION_INT &msg
     m_MapVehicleState[msg.sysid]->Cur_Lon = msg.lon / GPSdivisor;
 }
 
-void VehicleState::updateGoal()
-{
-
-}
+#endif

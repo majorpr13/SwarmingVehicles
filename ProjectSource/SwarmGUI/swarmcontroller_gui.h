@@ -10,7 +10,10 @@
 #include "Definitions.h"
 #include "heartbeattimer.h"
 #include "vehicledatadisplay.h"
+
+#ifdef ROS_LIBS
 #include "rosparse.h"
+#endif
 
 namespace Ui {
 class SwarmController_GUI;
@@ -34,16 +37,6 @@ private slots:
 
     void on_removeVehicleID_clicked();
 
-    void updateVehicleAttitude(const mavlink_common::ATTITUDE &VehicleAttitude);
-
-    void updateVehicleHeartbeat(const mavlink_common::HEARTBEAT &VehicleHeartbeat);
-
-    void updateVehiclePositionRaw(const mavlink_common::GPS_RAW_INT &VehiclePosition);
-
-    void updateVehiclePositionScaled(const mavlink_common::GLOBAL_POSITION_INT &VehiclePosition);
-
-    void updateVehicleSysStatus(const mavlink_common::SYS_STATUS &VehicleSysStatus);
-
     void updateElapsedHearbeat(const int VehicleID, const int elapsedTime);
 
     void updateWarningString(const QString &warningString);
@@ -54,11 +47,7 @@ private slots:
 
     void radioCalibration(const int &VehicleID, const int &MessageStream, const bool &boolStream);
 
-    void updateRadioValues(const mavlink_common::RC_CHANNELS_RAW &VehicleRCValues);
-
     void armRequest(const int &VehicleID, const bool &armValue);
-
-    void USBJoystick(const sensor_msgs::Joy &JoystickValues);
 
     void updateRCOverrides(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolOverrride);
 
@@ -78,6 +67,16 @@ private slots:
 
     void on_pushButton_ExportHome_clicked();
 
+#ifdef ROS_LIBS
+    void updateVehicleAttitude(const mavlink_common::ATTITUDE &VehicleAttitude);
+    void updateVehicleHeartbeat(const mavlink_common::HEARTBEAT &VehicleHeartbeat);
+    void updateVehiclePositionRaw(const mavlink_common::GPS_RAW_INT &VehiclePosition);
+    void updateVehiclePositionScaled(const mavlink_common::GLOBAL_POSITION_INT &VehiclePosition);
+    void updateVehicleSysStatus(const mavlink_common::SYS_STATUS &VehicleSysStatus);
+    void updateRadioValues(const mavlink_common::RC_CHANNELS_RAW &VehicleRCValues);
+    void USBJoystick(const sensor_msgs::Joy &JoystickValues);
+#endif
+
 private:
     void initialization();
     void updateButtons();
@@ -85,9 +84,7 @@ private:
 private:
 
     QTimer *m_Timer;
-    Ui::SwarmController_GUI *ui;
-
-    ROSParse *m_ROSParser;
+    Ui::SwarmController_GUI *ui;    
 
     HeartBeatTimer *m_HeartBeatTimer;
 
@@ -103,6 +100,10 @@ private:
     bool JoystickEnabled;
 
     int warningCounter;
+
+#ifdef ROS_LIBS
+    ROSParse *m_ROSParser;
+#endif
 };
 
 #endif // SWARMCONTROLLER_GUI_H

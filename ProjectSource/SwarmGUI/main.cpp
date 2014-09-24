@@ -5,10 +5,10 @@
 
 int main(int argc, char *argv[])
 {
-
-    ros::init(argc,argv,"Swarm_GUI");
-
     QApplication a(argc, argv);
+
+#ifdef ROS_LIBS
+    ros::init(argc,argv,"Swarm_GUI");   
 
     qRegisterMetaType<mavlink_common::HEARTBEAT>("mavlink_common::HEARTBEAT");
     qRegisterMetaType<mavlink_common::ATTITUDE>("mavlink_common::ATTITUDE");
@@ -19,6 +19,8 @@ int main(int argc, char *argv[])
     qRegisterMetaType<mavlink_common::PARAM_REQUEST_READ>("mavlink_common::PARAM_REQUEST_READ");
 
     qRegisterMetaType<sensor_msgs::Joy>("sensor_msgs::Joy");
+
+#endif
 
     SwarmController_GUI w;
     w.show();

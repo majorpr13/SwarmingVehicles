@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = SwarmGUI
 TEMPLATE = app
 
+
 SOURCES += main.cpp\
     swarmcontroller_gui.cpp \
     table_status_widget.cpp \
@@ -52,6 +53,8 @@ INCLUDEPATH += /home/scoriolinux/catkin_ws/src/Ardupilot_ROS/ardupilotmega-ros/m
 
 unix {
 exists(/opt/ros/indigo/lib/) {
+
+    DEFINES     += ROS_LIBS
     INCLUDEPATH += /opt/ros/indigo/include
     INCLUDEPATH += /opt/ros/indigo/lib
 

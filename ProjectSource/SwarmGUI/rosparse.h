@@ -1,6 +1,8 @@
 #ifndef ROSPARSE_H
 #define ROSPARSE_H
 
+#ifdef ROS_LIBS
+
 #include <QList>
 #include <QMap>
 #include <QHash>
@@ -9,10 +11,13 @@
 #include <QCoreApplication>
 #include <QThread>
 
+#include "Definitions.h"
+
+
 #include <sensor_msgs/Joy.h>
 
 #include <ros/ros.h>
-#include "Definitions.h"
+
 
 #include <mavlink_common/HEARTBEAT.h>
 #include <mavlink_common/ATTITUDE.h>
@@ -29,6 +34,7 @@
 #include <mavlink_common/E_MAV_CMD.h>
 #include <mavlink_common/COMMAND_LONG.h>
 #include <mavlink_common/RC_CHANNELS_OVERRIDE.h>
+
 
 class ROSParse : public QThread
 {
@@ -113,5 +119,7 @@ private:
 
 
 };
+
+#endif
 
 #endif // ROSPARSE_H

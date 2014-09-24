@@ -28,101 +28,6 @@ void VehicleDataDisplay::addVehicle(const int &VehicleID)
     m_currentVehicleID = VehicleID;
 }
 
-void VehicleDataDisplay::updateAttitude(const mavlink_common::ATTITUDE &VehicleAttitude)
-{
-    ui->widget_MainFlightInstrument->setRoll(VehicleAttitude.roll * (180.0/3.14159265));
-    m_VehicleState.roll = VehicleAttitude.roll;
-    m_VehicleState.rollrate = VehicleAttitude.rollspeed;
-
-    ui->widget_MainFlightInstrument->setPitch(VehicleAttitude.pitch * (180.0/3.14159265));
-    m_VehicleState.pitch = VehicleAttitude.pitch;
-    m_VehicleState.pitchrate = VehicleAttitude.pitchspeed;
-
-    ui->widget_MainFlightInstrument->update();
-}
-
-void VehicleDataDisplay::updatePositioning(const mavlink_common::GLOBAL_POSITION_INT &VehiclePositionGPS)
-{
-    double GPSdivisor = 10000000.00000;
-    StructureDefinitions::GPS_Params New;
-    StructureDefinitions::GPS_Params Home;
-    Home.Lat = m_HomeCoordinate.HLatitude;
-    Home.Lon = m_HomeCoordinate.HLongitude;
-    Home.Alt = m_HomeCoordinate.HAltitude;
-
-    New.Lat = VehiclePositionGPS.lat / GPSdivisor;
-    New.Lon = VehiclePositionGPS.lon / GPSdivisor;
-
-    double distance = m_Conversion->DistanceGPS(Home,New);
-    double bearing_degrees = m_Conversion->BearingGPS(Home,New);
-    double bearing_radians = m_Conversion->DegreestoRadians(bearing_degrees);
-
-    ui->lineEdit_CurrentX->setText(QString::number(distance * cos(bearing_radians)));
-    ui->lineEdit_CurrentY->setText(QString::number(distance * sin(bearing_radians)));
-
-    ui->lineEdit_relativeAlt->setText(QString::number(VehiclePositionGPS.relative_alt / 1000.0));
-    m_VehicleState.Cur_Altitude = VehiclePositionGPS.relative_alt / 1000.0;
-
-    ui->lineEdit_Latitude->setText(QString::number(New.Lat));
-    m_VehicleState.Cur_Lat = VehiclePositionGPS.lat / GPSdivisor;
-
-    ui->lineEdit_Longitude->setText(QString::number(New.Lon));
-    m_VehicleState.Cur_Lon = VehiclePositionGPS.lon / GPSdivisor;
-
-    ui->widget_MainFlightInstrument->setHeading(VehiclePositionGPS.hdg / 100.0);
-}
-
-void VehicleDataDisplay::updateFlightMode(const mavlink_common::HEARTBEAT &VehicleHeartbeat)
-{
-    if(VehicleHeartbeat.custom_mode != m_Conversion->FlightMode_StringtoEnum(ui->lineEdit_FlightMode->text()))
-    {
-        if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Stabilize)
-        {
-            ui->lineEdit_FlightMode->setText("Stabilize");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Acro)
-        {
-            ui->lineEdit_FlightMode->setText("Acro");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.AltHold)
-        {
-            ui->lineEdit_FlightMode->setText("AltHold");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Auto)
-        {
-            ui->lineEdit_FlightMode->setText("Auto");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Guided)
-        {
-            ui->lineEdit_FlightMode->setText("Guided");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Loiter)
-        {
-            ui->lineEdit_FlightMode->setText("Loiter");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.RTL)
-        {
-            ui->lineEdit_FlightMode->setText("RTL");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.CircleFM)
-        {
-            ui->lineEdit_FlightMode->setText("Circle");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Land)
-        {
-            ui->lineEdit_FlightMode->setText("Land");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Drift)
-        {
-            ui->lineEdit_FlightMode->setText("Drift");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Sport)
-        {
-            ui->lineEdit_FlightMode->setText("Sport");
-        }
-        ui->comboBox_DesiredFlightMode->setCurrentIndex(ui->comboBox_DesiredFlightMode->findText(ui->lineEdit_FlightMode->text()));
-    }
-}
 
 
 void VehicleDataDisplay::on_comboBox_DesiredFlightMode_activated(const QString &arg1)
@@ -159,14 +64,6 @@ void VehicleDataDisplay::on_pushButton_Cal_released()
 {
     //boolean_Calibration = !boolean_Calibration;
     //emit(radioCalibrate(m_currentVehicleID , m_Initialization->m_StreamModeV.RCChannels , boolean_Calibration));
-}
-
-void VehicleDataDisplay::updateRCValues(const mavlink_common::RC_CHANNELS_RAW &RCValues)
-{
-    ui->lineEdit_PitchCurrent->setText(QString::number(RCValues.chan2_raw));
-    ui->lineEdit_RollCurrent->setText(QString::number(RCValues.chan1_raw));
-    ui->lineEdit_ThrottleCurrent->setText(QString::number(RCValues.chan3_raw));
-    ui->lineEdit_YawCurrent->setText(QString::number(RCValues.chan4_raw));
 }
 
 
@@ -329,3 +226,111 @@ void VehicleDataDisplay::checkRCParams()
 
 
 }
+
+
+#ifdef ROS_LIBS
+void VehicleDataDisplay::updateRCValues(const mavlink_common::RC_CHANNELS_RAW &RCValues)
+{
+    ui->lineEdit_PitchCurrent->setText(QString::number(RCValues.chan2_raw));
+    ui->lineEdit_RollCurrent->setText(QString::number(RCValues.chan1_raw));
+    ui->lineEdit_ThrottleCurrent->setText(QString::number(RCValues.chan3_raw));
+    ui->lineEdit_YawCurrent->setText(QString::number(RCValues.chan4_raw));
+}
+
+
+void VehicleDataDisplay::updateAttitude(const mavlink_common::ATTITUDE &VehicleAttitude)
+{
+    ui->widget_MainFlightInstrument->setRoll(VehicleAttitude.roll * (180.0/3.14159265));
+    m_VehicleState.roll = VehicleAttitude.roll;
+    m_VehicleState.rollrate = VehicleAttitude.rollspeed;
+
+    ui->widget_MainFlightInstrument->setPitch(VehicleAttitude.pitch * (180.0/3.14159265));
+    m_VehicleState.pitch = VehicleAttitude.pitch;
+    m_VehicleState.pitchrate = VehicleAttitude.pitchspeed;
+
+    ui->widget_MainFlightInstrument->update();
+}
+
+void VehicleDataDisplay::updatePositioning(const mavlink_common::GLOBAL_POSITION_INT &VehiclePositionGPS)
+{
+    double GPSdivisor = 10000000.00000;
+    StructureDefinitions::GPS_Params New;
+    StructureDefinitions::GPS_Params Home;
+    Home.Lat = m_HomeCoordinate.HLatitude;
+    Home.Lon = m_HomeCoordinate.HLongitude;
+    Home.Alt = m_HomeCoordinate.HAltitude;
+
+    New.Lat = VehiclePositionGPS.lat / GPSdivisor;
+    New.Lon = VehiclePositionGPS.lon / GPSdivisor;
+
+    double distance = m_Conversion->DistanceGPS(Home,New);
+    double bearing_degrees = m_Conversion->BearingGPS(Home,New);
+    double bearing_radians = m_Conversion->DegreestoRadians(bearing_degrees);
+
+    ui->lineEdit_CurrentX->setText(QString::number(distance * cos(bearing_radians)));
+    ui->lineEdit_CurrentY->setText(QString::number(distance * sin(bearing_radians)));
+
+    ui->lineEdit_relativeAlt->setText(QString::number(VehiclePositionGPS.relative_alt / 1000.0));
+    m_VehicleState.Cur_Altitude = VehiclePositionGPS.relative_alt / 1000.0;
+
+    ui->lineEdit_Latitude->setText(QString::number(New.Lat));
+    m_VehicleState.Cur_Lat = VehiclePositionGPS.lat / GPSdivisor;
+
+    ui->lineEdit_Longitude->setText(QString::number(New.Lon));
+    m_VehicleState.Cur_Lon = VehiclePositionGPS.lon / GPSdivisor;
+
+    ui->widget_MainFlightInstrument->setHeading(VehiclePositionGPS.hdg / 100.0);
+}
+
+void VehicleDataDisplay::updateFlightMode(const mavlink_common::HEARTBEAT &VehicleHeartbeat)
+{
+    if(VehicleHeartbeat.custom_mode != m_Conversion->FlightMode_StringtoEnum(ui->lineEdit_FlightMode->text()))
+    {
+        if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Stabilize)
+        {
+            ui->lineEdit_FlightMode->setText("Stabilize");
+        }
+        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Acro)
+        {
+            ui->lineEdit_FlightMode->setText("Acro");
+        }
+        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.AltHold)
+        {
+            ui->lineEdit_FlightMode->setText("AltHold");
+        }
+        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Auto)
+        {
+            ui->lineEdit_FlightMode->setText("Auto");
+        }
+        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Guided)
+        {
+            ui->lineEdit_FlightMode->setText("Guided");
+        }
+        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Loiter)
+        {
+            ui->lineEdit_FlightMode->setText("Loiter");
+        }
+        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.RTL)
+        {
+            ui->lineEdit_FlightMode->setText("RTL");
+        }
+        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.CircleFM)
+        {
+            ui->lineEdit_FlightMode->setText("Circle");
+        }
+        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Land)
+        {
+            ui->lineEdit_FlightMode->setText("Land");
+        }
+        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Drift)
+        {
+            ui->lineEdit_FlightMode->setText("Drift");
+        }
+        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Sport)
+        {
+            ui->lineEdit_FlightMode->setText("Sport");
+        }
+        ui->comboBox_DesiredFlightMode->setCurrentIndex(ui->comboBox_DesiredFlightMode->findText(ui->lineEdit_FlightMode->text()));
+    }
+}
+#endif
