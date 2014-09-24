@@ -80,7 +80,11 @@ void SwarmController_GUI::on_addVehicleID_clicked()
         m_HeartBeatTimer->addVehicle(VehicleID);
 
         VehicleDataDisplay *newWidget = new VehicleDataDisplay(ui->TabVehicleInfo);
-        ui->TabVehicleInfo->addTab(newWidget,QString::number(VehicleID));
+        // If this is the first vehicle being added, delete the placeholder tab
+        if(m_MapVehicleWidgets.isEmpty())
+            ui->tabWidget_Vehicles->removeTab(0);
+
+        ui->tabWidget_Vehicles->addTab(newWidget,QString::number(VehicleID));
 
         m_MapVehicleWidgets.insert(VehicleID,newWidget);
         m_MapVehicleWidgets[VehicleID]->addVehicle(VehicleID);
@@ -254,12 +258,12 @@ void SwarmController_GUI::on_pushButton_USBJOY_Enable_clicked()
     if(JoystickEnabled == true)
     {
         ui->pushButton_USBCalibrate->setDisabled(false);
-        ui->pushButton_USBJOY_Enable->setText("DISABLE");
+        ui->pushButton_USBJOY_Enable->setText("Disable");
     }
     else
     {
         ui->pushButton_USBCalibrate->setDisabled(true);
-        ui->pushButton_USBJOY_Enable->setText("ENABLE");
+        ui->pushButton_USBJOY_Enable->setText("Enable");
     }
 
 #ifdef ROS_LIBS
