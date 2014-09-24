@@ -302,6 +302,8 @@ void SwarmController_GUI::updateVehicleSysStatus(const mavlink_common::SYS_STATU
 void SwarmController_GUI::updateVehicleHeartbeat(const mavlink_common::HEARTBEAT &VehicleHeartbeat)
 {
     int VehicleID = VehicleHeartbeat.sysid;
+    m_MapVehicleWidgets[VehicleID]->updateVehicleType((EnumerationDefinitions::Vehicle_Type)VehicleHeartbeat.type);
+
     m_HeartBeatTimer->restartTimer(VehicleID);
 
     if(VehicleHeartbeat.base_mode == 209)

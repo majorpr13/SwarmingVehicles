@@ -8,14 +8,17 @@ VehicleDataDisplay::VehicleDataDisplay(QWidget *parent) :
     ui->setupUi(this);
     m_Conversion = new Conversions();
     m_Initialization = new Initialization();
+
     boolUSBCalibraiton = false;
     boolRCCalibration = false;
+    firstTimeLoad = true;
 
     ui->checkBox_RollOverride->setDisabled(true);
     ui->checkBox_PitchOverride->setDisabled(true);
     ui->checkBox_YawOverride->setDisabled(true);
     ui->checkBox_ThrottleOverride->setDisabled(true);
 
+    initialization();
 }
 
 VehicleDataDisplay::~VehicleDataDisplay()
@@ -23,12 +26,23 @@ VehicleDataDisplay::~VehicleDataDisplay()
     delete ui;
 }
 
+void VehicleDataDisplay::initialization()
+{
+
+}
+
 void VehicleDataDisplay::addVehicle(const int &VehicleID)
 {
     m_currentVehicleID = VehicleID;
 }
 
-
+void VehicleDataDisplay::updateVehicleType(const EnumerationDefinitions::Vehicle_Type &vehicleType)
+{
+    if(firstTimeLoad == true)
+    {
+        firstTimeLoad = false;
+    }
+}
 
 void VehicleDataDisplay::on_comboBox_DesiredFlightMode_activated(const QString &arg1)
 {

@@ -139,6 +139,28 @@ struct StreamModes
 }
 namespace EnumerationDefinitions{
 
+enum Vehicle_Type{
+    Generic,
+    Plane,
+    Quadrotor,
+    Coaxial,
+    Helicopter,
+    Antenna_Tracker,
+    GCS,
+    Airship,
+    Balloon,
+    Rocket,
+    Rover,
+    Boat,
+    Submarine,
+    Hexacopter,
+    Octocopter,
+    Tricopter,
+    FlappingWing,
+    Kite,
+    Companion
+};
+
 enum GPS_Fix{
     Fix0D,
     Fix2D,

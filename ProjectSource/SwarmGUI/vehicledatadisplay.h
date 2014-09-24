@@ -37,6 +37,8 @@ public:
 
     void updateHomeCoordinate(const StructureDefinitions::GPS_Params &homeValue);
 
+    void updateVehicleType(const EnumerationDefinitions::Vehicle_Type &vehicleType);
+
     void USBcalibrationCompleted();
 
     void updateRCParam(const EnumerationDefinitions::Vehicle_Params &Parameter, const double value);
@@ -105,6 +107,8 @@ private:
 
     void updateOverrideCheckbox();
 
+    void initialization();
+
     Ui::VehicleDataDisplay *ui;
 
     StructureDefinitions::VehicleRCHL m_RCCalibration;
@@ -114,6 +118,8 @@ private:
 
     bool boolUSBCalibraiton;
     bool boolRCCalibration;
+
+    bool firstTimeLoad;
 
     int m_currentVehicleID;
 
