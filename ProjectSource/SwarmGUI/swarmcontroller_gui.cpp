@@ -90,14 +90,14 @@ void SwarmController_GUI::on_addVehicleID_clicked()
         StructureDefinitions::VehicleRCHL default_value;
         m_MapVehicleRC.insert(VehicleID,default_value);
 
-        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(requestStream(int,int,int)),this,SLOT(updateStreamRequest(int,int,int)));
-        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(desiredFlightMode(int,int)),this,SLOT(updateDesiredFlightMode(int,int)));
-        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(armRequest(int,bool)),this,SLOT(armRequest(int,bool)));
-        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(radioCalibrate(int,int,bool)),this,SLOT(radioCalibration(int,int,bool)));
+        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(requestStream(int,int,int)),m_ROSParser,SLOT(publishDataStreamRequest(int,int,int)));
+        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(desiredFlightMode(int,int)),m_ROSParser,SLOT(publishDesiredFlightMode(int,int)));
+        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(armRequest(int,bool)),m_ROSParser,SLOT(publishArmDisarm(int,bool)));
+
+        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(requestRCConfiguration(int)),this,SLOT(radioCalibration(int)));
 
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(signalJoystickOverride(int,EnumerationDefinitions::FlightMethods,bool)),this,SLOT(updateRCOverrides(int,EnumerationDefinitions::FlightMethods,bool)));
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(signalJoystickReverse(int,EnumerationDefinitions::FlightMethods,bool)),this,SLOT(updateRCReverse(int,EnumerationDefinitions::FlightMethods,bool)));
-
 #ifdef ROS_LIBS
         m_ROSParser->addVehicle(VehicleID);
 #endif
@@ -106,8 +106,6 @@ void SwarmController_GUI::on_addVehicleID_clicked()
     }
 
 }
-
-
 
 void SwarmController_GUI::updateElapsedHearbeat(const int VehicleID, const int elapsedTime)
 {
@@ -135,39 +133,14 @@ void SwarmController_GUI::on_removeVehicleID_clicked()
     updateButtons();
 }
 
-void SwarmController_GUI::updateWarningString(const QString &warningString)
+void SwarmController_GUI::radioCalibration(const int &VehicleID)
 {
-    //ui->textBrowser_Warnings->append(warningString);
+    QList<QString> listRC = m_Conversions->parameterList_RC();
+    for(int i = 0; i < listRC.length(); i++)
+    {
+        m_ROSParser->publishParameterRequest(VehicleID,listRC.at(i));
+    }
 }
-
-void SwarmController_GUI::updateStreamRequest(const int &VehicleID, const int &StreamType, const int &StreamRate)
-{
-#ifdef ROS_LIBS
-    m_ROSParser->publishDataStreamRequest(VehicleID,StreamType,StreamRate);
-#endif
-}
-
-void SwarmController_GUI::updateDesiredFlightMode(const int &VehicleID, const int &DesiredFlightMode)
-{
-#ifdef ROS_LIBS
-    m_ROSParser->publishDesiredFlightMode(VehicleID,DesiredFlightMode);
-#endif
-}
-
-void SwarmController_GUI::radioCalibration(const int &VehicleID, const int &MessageStream, const bool &boolStream)
-{
-    //m_ROSParser->publishDataStreamRequest(VehicleID,MessageStream,10);
-}
-
-
-void SwarmController_GUI::armRequest(const int &VehicleID, const bool &armValue)
-{
-#ifdef ROS_LIBS
-    m_ROSParser->publishArmDisarm(VehicleID,armValue);
-#endif
-}
-
-
 
 void SwarmController_GUI::on_pushButton_USBCalibrate_clicked()
 {
@@ -230,21 +203,6 @@ void SwarmController_GUI::updateRCReverse(const int &VehicleID, const Enumeratio
         m_MapVehicleRC[VehicleID].yaw_reverse = boolReverse;
     else if(FlightMode == EnumerationDefinitions::Throttle)
         m_MapVehicleRC[VehicleID].throttle_reverse = boolReverse;
-
-}
-
-void SwarmController_GUI::on_doubleSpinBox_LatHome_valueChanged(double arg1)
-{
-
-}
-
-void SwarmController_GUI::on_doubleSpinBox_LonHome_valueChanged(double arg1)
-{
-
-}
-
-void SwarmController_GUI::on_doubleSpinBox_AltHome_valueChanged(double arg1)
-{
 
 }
 

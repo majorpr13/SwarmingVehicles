@@ -452,3 +452,18 @@ double Conversions::RadianstoDegrees(const double &valueRadians)
 {
     return(valueRadians * (180.0/PI));
 }
+
+QList<QString> Conversions::parameterList_RC()
+{
+    QList<QString> returnList;
+    returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::RC1_Max));
+    returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::RC2_Max));
+    returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::RC3_Max));
+    returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::RC4_Max));
+
+    returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::RC1_Min));
+    returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::RC2_Min));
+    returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::RC3_Min));
+    returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::RC4_Min));
+    return(returnList);
+}

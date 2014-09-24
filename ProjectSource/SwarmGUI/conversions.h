@@ -4,6 +4,9 @@
 #include "initialization.h"
 #include "math.h"
 
+#include <QList>
+
+
 class Conversions
 {
 public:
@@ -26,6 +29,8 @@ public:
     double DegreestoRadians(const double &valueDegrees);
 
     double RadianstoDegrees(const double &valueRadians);
+
+    QList<QString> parameterList_RC();
 
     Initialization *m_Initialization;
 
