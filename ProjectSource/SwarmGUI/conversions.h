@@ -11,11 +11,11 @@ class Conversions
 {
 public:
     Conversions();
-    int FlightMode_StringtoEnum(const QString &FlightMode);
+    uint FlightMode_StringtoEnum(const QString &FlightMode);
     int StreamMode_StringtoEnum(const QString &StreamMode);
-    int VehicleParam_StringtoEnum(const QString &Parameter);
+    EnumerationDefinitions::Vehicle_Params VehicleParam_StringtoEnum(const QString &Parameter);
 
-    QString FlightMode_EnumtoString(const int &FlightMode);
+    QString FlightMode_EnumtoString(const uint &FlightMode);
     QString StreamMode_EnumtoString(const int &StreamMode);
     QString VehicleParam_EnumtoString(const int &Parameter);
 

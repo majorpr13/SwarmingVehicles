@@ -60,7 +60,10 @@ private slots:
     void updateVehiclePositionScaled(const mavlink_common::GLOBAL_POSITION_INT &VehiclePosition);
     void updateVehicleSysStatus(const mavlink_common::SYS_STATUS &VehicleSysStatus);
     void updateRadioValues(const mavlink_common::RC_CHANNELS_RAW &VehicleRCValues);
+    void updateVehicleParams(const mavlink_common::PARAM_VALUE &VehicleParamValue);
+
     void USBJoystick(const sensor_msgs::Joy &JoystickValues);
+
 #endif
 
 private:

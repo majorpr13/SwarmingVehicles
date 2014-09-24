@@ -6,7 +6,7 @@ Conversions::Conversions()
     PI = 3.14159265358979;
 }
 
-int Conversions::FlightMode_StringtoEnum(const QString &FlightMode)
+uint Conversions::FlightMode_StringtoEnum(const QString &FlightMode)
 {
     if(FlightMode == "Acro")
         return m_Initialization->m_FlightModeV.Acro;
@@ -42,7 +42,7 @@ int Conversions::FlightMode_StringtoEnum(const QString &FlightMode)
         return -1;
 }
 
-QString Conversions::FlightMode_EnumtoString(const int &FlightMode)
+QString Conversions::FlightMode_EnumtoString(const uint &FlightMode)
 {
     if(FlightMode == m_Initialization->m_FlightModeV.Acro)
         return "Acro";
@@ -192,9 +192,10 @@ int Conversions::PercenttoRC(const StructureDefinitions::VehicleRCHL &RCRange, c
      return(RC_Value);
 }
 
-int Conversions::VehicleParam_StringtoEnum(const QString &Parameter)
+EnumerationDefinitions::Vehicle_Params Conversions::VehicleParam_StringtoEnum(const QString &Parameter)
 {
-    int return_int = -1;
+    EnumerationDefinitions::Vehicle_Params return_int;
+
     if(Parameter == "RC1_Min")
         return_int = EnumerationDefinitions::RC1_Min;
     else if(Parameter == "RC1_Max")
@@ -255,7 +256,7 @@ int Conversions::VehicleParam_StringtoEnum(const QString &Parameter)
     else if(Parameter == "RC14_Max")
         return_int = EnumerationDefinitions::RC14_Max;
     else
-        return_int = -1;
+        return_int = EnumerationDefinitions::RC_Length;
     return(return_int);
 
 }

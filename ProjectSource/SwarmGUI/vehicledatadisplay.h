@@ -17,6 +17,7 @@
 #include <mavlink_common/HEARTBEAT.h>
 #include <mavlink_common/GLOBAL_POSITION_INT.h>
 #include <mavlink_common/RC_CHANNELS_RAW.h>
+#include <mavlink_common/PARAM_VALUE.h>
 #endif
 
 namespace Ui {
@@ -38,7 +39,9 @@ public:
 
     void USBcalibrationCompleted();
 
-    void updateRCParam(const QString &Parameter, const double value);
+    void updateRCParam(const EnumerationDefinitions::Vehicle_Params &Parameter, const double value);
+
+    void updateVehicleParams(const mavlink_common::PARAM_VALUE &parameter);
 
     StructureDefinitions::GPS_Params requestPosition();
 

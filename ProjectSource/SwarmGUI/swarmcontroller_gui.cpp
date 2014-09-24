@@ -29,6 +29,7 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
     connect(m_ROSParser,SIGNAL(newVehiclePositionRaw(mavlink_common::GPS_RAW_INT)), this, SLOT(updateVehiclePositionRaw(mavlink_common::GPS_RAW_INT)));
     connect(m_ROSParser,SIGNAL(newVehiclePositionScaled(mavlink_common::GLOBAL_POSITION_INT)), this, SLOT(updateVehiclePositionScaled(mavlink_common::GLOBAL_POSITION_INT)));
     connect(m_ROSParser,SIGNAL(newRCValues(mavlink_common::RC_CHANNELS_RAW)),this, SLOT(updateRadioValues(mavlink_common::RC_CHANNELS_RAW)));
+    connect(m_ROSParser,SIGNAL(newVehicleParam(mavlink_common::PARAM_VALUE)),this,SLOT(updateVehicleParams(mavlink_common::PARAM_VALUE)));
     connect(m_ROSParser,SIGNAL(newJoystickValues(sensor_msgs::Joy)),this, SLOT(USBJoystick(sensor_msgs::Joy)));
 #endif
 }
@@ -307,6 +308,11 @@ void SwarmController_GUI::updateVehicleHeartbeat(const mavlink_common::HEARTBEAT
         m_MapVehicleWidgets[VehicleID]->updateArmStatus(false);
     }
     m_MapVehicleWidgets[VehicleID]->updateFlightMode(VehicleHeartbeat);
+}
+
+void SwarmController_GUI::updateVehicleParams(const mavlink_common::PARAM_VALUE &VehicleParamValue)
+{
+    m_MapVehicleWidgets[VehicleParamValue.sysid]->updateVehicleParams(VehicleParamValue);
 }
 
 void SwarmController_GUI::updateRadioValues(const mavlink_common::RC_CHANNELS_RAW &VehicleRCValues)

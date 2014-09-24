@@ -74,9 +74,6 @@ public slots:
     void publishArmDisarm(const int &VehicleID, const bool &ArmStatus);
     void publishDataStreamRequest(const int &VehicleID, const int &StreamType, const int &StreamRate);
     void publishDesiredFlightMode(const int &VehicleID, const int &FlightMode);
-    //void publishDesiredFlightMode(const int &VehicleID, const int &FlightMode);
-
-
 
 private slots:
     void UAVHeartbeat(const mavlink_common::HEARTBEAT &msg);

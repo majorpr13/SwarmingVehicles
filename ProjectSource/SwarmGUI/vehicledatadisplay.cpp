@@ -155,11 +155,26 @@ void VehicleDataDisplay::updateOverrideCheckbox()
     }
 }
 
-void VehicleDataDisplay::updateRCParam(const QString &Parameter, const double value)
+void VehicleDataDisplay::updateVehicleParams(const mavlink_common::PARAM_VALUE &parameter)
 {
-    int returnEnum = m_Conversion->VehicleParam_StringtoEnum(Parameter);
+    QByteArray ba;
 
-    switch(returnEnum)
+    for(uint i = 0; i < parameter.param_id.size(); i++)
+    {
+        ba[i] = parameter.param_id.at(i);
+    }
+    QString newString(ba);
+
+    EnumerationDefinitions::Vehicle_Params VP = m_Conversion->VehicleParam_StringtoEnum(newString);
+    if(VP < EnumerationDefinitions::RC_Length)
+    {
+        updateRCParam(VP,parameter.param_value);
+    }
+}
+
+void VehicleDataDisplay::updateRCParam(const EnumerationDefinitions::Vehicle_Params &Parameter, const double value)
+{
+    switch(Parameter)
     {
     case(EnumerationDefinitions::RC1_Min):
         m_RCCalibration.roll_low = (int)value;
@@ -192,6 +207,8 @@ void VehicleDataDisplay::updateRCParam(const QString &Parameter, const double va
     case(EnumerationDefinitions::RC4_Max):
         m_RCCalibration.yaw_high = (int)value;
         ui->lineEdit_YawHigh->setText(QString::number(m_RCCalibration.yaw_high));
+        break;
+    default:
         break;
     }
 

@@ -7,7 +7,7 @@
 namespace StructureDefinitions{
 struct GCSDefinition
 {
-    GCSDefinition() : sysid(255),compid(190){}
+    GCSDefinition() : sysid(255),compid(255){}
     int sysid;
     int compid;
 };
@@ -105,18 +105,18 @@ struct JoystickHL
 namespace FlightModeStructure{
 struct FlightModes
 {
-     int Stabilize;
-     int AltHold;
-     int Loiter;
-     int RTL;
-     int Auto;
-     int Acro;
-     int Sport;
-     int Drift;
-     int Guided;
-     int CircleFM;
-     int Position;
-     int Land;
+     uint Stabilize;
+     uint AltHold;
+     uint Loiter;
+     uint RTL;
+     uint Auto;
+     uint Acro;
+     uint Sport;
+     uint Drift;
+     uint Guided;
+     uint CircleFM;
+     uint Position;
+     uint Land;
      //int FollowMe;
      //int Simple;
      //int SuperSimple;
@@ -186,7 +186,8 @@ enum Vehicle_Params{
     RC13_Min,
     RC13_Max,
     RC14_Min,
-    RC14_Max
+    RC14_Max,
+    RC_Length
 };
 }
 #endif // DEFINITIONS_H
