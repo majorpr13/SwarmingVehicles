@@ -10,6 +10,7 @@
 #include <QObject>
 #include <QCoreApplication>
 #include <QThread>
+#include <QVector>
 
 #include "Definitions.h"
 
@@ -27,7 +28,7 @@
 #include <mavlink_common/RC_CHANNELS_RAW.h>
 #include <mavlink_common/PARAM_VALUE.h>
 
-#include <mavlink_common/PARAM_VALUE.h>
+#include <mavlink_common/PARAM_SET.h>
 #include <mavlink_common/PARAM_REQUEST_READ.h>
 #include <mavlink_common/SET_MODE.h>
 #include <mavlink_common/REQUEST_DATA_STREAM.h>
@@ -55,6 +56,8 @@ public:
 
     void publishJoystickOverride(const int &VehicleID, const StructureDefinitions::RCOverride &RCOverride);
 
+    void publishMAVcommand(const int &VehicleID, const int &idCMD, const int &confirmation, const QVector<double> &msgVector);
+
     void joystickMode(const bool &joystickOperations);
 
 signals:
@@ -74,6 +77,9 @@ public slots:
     void publishArmDisarm(const int &VehicleID, const bool &ArmStatus);
     void publishDataStreamRequest(const int &VehicleID, const int &StreamMessage, const int &StreamRate);
     void publishDesiredFlightMode(const int &VehicleID, const int &FlightMode);
+
+    void publishParamSet(const int &VehicleID, const QString &msgString, const double &value);
+
 
 private slots:
     void UAVHeartbeat(const mavlink_common::HEARTBEAT &msg);
@@ -99,6 +105,8 @@ private:
     ros::Publisher arduPub_armRequest;
     ros::Publisher arduPub_rcOverride;
     ros::Publisher arduPub_paramReq;
+    ros::Publisher arduPub_paramSet;
+    ros::Publisher arduPub_cmdReq;
 
     ros::Subscriber arduSub_Heartbeat;
     ros::Subscriber arduSub_Attitude;

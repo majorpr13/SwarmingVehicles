@@ -7,6 +7,8 @@
 #include <QTimer>
 #include <QMapIterator>
 
+#include "cmdconversions.h"
+
 #include "Definitions.h"
 #include "heartbeattimer.h"
 #include "vehicledatadisplay.h"
@@ -39,11 +41,13 @@ private slots:
 
     void updateElapsedHearbeat(const int VehicleID, const int elapsedTime);
 
-    void radioCalibration(const int &VehicleID);
+    void requestRCParams(const int &VehicleID);
 
     void updateRCOverrides(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolOverrride);
 
     void updateRCReverse(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolReverse);
+
+    void requestWPParams(const int &VehicleID);
 
     void on_pushButton_USBCalibrate_clicked();
 
@@ -78,6 +82,8 @@ private:
     HeartBeatTimer *m_HeartBeatTimer;
 
     Conversions *m_Conversions;
+    cmdConversions *m_cmdConversions;
+    mavCommandStructures::mavCMD_numberList mavCmdNum;
 
     QMap<int, VehicleDataDisplay*> m_MapVehicleWidgets;
     QMap<int, StructureDefinitions::VehicleRCHL> m_MapVehicleRC;

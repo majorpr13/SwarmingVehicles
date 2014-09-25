@@ -183,6 +183,40 @@ void VehicleDataDisplay::updateVehicleParams(const mavlink_common::PARAM_VALUE &
     {
         updateRCParam(VP,parameter.param_value);
     }
+    else if((VP > EnumerationDefinitions::RC_Length) && (VP< EnumerationDefinitions::WP_Length))
+    {
+        updateWPParam(VP,parameter.param_value);
+    }
+}
+
+void VehicleDataDisplay::updateWPParam(const EnumerationDefinitions::Vehicle_Params &Parameter, const double value)
+{
+    switch(Parameter)
+    {
+    case(EnumerationDefinitions::WPNAV_ACCEL):
+        break;
+    case(EnumerationDefinitions::WPNAV_ACCEL_Z):
+        break;
+    case(EnumerationDefinitions::WPNAV_LOIT_JERK):
+        break;
+    case(EnumerationDefinitions::WPNAV_LOIT_SPEED):
+        break;
+    case(EnumerationDefinitions::WPNAV_RADIUS):
+        ui->spinBox_WPRadius->setValue(value);
+        break;
+    case(EnumerationDefinitions::WPNAV_SPEED):
+        ui->spinBox_WPSpeed->setValue(value);
+        break;
+    case(EnumerationDefinitions::WPNAV_SPEED_DN):
+        ui->spinBox_WPDescent->setValue(value);
+        break;
+    case(EnumerationDefinitions::WPNAV_SPEED_UP):
+        ui->spinBox_WPAscent->setValue(value);
+        break;
+    default:
+        break;
+
+    }
 }
 
 void VehicleDataDisplay::updateRCParam(const EnumerationDefinitions::Vehicle_Params &Parameter, const double value)
@@ -355,3 +389,35 @@ void VehicleDataDisplay::updateFlightMode(const mavlink_common::HEARTBEAT &Vehic
     }
 }
 #endif
+
+void VehicleDataDisplay::on_pushButton_reqWPParams_clicked()
+{
+    emit(requestWPParams(m_currentVehicleID));
+}
+
+void VehicleDataDisplay::updateUSBOverride(int const &roll, int const &pitch, int const &yaw, int const &throttle)
+{
+
+}
+
+void VehicleDataDisplay::on_pushButton_trWPParams_clicked()
+{
+    double value = 0.0;
+    QString msgString = "";
+
+    value = ui->spinBox_WPSpeed->value();
+    msgString = m_Conversion->VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_SPEED);
+    emit(transmitWPParams(m_currentVehicleID,msgString,value));
+
+    value = ui->spinBox_WPRadius->value();
+    msgString = m_Conversion->VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_RADIUS);
+    emit(transmitWPParams(m_currentVehicleID,msgString,value));
+
+    value = ui->spinBox_WPAscent->value();
+    msgString = m_Conversion->VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_SPEED_UP);
+    emit(transmitWPParams(m_currentVehicleID,msgString,value));
+
+    value = ui->spinBox_WPDescent->value();
+    msgString = m_Conversion->VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_SPEED_DN);
+    emit(transmitWPParams(m_currentVehicleID,msgString,value));
+}

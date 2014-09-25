@@ -6,6 +6,8 @@
 #include "WidgetPFD.h"
 #include "qfi_PFD.h"
 
+#include "cmdconversions.h"
+
 #include "initialization.h"
 #include "conversions.h"
 #include "Definitions.h"
@@ -41,9 +43,9 @@ public:
 
     void USBcalibrationCompleted();
 
-    void updateRCParam(const EnumerationDefinitions::Vehicle_Params &Parameter, const double value);
-
     void updateVehicleParams(const mavlink_common::PARAM_VALUE &parameter);
+
+    void updateUSBOverride(int const &roll, int const &pitch, int const &yaw, int const &throttle);
 
     StructureDefinitions::GPS_Params requestPosition();
 
@@ -68,6 +70,9 @@ signals:
     void armRequest(const int &VehicleID, const bool &armValue);
 
     void requestRCConfiguration(const int &vehicleID);
+    void requestWPParams(const int &vehicleID);
+    void transmitWPParams(const int &VehicleID, const QString &msgString, const double &value);
+
     void signalJoystickOverride(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolOverride);
     void signalJoystickReverse(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolReverse);
 
@@ -101,7 +106,17 @@ private slots:
 
     void on_pushButton_RCRequestParameters_clicked();
 
+    void on_pushButton_reqWPParams_clicked();
+
+    void on_pushButton_trWPParams_clicked();
+
 private:
+
+    void updateRCParam(const EnumerationDefinitions::Vehicle_Params &Parameter, const double value);
+
+    void updateWPParam(const EnumerationDefinitions::Vehicle_Params &Parameter, const double value);
+
+
 
     void checkRCParams();
 

@@ -11,12 +11,14 @@ class Conversions
 {
 public:
     Conversions();
-    uint FlightMode_StringtoEnum(const QString &FlightMode);
-    int StreamMode_StringtoEnum(const QString &StreamMode);
-    EnumerationDefinitions::Vehicle_Params VehicleParam_StringtoEnum(const QString &Parameter);
 
+    uint FlightMode_StringtoEnum(const QString &FlightMode);
     QString FlightMode_EnumtoString(const uint &FlightMode);
+
+    int StreamMode_StringtoEnum(const QString &StreamMode);
     QString StreamMode_EnumtoString(const int &StreamMode);
+
+    EnumerationDefinitions::Vehicle_Params VehicleParam_StringtoEnum(const QString &Parameter);
     QString VehicleParam_EnumtoString(const int &Parameter);
 
     double USBtoPercent(const StructureDefinitions::JoystickHL &USBRange, const EnumerationDefinitions::FlightMethods &FlightAxis, const double &USBRCValue);
@@ -31,6 +33,8 @@ public:
     double RadianstoDegrees(const double &valueRadians);
 
     QList<QString> parameterList_RC();
+
+    QList<QString> parameterList_WP();
 
     Initialization *m_Initialization;
 

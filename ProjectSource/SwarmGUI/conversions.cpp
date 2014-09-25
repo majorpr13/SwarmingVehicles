@@ -255,6 +255,24 @@ EnumerationDefinitions::Vehicle_Params Conversions::VehicleParam_StringtoEnum(co
         return_int = EnumerationDefinitions::RC14_Min;
     else if(Parameter == "RC14_Max")
         return_int = EnumerationDefinitions::RC14_Max;
+
+    else if(Parameter == "WPNAV_SPEED")
+        return_int = EnumerationDefinitions::WPNAV_SPEED;
+    else if(Parameter == "WPNAV_RADIUS")
+        return_int = EnumerationDefinitions::WPNAV_RADIUS;
+    else if(Parameter == "WPNAV_SPEED_UP")
+        return_int = EnumerationDefinitions::WPNAV_SPEED_UP;
+    else if(Parameter == "WPNAV_SPEED_DN")
+        return_int = EnumerationDefinitions::WPNAV_SPEED_DN;
+    else if(Parameter == "WPNAV_LOIT_SPEED")
+        return_int = EnumerationDefinitions::WPNAV_LOIT_SPEED;
+    else if(Parameter == "WPNAV_ACCEL")
+        return_int = EnumerationDefinitions::WPNAV_ACCEL;
+    else if(Parameter == "WPNAV_ACCEL_Z")
+        return_int = EnumerationDefinitions::WPNAV_ACCEL_Z;
+    else if(Parameter == "WPNAV_LOIT_JERK")
+        return_int = EnumerationDefinitions::WPNAV_LOIT_JERK;
+
     else
         return_int = EnumerationDefinitions::RC_Length;
     return(return_int);
@@ -352,6 +370,31 @@ QString Conversions::VehicleParam_EnumtoString(const int &Parameter)
         break;
     case(EnumerationDefinitions::RC14_Max):
         string_return = "RC14_Max";
+        break;
+
+    case(EnumerationDefinitions::WPNAV_ACCEL):
+        string_return = "WPNAV_ACCEL";
+        break;
+    case(EnumerationDefinitions::WPNAV_ACCEL_Z):
+        string_return = "WPNAV_ACCEL_Z";
+        break;
+    case(EnumerationDefinitions::WPNAV_LOIT_JERK):
+        string_return = "WPNAV_LOIT_JERK";
+        break;
+    case(EnumerationDefinitions::WPNAV_LOIT_SPEED):
+        string_return = "WPNAV_LOIT_SPEED";
+        break;
+    case(EnumerationDefinitions::WPNAV_RADIUS):
+        string_return = "WPNAV_RADIUS";
+        break;
+    case(EnumerationDefinitions::WPNAV_SPEED):
+        string_return = "WPNAV_SPEED";
+        break;
+    case(EnumerationDefinitions::WPNAV_SPEED_DN):
+        string_return = "WPNAV_SPEED_DN";
+        break;
+    case(EnumerationDefinitions::WPNAV_SPEED_UP):
+        string_return = "WPNAV_SPEED_UP";
         break;
 
     default:
@@ -466,5 +509,20 @@ QList<QString> Conversions::parameterList_RC()
     returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::RC2_Min));
     returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::RC3_Min));
     returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::RC4_Min));
+    return(returnList);
+}
+
+QList<QString> Conversions::parameterList_WP()
+{
+    QList<QString> returnList;
+    returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_ACCEL));
+    returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_ACCEL_Z));
+    returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_LOIT_JERK));
+    returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_LOIT_SPEED));
+
+    returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_RADIUS));
+    returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_SPEED));
+    returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_SPEED_DN));
+    returnList.append(VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_SPEED_UP));
     return(returnList);
 }

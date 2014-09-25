@@ -4,6 +4,23 @@
 #include <QString>
 #include <QTime>
 
+namespace mavCommandStructures{
+struct mavCMD_numberList{
+    mavCMD_numberList() : setHome(179){}
+    int setHome;
+};
+
+struct mavCMD_setHome{
+    mavCMD_setHome() : useCurrent(0),empty1(0.0),empty2(0.0),empty3(0.0),Latitude(0.0),Longitude(0.0),Altitude(0.0){}
+    double useCurrent;
+    double empty1;
+    double empty2;
+    double empty3;
+    double Latitude;
+    double Longitude;
+    double Altitude;
+};
+}
 namespace StructureDefinitions{
 struct GCSDefinition
 {
@@ -209,7 +226,16 @@ enum Vehicle_Params{
     RC13_Max,
     RC14_Min,
     RC14_Max,
-    RC_Length
+    RC_Length,
+    WPNAV_SPEED,
+    WPNAV_RADIUS,
+    WPNAV_SPEED_UP,
+    WPNAV_SPEED_DN,
+    WPNAV_LOIT_SPEED,
+    WPNAV_ACCEL,
+    WPNAV_ACCEL_Z,
+    WPNAV_LOIT_JERK,
+    WP_Length
 };
 }
 #endif // DEFINITIONS_H

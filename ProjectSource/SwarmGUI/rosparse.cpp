@@ -28,6 +28,7 @@ ROSParse::ROSParse(const int &GCSID)
         arduPub_armRequest = node_handler.advertise<mavlink_common::COMMAND_LONG>("to_mav_command_long",10);
         arduPub_rcOverride = node_handler.advertise<mavlink_common::RC_CHANNELS_OVERRIDE>("to_mav_rc_channels_override",10);
         arduPub_paramReq = node_handler.advertise<mavlink_common::PARAM_REQUEST_READ>("to_mav_param_request_read",20);
+        arduPub_cmdReq = node_handler.advertise<mavlink_common::COMMAND_LONG>("to_mav_command_long",10);
 
         //arduPub_gcsHeartbeat = node_handler.advertise<mavlink_common::HEARTBEAT>("to_mav_heartbeat",2);
 
@@ -109,6 +110,61 @@ void ROSParse::UAVParam(const mavlink_common::PARAM_VALUE &msg)
     if(m_MapVehicleIDs.contains(msg.sysid))
     {
         emit(newVehicleParam(msg));
+    }
+}
+
+void ROSParse::publishParamSet(const int &VehicleID, const QString &msgString, const double &value)
+{
+    StructureDefinitions::GCSDefinition GCSParameters;
+    mavlink_common::PARAM_SET msg;
+
+    msg.sysid = GCSParameters.sysid;
+    msg.compid = GCSParameters.compid;
+
+    msg.target_system = VehicleID;
+    msg.target_component = 0;
+
+    boost::array<u_int8_t, 16> stringArray;
+    std::fill(stringArray.begin(), stringArray.end(), 0 );
+    QByteArray ba = msgString.toLocal8Bit();
+
+    for(int i = 0; i < ba.length(); i++)
+    {
+        stringArray[i] = ba.at(i);
+    }
+
+    msg.param_id = stringArray;
+    msg.param_value = value;
+
+    arduPub_paramSet.publish(msg);
+}
+
+void ROSParse::publishMAVcommand(const int &VehicleID, const int &idCMD, const int &confirmation, const QVector<double> &msgVector)
+{
+    if(msgVector.size() == 7)
+    {
+        StructureDefinitions::GCSDefinition GCSParameters;
+        mavlink_common::COMMAND_LONG msg;
+
+        msg.sysid = GCSParameters.sysid;
+        msg.compid = GCSParameters.compid;
+
+        msg.target_system = VehicleID;
+        msg.target_component = 0;
+
+        msg.command = idCMD;
+
+        msg.confirmation = confirmation;
+
+        msg.param1 = msgVector.at(0);
+        msg.param2 = msgVector.at(1);
+        msg.param3 = msgVector.at(2);
+        msg.param4 = msgVector.at(3);
+        msg.param5 = msgVector.at(4);
+        msg.param6 = msgVector.at(5);
+        msg.param7 = msgVector.at(6);
+
+        arduPub_cmdReq.publish(msg);
     }
 }
 
