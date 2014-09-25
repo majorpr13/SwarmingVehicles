@@ -140,6 +140,7 @@ void ROSParse::publishParameterRequest(const int &VehicleID, const QString &msgS
     msg.target_component = 0;
 
     boost::array<u_int8_t, 16> stringArray;
+    std::fill(stringArray.begin(), stringArray.end(), 0 );
     QByteArray ba = msgString.toLocal8Bit();
 
     for(int i = 0; i < ba.length(); i++)
@@ -148,13 +149,13 @@ void ROSParse::publishParameterRequest(const int &VehicleID, const QString &msgS
     }
 
     msg.param_id = stringArray;
-    msg.param_index = 0;
+    msg.param_index = -1;
 
     arduPub_paramReq.publish(msg);
 
 }
 
-void ROSParse::publishDataStreamRequest(const int &VehicleID, const int &StreamType, const int &StreamRate)
+void ROSParse::publishDataStreamRequest(const int &VehicleID, const int &StreamMessage, const int &StreamRate)
 {
     StructureDefinitions::GCSDefinition GCSParameters;
     mavlink_common::REQUEST_DATA_STREAM msg;
@@ -163,14 +164,15 @@ void ROSParse::publishDataStreamRequest(const int &VehicleID, const int &StreamT
     msg.compid = GCSParameters.compid;
 
     msg.target_system = VehicleID;
-    msg.target_component = 0;
-    msg.req_stream_id = StreamType;
+    msg.target_component = 01;
+    msg.req_stream_id = StreamMessage;
     msg.req_message_rate = StreamRate;
 
     if(StreamRate == 0)
         msg.start_stop = 0;
     else
         msg.start_stop = 1;
+
     arduPub_requestDataStreams.publish(msg);
     arduPub_requestDataStreams.publish(msg);
 }
@@ -219,8 +221,8 @@ void ROSParse::publishJoystickOverride(const int &VehicleID, const StructureDefi
 
     msg.target_system = VehicleID;
     msg.target_component = 0; // check that this value is correct
-    msg.chan1_raw = RCOverride.pitch_override;
-    msg.chan2_raw = RCOverride.roll_override;
+    msg.chan1_raw = RCOverride.roll_override;
+    msg.chan2_raw = RCOverride.pitch_override;
     msg.chan3_raw = RCOverride.throttle_override;
     msg.chan4_raw = RCOverride.yaw_override;
     msg.chan5_raw = 0;

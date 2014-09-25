@@ -64,7 +64,7 @@ public slots:
 signals:
 
     void desiredFlightMode(const int &VehicleID, const int &FlightMode);
-    void requestStream(const int &VehicleID, const int &StreamType, const int &StreamRate);
+    void requestStream(const int &VehicleID, const int &StreamMessage, const int &StreamRate);
     void armRequest(const int &VehicleID, const bool &armValue);
 
     void requestRCConfiguration(const int &vehicleID);

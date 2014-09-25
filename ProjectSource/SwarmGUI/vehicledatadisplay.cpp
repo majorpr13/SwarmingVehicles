@@ -178,7 +178,6 @@ void VehicleDataDisplay::updateVehicleParams(const mavlink_common::PARAM_VALUE &
         ba[i] = parameter.param_id.at(i);
     }
     QString newString(ba);
-
     EnumerationDefinitions::Vehicle_Params VP = m_Conversion->VehicleParam_StringtoEnum(newString);
     if(VP < EnumerationDefinitions::RC_Length)
     {

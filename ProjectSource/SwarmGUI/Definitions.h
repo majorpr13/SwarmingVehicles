@@ -7,7 +7,7 @@
 namespace StructureDefinitions{
 struct GCSDefinition
 {
-    GCSDefinition() : sysid(255),compid(255){}
+    GCSDefinition() : sysid(255),compid(190){}
     int sysid;
     int compid;
 };

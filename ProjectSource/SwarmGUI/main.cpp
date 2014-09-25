@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
     qRegisterMetaType<mavlink_common::SYS_STATUS>("mavlink_common::SYS_STATUS");
     qRegisterMetaType<mavlink_common::RC_CHANNELS_RAW>("mavlink_common::RC_CHANNELS_RAW");
     qRegisterMetaType<mavlink_common::PARAM_REQUEST_READ>("mavlink_common::PARAM_REQUEST_READ");
+    qRegisterMetaType<mavlink_common::PARAM_VALUE>("mavlink_common::PARAM_VALUE");
 
     qRegisterMetaType<sensor_msgs::Joy>("sensor_msgs::Joy");
 
