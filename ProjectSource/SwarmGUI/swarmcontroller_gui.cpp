@@ -129,6 +129,7 @@ void SwarmController_GUI::on_removeVehicleID_clicked()
 
     ui->tableView_VehicleInformation->removeEntry(VehicleID);
     ui->TabVehicleInfo->removeTab(ui->TabVehicleInfo->indexOf(m_MapVehicleWidgets.value(VehicleID)));
+
     //dont know how to remove this pointer
     //delete(m_MapVehicleWidgets[VehicleID]->VehicleDataDisplay.ui);
     m_MapVehicleWidgets.remove(VehicleID);

@@ -281,8 +281,8 @@ void VehicleDataDisplay::updatePositioning(const mavlink_common::GLOBAL_POSITION
     Home.Lon = m_HomeCoordinate.HLongitude;
     Home.Alt = m_HomeCoordinate.HAltitude;
 
-    New.Lat = VehiclePositionGPS.lat / GPSdivisor;
-    New.Lon = VehiclePositionGPS.lon / GPSdivisor;
+    New.Lat = (double)VehiclePositionGPS.lat / GPSdivisor;
+    New.Lon = (double)VehiclePositionGPS.lon / GPSdivisor;
 
     double distance = m_Conversion->DistanceGPS(Home,New);
     double bearing_degrees = m_Conversion->BearingGPS(Home,New);
