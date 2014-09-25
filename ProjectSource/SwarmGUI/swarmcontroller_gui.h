@@ -82,6 +82,7 @@ private:
     QMap<int, VehicleDataDisplay*> m_MapVehicleWidgets;
     QMap<int, StructureDefinitions::VehicleRCHL> m_MapVehicleRC;
 
+    QList<QString> listVehicles;
     StructureDefinitions::JoystickHL m_USBJoystickHL;
     StructureDefinitions::HomeDefinition m_GlobalHome;
 

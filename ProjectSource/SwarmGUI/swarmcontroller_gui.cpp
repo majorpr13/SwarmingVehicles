@@ -71,7 +71,7 @@ SwarmController_GUI::~SwarmController_GUI()
 
 void SwarmController_GUI::on_addVehicleID_clicked()
 {
-    int VehicleID = ui->spinBoxVehicleID->value();
+    int VehicleID = ui->comboBox_VehicleID->currentText().toInt();
     bool add_Vehicle;
 
     add_Vehicle = ui->tableView_VehicleInformation->addEntry(VehicleID);
@@ -120,12 +120,23 @@ void SwarmController_GUI::updateElapsedHearbeat(const int VehicleID, const int e
 
 void SwarmController_GUI::on_removeVehicleID_clicked()
 {
-    int VehicleID = ui->spinBoxVehicleID->value();
+    int VehicleID = ui->comboBox_VehicleID->currentText().toInt();
     m_HeartBeatTimer->removeVehicle(VehicleID);
 
 #ifdef ROS_LIBS
     m_ROSParser->removeVehicle(VehicleID);
 #endif
+
+    // Remove the tab
+    for(int i = 0; i <= ui->tabWidget_Vehicles->count(); i++)
+    {
+        QString temp;
+        temp = ui->tabWidget_Vehicles->tabText(i);
+        if(temp == QString::number(VehicleID))
+        {
+            ui->tabWidget_Vehicles->removeTab(i);
+        }
+    }
 
     ui->tableView_VehicleInformation->removeEntry(VehicleID);
     ui->TabVehicleInfo->removeTab(ui->TabVehicleInfo->indexOf(m_MapVehicleWidgets.value(VehicleID)));
@@ -303,6 +314,13 @@ void SwarmController_GUI::updateVehicleSysStatus(const mavlink_common::SYS_STATU
 void SwarmController_GUI::updateVehicleHeartbeat(const mavlink_common::HEARTBEAT &VehicleHeartbeat)
 {
     int VehicleID = VehicleHeartbeat.sysid;
+
+    if(listVehicles.contains(QString::number(VehicleID)) == false)
+    {
+        listVehicles.append(QString::number(VehicleID));
+        ui->comboBox_VehicleID->addItem(QString::number(VehicleID));
+    }
+
     m_MapVehicleWidgets[VehicleID]->updateVehicleType((EnumerationDefinitions::Vehicle_Type)VehicleHeartbeat.type);
 
     m_HeartBeatTimer->restartTimer(VehicleID);

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1237</width>
-    <height>581</height>
+    <height>582</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -808,35 +808,6 @@
       </item>
      </layout>
     </item>
-    <item row="0" column="1">
-     <widget class="QTabWidget" name="tabWidget_Vehicles">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>845</width>
-        <height>376</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="tab_3">
-       <attribute name="title">
-        <string>Vehicles</string>
-       </attribute>
-      </widget>
-     </widget>
-    </item>
     <item row="1" column="1">
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
@@ -856,8 +827,8 @@
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="0">
-           <widget class="QLabel" name="IDLabel">
+          <item row="2" column="1">
+           <widget class="QPushButton" name="removeVehicleID">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -870,11 +841,14 @@
              </font>
             </property>
             <property name="text">
-             <string>Vehicle ID:</string>
+             <string>Remove</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
+           <widget class="QComboBox" name="comboBox_VehicleID"/>
+          </item>
+          <item row="1" column="1">
            <widget class="QSpinBox" name="spinBoxVehicleID">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -895,7 +869,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QPushButton" name="addVehicleID">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -913,8 +887,8 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QPushButton" name="removeVehicleID">
+          <item row="1" column="0">
+           <widget class="QLabel" name="IDLabel">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -927,7 +901,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Remove</string>
+             <string>Vehicle ID:</string>
             </property>
            </widget>
           </item>
@@ -975,6 +949,35 @@
       </item>
      </layout>
     </item>
+    <item row="0" column="1">
+     <widget class="QTabWidget" name="tabWidget_Vehicles">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>845</width>
+        <height>376</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tab_3">
+       <attribute name="title">
+        <string>Vehicles</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -983,7 +986,7 @@
      <x>0</x>
      <y>0</y>
      <width>1237</width>
-     <height>26</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
