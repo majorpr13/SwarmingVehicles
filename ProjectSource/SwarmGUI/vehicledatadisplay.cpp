@@ -74,13 +74,6 @@ void VehicleDataDisplay::on_pushButton_STREAM_clicked()
     emit(requestStream(m_currentVehicleID,streamTypeInt,streamRate));
 }
 
-void VehicleDataDisplay::on_pushButton_Cal_released()
-{
-    //boolean_Calibration = !boolean_Calibration;
-    //emit(radioCalibrate(m_currentVehicleID , m_Initialization->m_StreamModeV.RCChannels , boolean_Calibration));
-}
-
-
 void VehicleDataDisplay::on_pushButton_ARM_clicked()
 {
     emit(armRequest(m_currentVehicleID,true));
@@ -150,12 +143,13 @@ StructureDefinitions::GPS_Params VehicleDataDisplay::requestPosition()
 
 void VehicleDataDisplay::on_pushButton_RCRequestParameters_clicked()
 {
-    emit(requestRCConfiguration(m_currentVehicleID));
+    emit(requestRCParams(m_currentVehicleID));
 }
 
 void VehicleDataDisplay::USBcalibrationCompleted()
 {
     boolUSBCalibraiton = true;
+    updateOverrideCheckbox();
 }
 
 void VehicleDataDisplay::updateOverrideCheckbox()
@@ -259,6 +253,7 @@ void VehicleDataDisplay::updateRCParam(const EnumerationDefinitions::Vehicle_Par
         break;
     }
 
+    checkRCParams();
 
 }
 
@@ -327,6 +322,7 @@ void VehicleDataDisplay::updatePositioning(const mavlink_common::GLOBAL_POSITION
 
     ui->lineEdit_relativeAlt->setText(QString::number(VehiclePositionGPS.relative_alt / 1000.0));
     m_VehicleState.Cur_Altitude = VehiclePositionGPS.relative_alt / 1000.0;
+    ui->widget_MainFlightInstrument->setAltitude(m_VehicleState.Cur_Altitude);
 
     ui->lineEdit_Latitude->setText(QString::number(New.Lat));
     m_VehicleState.Cur_Lat = VehiclePositionGPS.lat / GPSdivisor;
@@ -335,6 +331,8 @@ void VehicleDataDisplay::updatePositioning(const mavlink_common::GLOBAL_POSITION
     m_VehicleState.Cur_Lon = VehiclePositionGPS.lon / GPSdivisor;
 
     ui->widget_MainFlightInstrument->setHeading(VehiclePositionGPS.hdg / 100.0);
+
+    ui->widget_MainFlightInstrument->update();
 }
 
 void VehicleDataDisplay::updateFlightMode(const mavlink_common::HEARTBEAT &VehicleHeartbeat)
@@ -397,6 +395,10 @@ void VehicleDataDisplay::on_pushButton_reqWPParams_clicked()
 
 void VehicleDataDisplay::updateUSBOverride(int const &roll, int const &pitch, int const &yaw, int const &throttle)
 {
+    ui->lineEdit_RollOR->setText(QString::number(roll));
+    ui->lineEdit_PitchOR->setText(QString::number(pitch));
+    ui->lineEdit_YawOR->setText(QString::number(yaw));
+    ui->lineEdit_ThrottleOR->setText(QString::number(throttle));
 
 }
 

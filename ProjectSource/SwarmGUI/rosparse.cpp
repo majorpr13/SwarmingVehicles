@@ -5,36 +5,34 @@
 
 
 #ifdef ROS_LIBS
-ROSParse::ROSParse(){
-
-}
 
 ROSParse::ROSParse(const int &GCSID)
 {
     m_GCSID = GCSID;
 
-        ros::NodeHandle node_handler;
+    ros::NodeHandle node_handler;
 
-        arduSub_Heartbeat = node_handler.subscribe("/from_mav_heartbeat", 10, &ROSParse::UAVHeartbeat,this);
-        arduSub_Attitude = node_handler.subscribe("/from_mav_attitude", 10, &ROSParse::UAVAttitude,this);
-        arduSub_GPSPositionRaw = node_handler.subscribe("/from_mav_gps_raw_int", 10, &ROSParse::UAVPositionRaw,this);
-        arduSub_GPSPositionScaled = node_handler.subscribe("/from_mav_global_position_int",10, &ROSParse::UAVPositionScaled,this);
-        arduSub_SysStatus = node_handler.subscribe("/from_mav_sys_status", 10, &ROSParse::UAVSysStatus,this);
-        arduSub_RCRawValue = node_handler.subscribe("/from_mav_rc_channels_raw", 10, &ROSParse::UAVRCValue,this);
-        arduSub_ParamReq = node_handler.subscribe("/from_mav_param_value",10,&ROSParse::UAVParam,this);
+    arduSub_Heartbeat = node_handler.subscribe("/from_mav_heartbeat", 10, &ROSParse::UAVHeartbeat,this);
+    arduSub_Attitude = node_handler.subscribe("/from_mav_attitude", 10, &ROSParse::UAVAttitude,this);
+    arduSub_GPSPositionRaw = node_handler.subscribe("/from_mav_gps_raw_int", 10, &ROSParse::UAVPositionRaw,this);
+    arduSub_GPSPositionScaled = node_handler.subscribe("/from_mav_global_position_int",10, &ROSParse::UAVPositionScaled,this);
+    arduSub_SysStatus = node_handler.subscribe("/from_mav_sys_status", 10, &ROSParse::UAVSysStatus,this);
+    arduSub_RCRawValue = node_handler.subscribe("/from_mav_rc_channels_raw", 10, &ROSParse::UAVRCValue,this);
+    arduSub_ParamReq = node_handler.subscribe("/from_mav_param_value",10,&ROSParse::UAVParam,this);
 
-        arduPub_desiredFlightMode = node_handler.advertise<mavlink_common::SET_MODE>("to_mav_set_mode",10);
-        arduPub_requestDataStreams = node_handler.advertise<mavlink_common::REQUEST_DATA_STREAM>("to_mav_request_data_stream",10);
-        arduPub_armRequest = node_handler.advertise<mavlink_common::COMMAND_LONG>("to_mav_command_long",10);
-        arduPub_rcOverride = node_handler.advertise<mavlink_common::RC_CHANNELS_OVERRIDE>("to_mav_rc_channels_override",10);
-        arduPub_paramReq = node_handler.advertise<mavlink_common::PARAM_REQUEST_READ>("to_mav_param_request_read",20);
-        arduPub_cmdReq = node_handler.advertise<mavlink_common::COMMAND_LONG>("to_mav_command_long",10);
+    arduPub_desiredFlightMode = node_handler.advertise<mavlink_common::SET_MODE>("to_mav_set_mode",10);
+    arduPub_requestDataStreams = node_handler.advertise<mavlink_common::REQUEST_DATA_STREAM>("to_mav_request_data_stream",10);
+    arduPub_armRequest = node_handler.advertise<mavlink_common::COMMAND_LONG>("to_mav_command_long",10);
+    arduPub_rcOverride = node_handler.advertise<mavlink_common::RC_CHANNELS_OVERRIDE>("to_mav_rc_channels_override",10);
+    arduPub_paramReq = node_handler.advertise<mavlink_common::PARAM_REQUEST_READ>("to_mav_param_request_read",20);
+    arduPub_cmdReq = node_handler.advertise<mavlink_common::COMMAND_LONG>("to_mav_command_long",10);
 
-        //arduPub_gcsHeartbeat = node_handler.advertise<mavlink_common::HEARTBEAT>("to_mav_heartbeat",2);
+    //arduPub_gcsHeartbeat = node_handler.advertise<mavlink_common::HEARTBEAT>("to_mav_heartbeat",2);
 
-        //connect(m_TimerHeartbeat,SIGNAL(timeout()),this,SLOT(publishGCSHeartbeat()));
-        rosspinner = new ros::AsyncSpinner(0);
-        rosspinner->start();
+    //connect(m_TimerHeartbeat,SIGNAL(timeout()),this,SLOT(publishGCSHeartbeat()));
+    rosspinner = new ros::AsyncSpinner(0);
+    rosspinner->start();
+
 }
 
 ROSParse::~ROSParse()
@@ -42,6 +40,10 @@ ROSParse::~ROSParse()
 
 }
 
+void ROSParse::initiate(const int &GCSID)
+{
+
+}
 
 void ROSParse::addVehicle(const int &VehicleID)
 {
@@ -56,12 +58,7 @@ void ROSParse::removeVehicle(const int &VehicleID)
 
 void ROSParse::UAVHeartbeat(const mavlink_common::HEARTBEAT &msg)
 {
-    if(m_MapVehicleIDs.contains(msg.sysid))
-    {
         emit(newVehicleHeartbeat(msg));
-    }
-    else
-        return;
 }
 
 void ROSParse::UAVAttitude(const mavlink_common::ATTITUDE &msg)
@@ -285,7 +282,7 @@ void ROSParse::publishJoystickOverride(const int &VehicleID, const StructureDefi
     msg.chan6_raw = 0;
     msg.chan7_raw = 0;
     msg.chan8_raw = 0;
-    arduPub_armRequest.publish(msg);
+    arduPub_rcOverride.publish(msg);
 }
 
 void ROSParse::JoystickValues(const sensor_msgs::Joy &msg)

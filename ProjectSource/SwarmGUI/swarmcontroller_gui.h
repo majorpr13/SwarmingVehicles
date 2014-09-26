@@ -73,6 +73,7 @@ private slots:
 private:
     void initialization();
     void updateButtons();
+    void updateUSBButtons(const sensor_msgs::Joy &JoystickValues);
 
 private:
 
@@ -89,8 +90,10 @@ private:
     QMap<int, StructureDefinitions::VehicleRCHL> m_MapVehicleRC;
 
     QList<QString> listVehicles;
+
     StructureDefinitions::JoystickHL m_USBJoystickHL;
     StructureDefinitions::HomeDefinition m_GlobalHome;
+    StructureDefinitions::USB_Buttons m_USBButtons;
 
     bool JoystickCalibrate;
     bool JoystickEnabled;

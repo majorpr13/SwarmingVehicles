@@ -865,7 +865,7 @@ qfi_PFD::ALT::ALT( QGraphicsScene * scene ) :
     m_scaleX ( 1.0f ),
     m_scaleY ( 1.0f ),
 
-    m_originalPixPerAlt   ( 0.150f ),
+    m_originalPixPerAlt   ( 0.750f ),
     m_originalScaleHeight ( 300.0f ),
     m_originalLabelsX     ( 250.0f ),
     m_originalLabel1Y     (  50.0f ),
@@ -1142,11 +1142,11 @@ void qfi_PFD::ALT::updateScale()
 void qfi_PFD::ALT::updateScaleLabels()
 {
     int tmp = floor( m_altitude + 0.5f );
-    int alt = tmp - ( tmp % 500 );
+    int alt = tmp - ( tmp % 100 );
 
-    float alt1 = (float)alt + 500.0f;
+    float alt1 = (float)alt + 100.0f;
     float alt2 = (float)alt;
-    float alt3 = (float)alt - 500.0f;
+    float alt3 = (float)alt - 100.0f;
 
     m_labelsDeltaY_new = m_scaleY * m_originalPixPerAlt * m_altitude;
 
@@ -1157,9 +1157,9 @@ void qfi_PFD::ALT::updateScaleLabels()
 
     if ( m_labelsDeltaY_new < 0.0f && m_altitude > alt2 )
     {
-        alt1 += 500.0f;
-        alt2 += 500.0f;
-        alt3 += 500.0f;
+        alt1 += 100.0f;
+        alt2 += 100.0f;
+        alt3 += 100.0f;
     }
 
     m_itemLabel1->moveBy( 0.0f, m_labelsDeltaY_new - m_labelsDeltaY_old );
@@ -1234,7 +1234,7 @@ qfi_PFD::ASI::ASI( QGraphicsScene * scene ) :
     m_scaleX ( 1.0f ),
     m_scaleY ( 1.0f ),
 
-    m_originalPixPerSpd   (   1.5f ),
+    m_originalPixPerSpd   (  15.0f ),
     m_originalScaleHeight ( 300.0f ),
     m_originalLabelsX     (  43.0f ),
     m_originalLabel1Y     (  35.0f ),
@@ -1536,15 +1536,15 @@ void qfi_PFD::ASI::updateScaleLabels()
     m_labelsDeltaY_new = m_scaleY * m_originalPixPerSpd * m_airspeed;
 
     int tmp = floor( m_airspeed + 0.5f );
-    int spd = tmp - ( tmp % 20 );
+    int spd = tmp - ( tmp % 2 );
 
-    float spd1 = (float)spd + 60.0f;
-    float spd2 = (float)spd + 40.0f;
-    float spd3 = (float)spd + 20.0f;
+    float spd1 = (float)spd + 6.0f;
+    float spd2 = (float)spd + 4.0f;
+    float spd3 = (float)spd + 2.0f;
     float spd4 = (float)spd;
-    float spd5 = (float)spd - 20.0f;
-    float spd6 = (float)spd - 40.0f;
-    float spd7 = (float)spd - 60.0f;
+    float spd5 = (float)spd - 2.0f;
+    float spd6 = (float)spd - 4.0f;
+    float spd7 = (float)spd - 6.0f;
 
     while ( m_labelsDeltaY_new > m_scaleY * 15.0f )
     {
@@ -1553,13 +1553,13 @@ void qfi_PFD::ASI::updateScaleLabels()
 
     if ( m_labelsDeltaY_new < 0.0 && m_airspeed > spd4 )
     {
-        spd1 += 20.0f;
-        spd2 += 20.0f;
-        spd3 += 20.0f;
-        spd4 += 20.0f;
-        spd5 += 20.0f;
-        spd6 += 20.0f;
-        spd7 += 20.0f;
+        spd1 += 2.0f;
+        spd2 += 2.0f;
+        spd3 += 2.0f;
+        spd4 += 2.0f;
+        spd5 += 2.0f;
+        spd6 += 2.0f;
+        spd7 += 2.0f;
     }
 
     m_itemLabel1->moveBy( 0.0f, m_labelsDeltaY_new - m_labelsDeltaY_old );

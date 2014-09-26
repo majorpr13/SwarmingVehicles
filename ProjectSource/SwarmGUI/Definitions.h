@@ -22,6 +22,16 @@ struct mavCMD_setHome{
 };
 }
 namespace StructureDefinitions{
+struct USB_Buttons
+{
+    USB_Buttons() : Button1(1),Button2(1),Button3(0),Button4(1),Button5(0){}
+    int Button1;
+    int Button2;
+    int Button3;
+    int Button4;
+    int Button5;
+};
+
 struct GCSDefinition
 {
     GCSDefinition() : sysid(255),compid(190){}

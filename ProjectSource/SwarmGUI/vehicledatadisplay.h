@@ -49,6 +49,8 @@ public:
 
     StructureDefinitions::GPS_Params requestPosition();
 
+
+
 #ifdef ROS_LIBS
     void updateRCValues(const mavlink_common::RC_CHANNELS_RAW &RCValues);
 #endif
@@ -69,7 +71,7 @@ signals:
     void requestStream(const int &VehicleID, const int &StreamMessage, const int &StreamRate);
     void armRequest(const int &VehicleID, const bool &armValue);
 
-    void requestRCConfiguration(const int &vehicleID);
+    void requestRCParams(const int &vehicleID);
     void requestWPParams(const int &vehicleID);
     void transmitWPParams(const int &VehicleID, const QString &msgString, const double &value);
 
@@ -81,8 +83,6 @@ private slots:
     void on_comboBox_DesiredFlightMode_activated(const QString &arg1);
 
     void on_pushButton_STREAM_clicked();
-
-    void on_pushButton_Cal_released();
 
     void on_pushButton_ARM_clicked();
 
@@ -116,11 +116,9 @@ private:
 
     void updateWPParam(const EnumerationDefinitions::Vehicle_Params &Parameter, const double value);
 
-
+    void updateOverrideCheckbox();
 
     void checkRCParams();
-
-    void updateOverrideCheckbox();
 
     void initialization();
 

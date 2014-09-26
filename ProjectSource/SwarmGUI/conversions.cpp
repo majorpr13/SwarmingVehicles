@@ -162,25 +162,49 @@ int Conversions::PercenttoRC(const StructureDefinitions::VehicleRCHL &RCRange, c
         if(RCRange.roll_reverse == false)
             result = ((double)(RCRange.roll_high - RCRange.roll_low) * Percentage) + (double)RCRange.roll_low;
         else
+        {
             result = (double)RCRange.roll_high - ((double)(RCRange.roll_high - RCRange.roll_low) * Percentage);
+            if(result > (double)RCRange.roll_high)
+                result = (double)RCRange.roll_high;
+            else if(result < (double)RCRange.roll_low)
+                result = (double)RCRange.roll_low;
+        }
         break;
     case(EnumerationDefinitions::Pitch):
         if(RCRange.pitch_reverse == false)
             result = ((double)(RCRange.pitch_high - RCRange.pitch_low) * Percentage) + (double)RCRange.pitch_low;
         else
+        {
             result = (double)RCRange.pitch_high - ((double)(RCRange.pitch_high - RCRange.pitch_low) * Percentage);
+            if(result > (double)RCRange.pitch_high)
+                result = (double)RCRange.pitch_high;
+            else if(result < (double)RCRange.pitch_low)
+                result = (double)RCRange.pitch_low;
+        }
         break;
     case(EnumerationDefinitions::Yaw):
         if(RCRange.yaw_reverse == false)
             result = ((double)(RCRange.yaw_high - RCRange.yaw_low) * Percentage) + (double)RCRange.yaw_low;
         else
+        {
             result = (double)RCRange.yaw_high - ((double)(RCRange.yaw_high - RCRange.yaw_low) * Percentage);
+            if(result > (double)RCRange.yaw_high)
+                result = (double)RCRange.yaw_high;
+            else if(result < (double)RCRange.yaw_low)
+                result = (double)RCRange.yaw_low;
+        }
         break;
     case(EnumerationDefinitions::Throttle):
         if(RCRange.throttle_reverse == false)
             result = ((double)(RCRange.throttle_high - RCRange.throttle_low) * Percentage) + (double)RCRange.throttle_low;
         else
+        {
             result = (double)RCRange.throttle_high - ((double)(RCRange.throttle_high - RCRange.throttle_low) * Percentage);
+            if(result > (double)RCRange.throttle_high)
+                result = (double)RCRange.throttle_high;
+            else if(result < (double)RCRange.throttle_low)
+                result = (double)RCRange.throttle_low;
+        }
         break;
     default:
         result = 1500;

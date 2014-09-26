@@ -44,8 +44,6 @@ class ROSParse : public QThread
 public:
     ROSParse(const int &GCSID);
 
-    ROSParse();
-
     ~ROSParse();
 
     void addVehicle(const int &VehicleID);
@@ -59,6 +57,8 @@ public:
     void publishMAVcommand(const int &VehicleID, const int &idCMD, const int &confirmation, const QVector<double> &msgVector);
 
     void joystickMode(const bool &joystickOperations);
+
+    void initiate(const int &GCSID);
 
 signals:
 

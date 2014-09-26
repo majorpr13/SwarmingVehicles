@@ -12,6 +12,7 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
 
     m_MapVehicleWidgets.clear();
     m_MapVehicleRC.clear();
+
     m_HeartBeatTimer = new HeartBeatTimer();
     m_Conversions = new Conversions();
     m_cmdConversions = new cmdConversions();
@@ -23,6 +24,8 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
     JoystickCalibrate = false;
     JoystickEnabled = false;
 
+    listVehicles.clear();
+
 #ifdef ROS_LIBS
     m_ROSParser = new ROSParse(10);
     connect(m_ROSParser,SIGNAL(newVehicleHeartbeat(mavlink_common::HEARTBEAT)),this,SLOT(updateVehicleHeartbeat(mavlink_common::HEARTBEAT)));
@@ -33,6 +36,7 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
     connect(m_ROSParser,SIGNAL(newRCValues(mavlink_common::RC_CHANNELS_RAW)),this, SLOT(updateRadioValues(mavlink_common::RC_CHANNELS_RAW)));
     connect(m_ROSParser,SIGNAL(newVehicleParam(mavlink_common::PARAM_VALUE)),this,SLOT(updateVehicleParams(mavlink_common::PARAM_VALUE)));
     connect(m_ROSParser,SIGNAL(newJoystickValues(sensor_msgs::Joy)),this, SLOT(USBJoystick(sensor_msgs::Joy)));
+    //m_ROSParser->initiate(10);
 #endif
 }
 
@@ -97,7 +101,7 @@ void SwarmController_GUI::on_addVehicleID_clicked()
         StructureDefinitions::VehicleRCHL default_value;
         m_MapVehicleRC.insert(VehicleID,default_value);
 
-        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(requestRCParams(int)),this,SLOT(radioCalibration(int)));
+        connect(m_MapVehicleWidgets[VehicleID],SIGNAL(requestRCParams(int)),this,SLOT(requestRCParams(int)));
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(requestWPParams(int)),this,SLOT(requestWPParams(int)));
         connect(m_MapVehicleWidgets[VehicleID],SIGNAL(transmitWPParams(int,QString,double)),m_ROSParser,SLOT(publishParamSet(int,QString,double)));
 
@@ -191,7 +195,15 @@ void SwarmController_GUI::on_pushButton_USBCalibrate_clicked()
     if(JoystickCalibrate == true)
         ui->pushButton_USBCalibrate->setText("Done");
     else
+    {
         ui->pushButton_USBCalibrate->setText("Calibrate");
+        QMapIterator<int, VehicleDataDisplay*> i(m_MapVehicleWidgets);
+        while(i.hasNext())
+        {
+            i.next();
+            m_MapVehicleWidgets[i.key()]->USBcalibrationCompleted();
+        }
+    }
 }
 
 void SwarmController_GUI::updateRCOverrides(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolOverrride)
@@ -352,21 +364,24 @@ void SwarmController_GUI::updateVehicleHeartbeat(const mavlink_common::HEARTBEAT
         ui->comboBox_VehicleID->addItem(QString::number(VehicleID));
     }
 
-    m_MapVehicleWidgets[VehicleID]->updateVehicleType((EnumerationDefinitions::Vehicle_Type)VehicleHeartbeat.type);
-
-    m_HeartBeatTimer->restartTimer(VehicleID);
-
-    if(VehicleHeartbeat.base_mode == 209)
+    if(m_MapVehicleWidgets.contains(VehicleID))
     {
-        ui->tableView_VehicleInformation->ChangeArmed(VehicleID, true);
-        m_MapVehicleWidgets[VehicleID]->updateArmStatus(true);
+        m_MapVehicleWidgets[VehicleID]->updateVehicleType((EnumerationDefinitions::Vehicle_Type)VehicleHeartbeat.type);
+
+        m_HeartBeatTimer->restartTimer(VehicleID);
+
+        if(VehicleHeartbeat.base_mode == 209)
+        {
+            ui->tableView_VehicleInformation->ChangeArmed(VehicleID, true);
+            m_MapVehicleWidgets[VehicleID]->updateArmStatus(true);
+        }
+        else
+        {
+            ui->tableView_VehicleInformation->ChangeArmed(VehicleID, false);
+            m_MapVehicleWidgets[VehicleID]->updateArmStatus(false);
+        }
+        m_MapVehicleWidgets[VehicleID]->updateFlightMode(VehicleHeartbeat);
     }
-    else
-    {
-        ui->tableView_VehicleInformation->ChangeArmed(VehicleID, false);
-        m_MapVehicleWidgets[VehicleID]->updateArmStatus(false);
-    }
-    m_MapVehicleWidgets[VehicleID]->updateFlightMode(VehicleHeartbeat);
 }
 
 void SwarmController_GUI::updateVehicleParams(const mavlink_common::PARAM_VALUE &VehicleParamValue)
@@ -381,6 +396,8 @@ void SwarmController_GUI::updateRadioValues(const mavlink_common::RC_CHANNELS_RA
 
 void::SwarmController_GUI::USBJoystick(const sensor_msgs::Joy &JoystickValues)
 {
+    updateUSBButtons(JoystickValues); //This will update the buttons and perform any associated actions
+
     double roll = JoystickValues.axes.at(0);
     ui->lineEdit_RollCurrent->setText(QString::number(roll));
 
@@ -443,6 +460,7 @@ void::SwarmController_GUI::USBJoystick(const sensor_msgs::Joy &JoystickValues)
     else
     {
         QMapIterator<int, StructureDefinitions::VehicleRCHL> i(m_MapVehicleRC);
+        bool sendOverride = false;
         while(i.hasNext())
         {
             i.next();
@@ -451,6 +469,7 @@ void::SwarmController_GUI::USBJoystick(const sensor_msgs::Joy &JoystickValues)
             {
                 double roll_percentage = m_Conversions->USBtoPercent(m_USBJoystickHL,EnumerationDefinitions::Roll,roll);
                 override_command.roll_override = m_Conversions->PercenttoRC(i.value(),EnumerationDefinitions::Roll,roll_percentage);
+                sendOverride = true;
             }
             else
                 override_command.roll_override = 0;
@@ -459,6 +478,7 @@ void::SwarmController_GUI::USBJoystick(const sensor_msgs::Joy &JoystickValues)
             {
                 double pitch_percentage = m_Conversions->USBtoPercent(m_USBJoystickHL,EnumerationDefinitions::Pitch,pitch);
                 override_command.pitch_override = m_Conversions->PercenttoRC(i.value(),EnumerationDefinitions::Pitch,pitch_percentage);
+                sendOverride = true;
             }
             else
                 override_command.pitch_override = 0;
@@ -467,6 +487,7 @@ void::SwarmController_GUI::USBJoystick(const sensor_msgs::Joy &JoystickValues)
             {
                 double yaw_percentage = m_Conversions->USBtoPercent(m_USBJoystickHL,EnumerationDefinitions::Yaw,yaw);
                 override_command.yaw_override = m_Conversions->PercenttoRC(i.value(),EnumerationDefinitions::Yaw,yaw_percentage);
+                sendOverride = true;
             }
             else
                 override_command.yaw_override = 0;
@@ -475,14 +496,45 @@ void::SwarmController_GUI::USBJoystick(const sensor_msgs::Joy &JoystickValues)
             {
                 double throttle_percentage = m_Conversions->USBtoPercent(m_USBJoystickHL,EnumerationDefinitions::Throttle,throttle);
                 override_command.throttle_override = m_Conversions->PercenttoRC(i.value(),EnumerationDefinitions::Roll,throttle_percentage);
+                sendOverride = true;
             }
             else
                 override_command.throttle_override = 0;
 
-            m_ROSParser->publishJoystickOverride(i.key() , override_command);
+            if(sendOverride == true)
+                m_ROSParser->publishJoystickOverride(i.key() , override_command);
+
             m_MapVehicleWidgets[i.key()]->updateUSBOverride(override_command.roll_override,override_command.pitch_override,override_command.yaw_override,override_command.throttle_override);
 
         }
     }
 }
+
+void SwarmController_GUI::updateUSBButtons(const sensor_msgs::Joy &JoystickValues)
+{
+    if(m_USBButtons.Button1 != JoystickValues.buttons.at(0))
+    {
+        m_USBButtons.Button1 = JoystickValues.buttons.at(0);
+    }
+    if(m_USBButtons.Button2 != JoystickValues.buttons.at(1))
+    {
+        m_USBButtons.Button2 = JoystickValues.buttons.at(1);
+    }
+    if(m_USBButtons.Button3 != JoystickValues.buttons.at(2))
+    {
+        m_USBButtons.Button3 = JoystickValues.buttons.at(2);
+    }
+    if(m_USBButtons.Button4 != JoystickValues.buttons.at(3))
+    {
+        m_USBButtons.Button4 = JoystickValues.buttons.at(3);
+    }
+    if(m_USBButtons.Button5 != JoystickValues.buttons.at(4))
+    {
+        m_USBButtons.Button5 = JoystickValues.buttons.at(4);
+    }
+
+
+
+}
+
 #endif
