@@ -96,6 +96,8 @@ private slots:
 
 private:
 
+    QTimer *m_Timer;
+
     QMap<int,bool> m_MapVehicleIDs;
 
     ros::Publisher arduPub_gcsHeartbeat;

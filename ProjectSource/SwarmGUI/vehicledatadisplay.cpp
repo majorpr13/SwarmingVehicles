@@ -423,3 +423,17 @@ void VehicleDataDisplay::on_pushButton_trWPParams_clicked()
     msgString = m_Conversion->VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_SPEED_DN);
     emit(transmitWPParams(m_currentVehicleID,msgString,value));
 }
+
+void VehicleDataDisplay::on_pushButton_DisableOverride_clicked()
+{
+
+    ui->checkBox_RollOverride->setChecked(false);
+    ui->checkBox_PitchOverride->setChecked(false);
+    ui->checkBox_YawOverride->setChecked(false);
+    ui->checkBox_ThrottleOverride->setChecked(false);
+
+    emit(signalJoystickOverride(m_currentVehicleID,EnumerationDefinitions::Roll,false));
+    emit(signalJoystickOverride(m_currentVehicleID,EnumerationDefinitions::Pitch,false));
+    emit(signalJoystickOverride(m_currentVehicleID,EnumerationDefinitions::Yaw,false));
+    emit(signalJoystickOverride(m_currentVehicleID,EnumerationDefinitions::Throttle,false));
+}

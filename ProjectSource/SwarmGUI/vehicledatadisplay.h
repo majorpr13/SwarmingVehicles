@@ -110,6 +110,8 @@ private slots:
 
     void on_pushButton_trWPParams_clicked();
 
+    void on_pushButton_DisableOverride_clicked();
+
 private:
 
     void updateRCParam(const EnumerationDefinitions::Vehicle_Params &Parameter, const double value);

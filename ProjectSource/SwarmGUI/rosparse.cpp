@@ -8,6 +8,9 @@
 
 ROSParse::ROSParse(const int &GCSID)
 {
+    //m_Timer->setInterval(1500);
+    //connect(m_Timer,SIGNAL(timeout()),this,SLOT(publishGCSHeartbeat()));
+
     m_GCSID = GCSID;
 
     ros::NodeHandle node_handler;
@@ -28,10 +31,10 @@ ROSParse::ROSParse(const int &GCSID)
     arduPub_cmdReq = node_handler.advertise<mavlink_common::COMMAND_LONG>("to_mav_command_long",10);
 
     //arduPub_gcsHeartbeat = node_handler.advertise<mavlink_common::HEARTBEAT>("to_mav_heartbeat",2);
-
-    //connect(m_TimerHeartbeat,SIGNAL(timeout()),this,SLOT(publishGCSHeartbeat()));
+    //m_Timer->start();
     rosspinner = new ros::AsyncSpinner(0);
     rosspinner->start();
+
 
 }
 
@@ -58,7 +61,8 @@ void ROSParse::removeVehicle(const int &VehicleID)
 
 void ROSParse::UAVHeartbeat(const mavlink_common::HEARTBEAT &msg)
 {
-        emit(newVehicleHeartbeat(msg));
+    std::cout<<"The seen base mode is: "<<msg.base_mode<<std::endl;
+    emit(newVehicleHeartbeat(msg));
 }
 
 void ROSParse::UAVAttitude(const mavlink_common::ATTITUDE &msg)
@@ -167,14 +171,16 @@ void ROSParse::publishMAVcommand(const int &VehicleID, const int &idCMD, const i
 
 void ROSParse::publishGCSHeartbeat()
 {
+    std::cout<<"This has been fired"<<std::endl;
     StructureDefinitions::GCSDefinition GCSParameters;
     mavlink_common::HEARTBEAT msg;
     msg.sysid = GCSParameters.sysid;
     msg.compid = GCSParameters.compid;
-    msg.type = 0;
+
+    msg.type = 6;
     msg.autopilot = 0;
     msg.base_mode = 0;
-    msg.custom_mode = 395264;
+    msg.custom_mode = 0;
     msg.system_status = 0;
     msg.mavlink_version = 3;
 

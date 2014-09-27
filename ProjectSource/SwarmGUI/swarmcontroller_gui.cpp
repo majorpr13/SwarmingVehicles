@@ -14,10 +14,13 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
     m_MapVehicleRC.clear();
 
     m_HeartBeatTimer = new HeartBeatTimer();
+
+
     m_Conversions = new Conversions();
     m_cmdConversions = new cmdConversions();
 
     warningCounter = 0;
+
 
     connect(m_HeartBeatTimer,SIGNAL(elapsedUpdate(int,int)),this,SLOT(updateElapsedHearbeat(int,int)));
 
@@ -36,7 +39,9 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
     connect(m_ROSParser,SIGNAL(newRCValues(mavlink_common::RC_CHANNELS_RAW)),this, SLOT(updateRadioValues(mavlink_common::RC_CHANNELS_RAW)));
     connect(m_ROSParser,SIGNAL(newVehicleParam(mavlink_common::PARAM_VALUE)),this,SLOT(updateVehicleParams(mavlink_common::PARAM_VALUE)));
     connect(m_ROSParser,SIGNAL(newJoystickValues(sensor_msgs::Joy)),this, SLOT(USBJoystick(sensor_msgs::Joy)));
+
     //m_ROSParser->initiate(10);
+
 #endif
 }
 
@@ -273,6 +278,14 @@ void SwarmController_GUI::on_pushButton_USBJOY_Enable_clicked()
     {
         ui->pushButton_USBCalibrate->setDisabled(true);
         ui->pushButton_USBJOY_Enable->setText("Enable");
+        QMapIterator<int, StructureDefinitions::VehicleRCHL> i(m_MapVehicleRC);
+        bool sendOverride = false;
+        while(i.hasNext())
+        {
+            i.next();
+            StructureDefinitions::RCOverride override_command;
+            m_ROSParser->publishJoystickOverride(i.key(),override_command);
+        }
     }
 
 #ifdef ROS_LIBS
@@ -369,16 +382,15 @@ void SwarmController_GUI::updateVehicleHeartbeat(const mavlink_common::HEARTBEAT
         m_MapVehicleWidgets[VehicleID]->updateVehicleType((EnumerationDefinitions::Vehicle_Type)VehicleHeartbeat.type);
 
         m_HeartBeatTimer->restartTimer(VehicleID);
-
-        if(VehicleHeartbeat.base_mode == 209)
-        {
-            ui->tableView_VehicleInformation->ChangeArmed(VehicleID, true);
-            m_MapVehicleWidgets[VehicleID]->updateArmStatus(true);
-        }
-        else
+        if(VehicleHeartbeat.base_mode == 81)
         {
             ui->tableView_VehicleInformation->ChangeArmed(VehicleID, false);
             m_MapVehicleWidgets[VehicleID]->updateArmStatus(false);
+        }
+        else
+        {
+            ui->tableView_VehicleInformation->ChangeArmed(VehicleID, true);
+            m_MapVehicleWidgets[VehicleID]->updateArmStatus(true);
         }
         m_MapVehicleWidgets[VehicleID]->updateFlightMode(VehicleHeartbeat);
     }
@@ -532,9 +544,6 @@ void SwarmController_GUI::updateUSBButtons(const sensor_msgs::Joy &JoystickValue
     {
         m_USBButtons.Button5 = JoystickValues.buttons.at(4);
     }
-
-
-
 }
 
 #endif

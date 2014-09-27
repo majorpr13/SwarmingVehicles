@@ -81,6 +81,7 @@ private:
     Ui::SwarmController_GUI *ui;    
 
     HeartBeatTimer *m_HeartBeatTimer;
+    HeartBeatTimer *m_GCSHeartbeat;
 
     Conversions *m_Conversions;
     cmdConversions *m_cmdConversions;
