@@ -48,7 +48,7 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
 void SwarmController_GUI::initialization()
 {
     ui->pushButton_ImportHome->setDisabled(true);
-    ui->pushButton_ExportHome->setDisabled(true);
+    ui->pushButton_ExportHome->setDisabled(false);
     ui->pushButton_USBCalibrate->setDisabled(true);
 }
 

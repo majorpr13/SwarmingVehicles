@@ -1,0 +1,12 @@
+#ifndef GPS_POSITION_GLOBAL_H
+#define GPS_POSITION_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(GPS_POSITION_LIBRARY)
+#  define GPS_POSITIONSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define GPS_POSITIONSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // GPS_POSITION_GLOBAL_H

@@ -61,7 +61,6 @@ void ROSParse::removeVehicle(const int &VehicleID)
 
 void ROSParse::UAVHeartbeat(const mavlink_common::HEARTBEAT &msg)
 {
-    std::cout<<"The seen base mode is: "<<msg.base_mode<<std::endl;
     emit(newVehicleHeartbeat(msg));
 }
 

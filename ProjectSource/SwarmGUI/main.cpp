@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QGraphicsSvgItem>
 #include <QMetaType>
+#include "gps_position.h"
 
 int main(int argc, char *argv[])
 {
@@ -23,9 +24,21 @@ int main(int argc, char *argv[])
 
 #endif
 
-    SwarmController_GUI w;
-    w.show();
+//    SwarmController_GUI w;
+//    w.show();
+    GPS_Position beg;
+    GPS_Position home;
 
+    beg.Latitude = 38.7681415;
+    beg.Longitude = -77.0952727;
+
+    home.Latitude = 38.7681409;
+    home.Longitude = -77.0952430;
+
+double distance = beg.Distance(home);
+double bearing = beg.Bearing(home);
+std::cout<<"The distance seen here is: "<<distance<<std::endl;
+std::cout<<"The bearing seen here is: "<<bearing<<std::endl;
 //    std::cout<<"I got into here."<<std::endl;
 //    QString msgString = "CH8_OPT";
 //    boost::array<u_int8_t, 16> stringArray;

@@ -2,5 +2,7 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     SwarmGUI \
-    QTFlightView
+    QTFlightView \
+    GPS_Position \
+    RC_Handler
 
