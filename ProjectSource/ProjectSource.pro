@@ -4,5 +4,7 @@ SUBDIRS += \
     SwarmGUI \
     QTFlightView \
     GPS_Position \
-    RC_Handler
+    RC_Handler \
+    FlightMode_Handler \
+    Command_Helper
 

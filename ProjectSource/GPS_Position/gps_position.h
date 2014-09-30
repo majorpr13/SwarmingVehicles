@@ -7,6 +7,12 @@
 class GPS_POSITIONSHARED_EXPORT GPS_Position {
 public:
 
+    enum GPS_Fix{
+        Fix0D,
+        Fix2D,
+        Fix3D
+    };
+
     float Latitude;
     float Longitude;
     float Altitude;
