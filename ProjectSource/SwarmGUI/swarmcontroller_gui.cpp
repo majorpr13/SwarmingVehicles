@@ -15,6 +15,8 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
 
     m_HeartBeatTimer = new HeartBeatTimer();
 
+    m_JoystickHandler = new USBJoy_Handler();
+
 
     m_Conversions = new Conversions();
     m_cmdConversions = new cmdConversions();
@@ -89,6 +91,9 @@ void SwarmController_GUI::on_addVehicleID_clicked()
 
     if(add_Vehicle == true)
     {
+        RC_Handler *newRCHandler = new RC_Handler();
+        m_MapRC.insert(VehicleID,newRCHandler);
+
         m_HeartBeatTimer->addVehicle(VehicleID);
 
         VehicleDataDisplay *newWidget = new VehicleDataDisplay(ui->TabVehicleInfo);
@@ -97,6 +102,7 @@ void SwarmController_GUI::on_addVehicleID_clicked()
             ui->tabWidget_Vehicles->removeTab(0);
 
         ui->tabWidget_Vehicles->addTab(newWidget,QString::number(VehicleID));
+
 
         m_MapVehicleWidgets.insert(VehicleID,newWidget);
         m_MapVehicleWidgets[VehicleID]->addVehicle(VehicleID);
@@ -165,6 +171,7 @@ void SwarmController_GUI::on_removeVehicleID_clicked()
     //delete(m_MapVehicleWidgets[VehicleID]->VehicleDataDisplay.ui);
     m_MapVehicleWidgets.remove(VehicleID);
     m_MapVehicleRC.remove(VehicleID);
+    m_MapRC.remove(VehicleID);
 
     ui->comboBox_VehicleHome->removeItem(ui->comboBox_VehicleHome->findText(QString::number(VehicleID)));
 
@@ -213,7 +220,7 @@ void SwarmController_GUI::on_pushButton_USBCalibrate_clicked()
 
 void SwarmController_GUI::updateRCOverrides(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolOverrride)
 {
-    StructureDefinitions::RCOverride override_command;
+    RC_Handler::cmd_Value override_command;
 
     if(FlightMode == EnumerationDefinitions::Roll)
     {
@@ -249,7 +256,7 @@ void SwarmController_GUI::updateRCOverrides(const int &VehicleID, const Enumerat
     }
 
 #ifdef ROS_LIBS
-    m_ROSParser->publishJoystickOverride(VehicleID , override_command);
+    m_ROSParser->publishJoystickOverride_single(VehicleID , override_command);
 #endif
 }
 
@@ -279,12 +286,12 @@ void SwarmController_GUI::on_pushButton_USBJOY_Enable_clicked()
         ui->pushButton_USBCalibrate->setDisabled(true);
         ui->pushButton_USBJOY_Enable->setText("Enable");
         QMapIterator<int, StructureDefinitions::VehicleRCHL> i(m_MapVehicleRC);
-        bool sendOverride = false;
         while(i.hasNext())
         {
             i.next();
-            StructureDefinitions::RCOverride override_command;
-            m_ROSParser->publishJoystickOverride(i.key(),override_command);
+            m_MapRC[i.key()]->setbool_Override(RC_Handler::ALL,false);
+            RC_Handler::cmd_Value override_command;
+            m_ROSParser->publishJoystickOverride_single(i.key(),override_command);
         }
     }
 
@@ -410,115 +417,50 @@ void::SwarmController_GUI::USBJoystick(const sensor_msgs::Joy &JoystickValues)
 {
     updateUSBButtons(JoystickValues); //This will update the buttons and perform any associated actions
 
-    double roll = JoystickValues.axes.at(0);
-    ui->lineEdit_RollCurrent->setText(QString::number(roll));
-
-    double pitch = JoystickValues.axes.at(1);
-    ui->lineEdit_PitchCurrent->setText(QString::number(pitch));
-
-    double yaw = JoystickValues.axes.at(4);
-    ui->lineEdit_YawCurrent->setText(QString::number(yaw));
-
-    double throttle = JoystickValues.axes.at(2);
-    ui->lineEdit_ThrottleCurrent->setText(QString::number(throttle));
-
     if(JoystickCalibrate == true)
     {
-        if(roll < m_USBJoystickHL.roll_low)
-        {
-            m_USBJoystickHL.roll_low = roll;
-            ui->lineEdit_RollLow->setText(QString::number(m_USBJoystickHL.roll_low));
-        }
-        else if(roll > m_USBJoystickHL.roll_high)
-        {
-            m_USBJoystickHL.roll_high = roll;
-            ui->lineEdit_RollHigh->setText(QString::number(m_USBJoystickHL.roll_high));
-        }
+        m_JoystickHandler->USBJoystickCalibration(JoystickValues);
+        RC_Handler::USBJoystick USBHL = m_JoystickHandler->getUSBJoystickCalibration();
 
-        if(pitch < m_USBJoystickHL.pitch_low)
-        {
-            m_USBJoystickHL.pitch_low = pitch;
-            ui->lineEdit_PitchLow->setText(QString::number(m_USBJoystickHL.pitch_low));
-        }
-        else if(pitch > m_USBJoystickHL.pitch_high)
-        {
-            m_USBJoystickHL.pitch_high = pitch;
-            ui->lineEdit_PitchHigh->setText(QString::number(m_USBJoystickHL.pitch_high));
-        }
+        ui->lineEdit_RollLow->setText(QString::number(USBHL.USB_RL));
+        ui->lineEdit_RollHigh->setText(QString::number(USBHL.USB_RH));
+        ui->lineEdit_PitchLow->setText(QString::number(USBHL.USB_PL));
+        ui->lineEdit_PitchHigh->setText(QString::number(USBHL.USB_PH));
+        ui->lineEdit_YawLow->setText(QString::number(USBHL.USB_YL));
+        ui->lineEdit_YawHigh->setText(QString::number(USBHL.USB_YH));
+        ui->lineEdit_ThrottleLow->setText(QString::number(USBHL.USB_TL));
+        ui->lineEdit_ThrottleHigh->setText(QString::number(USBHL.USB_TH));
 
-        if(yaw < m_USBJoystickHL.yaw_low)
+        QMapIterator<int, RC_Handler*> i(m_MapRC);
+        while(i.hasNext())
         {
-            m_USBJoystickHL.yaw_low = yaw;
-            ui->lineEdit_YawLow->setText(QString::number(m_USBJoystickHL.yaw_low));
-        }
-        else if(yaw > m_USBJoystickHL.yaw_high)
-        {
-            m_USBJoystickHL.yaw_high = yaw;
-            ui->lineEdit_YawHigh->setText(QString::number(m_USBJoystickHL.yaw_high));
-        }
-
-        if(throttle < m_USBJoystickHL.throttle_low)
-        {
-            m_USBJoystickHL.throttle_low = throttle;
-            ui->lineEdit_ThrottleLow->setText(QString::number(m_USBJoystickHL.throttle_low));
-        }
-        else if(throttle > m_USBJoystickHL.throttle_high)
-        {
-            m_USBJoystickHL.throttle_high = throttle;
-            ui->lineEdit_ThrottleHigh->setText(QString::number(m_USBJoystickHL.throttle_high));
+            i.next();
+            m_MapRC[i.key()]->setJS_HL(USBHL);
         }
     }
 
     else
     {
-        QMapIterator<int, StructureDefinitions::VehicleRCHL> i(m_MapVehicleRC);
-        bool sendOverride = false;
+        RC_Handler::usb_Value usbValue;
+        usbValue.roll_value = JoystickValues.axes.at(0);
+        usbValue.pitch_value = JoystickValues.axes.at(1);
+        usbValue.yaw_value = JoystickValues.axes.at(4);
+        usbValue.throttle_value = JoystickValues.axes.at(2);
+
+        QMap<int,RC_Handler::cmd_Value> mapCommand;
+
+        QMapIterator<int, RC_Handler*> i(m_MapRC);
         while(i.hasNext())
         {
             i.next();
-            StructureDefinitions::RCOverride override_command;
-            if(i.value().roll_or== true)
+            if(i.value()->overrideDesired == true)
             {
-                double roll_percentage = m_Conversions->USBtoPercent(m_USBJoystickHL,EnumerationDefinitions::Roll,roll);
-                override_command.roll_override = m_Conversions->PercenttoRC(i.value(),EnumerationDefinitions::Roll,roll_percentage);
-                sendOverride = true;
+                RC_Handler::cmd_Value cmdValue = m_MapRC[i.key()]->computeOverride(usbValue);
+                mapCommand.insert(i.key(),cmdValue);
+                m_MapVehicleWidgets[i.key()]->updateUSBOverride(cmdValue);
             }
-            else
-                override_command.roll_override = 0;
-
-            if(i.value().pitch_or == true)
-            {
-                double pitch_percentage = m_Conversions->USBtoPercent(m_USBJoystickHL,EnumerationDefinitions::Pitch,pitch);
-                override_command.pitch_override = m_Conversions->PercenttoRC(i.value(),EnumerationDefinitions::Pitch,pitch_percentage);
-                sendOverride = true;
-            }
-            else
-                override_command.pitch_override = 0;
-
-            if(i.value().yaw_or == true)
-            {
-                double yaw_percentage = m_Conversions->USBtoPercent(m_USBJoystickHL,EnumerationDefinitions::Yaw,yaw);
-                override_command.yaw_override = m_Conversions->PercenttoRC(i.value(),EnumerationDefinitions::Yaw,yaw_percentage);
-                sendOverride = true;
-            }
-            else
-                override_command.yaw_override = 0;
-
-            if(i.value().throttle_or == true)
-            {
-                double throttle_percentage = m_Conversions->USBtoPercent(m_USBJoystickHL,EnumerationDefinitions::Throttle,throttle);
-                override_command.throttle_override = m_Conversions->PercenttoRC(i.value(),EnumerationDefinitions::Roll,throttle_percentage);
-                sendOverride = true;
-            }
-            else
-                override_command.throttle_override = 0;
-
-            if(sendOverride == true)
-                m_ROSParser->publishJoystickOverride(i.key() , override_command);
-
-            m_MapVehicleWidgets[i.key()]->updateUSBOverride(override_command.roll_override,override_command.pitch_override,override_command.yaw_override,override_command.throttle_override);
-
         }
+        m_ROSParser->publishJoystickOverride(mapCommand);
     }
 }
 

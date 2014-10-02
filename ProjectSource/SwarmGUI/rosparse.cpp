@@ -170,7 +170,6 @@ void ROSParse::publishMAVcommand(const int &VehicleID, const int &idCMD, const i
 
 void ROSParse::publishGCSHeartbeat()
 {
-    std::cout<<"This has been fired"<<std::endl;
     StructureDefinitions::GCSDefinition GCSParameters;
     mavlink_common::HEARTBEAT msg;
     msg.sysid = GCSParameters.sysid;
@@ -270,7 +269,34 @@ void ROSParse::publishArmDisarm(const int &VehicleID, const bool &ArmStatus)
     arduPub_armRequest.publish(msg);
 }
 
-void ROSParse::publishJoystickOverride(const int &VehicleID, const StructureDefinitions::RCOverride &RCOverride)
+void ROSParse::publishJoystickOverride(const QMap<int,RC_Handler::cmd_Value> &cmdValue)
+{
+    StructureDefinitions::GCSDefinition GCSParameters;
+    mavlink_common::RC_CHANNELS_OVERRIDE msg;
+    msg.sysid = GCSParameters.sysid;
+    msg.compid = GCSParameters.compid;
+
+    QMapIterator<int,RC_Handler::cmd_Value> i(cmdValue);
+
+    while(i.hasNext())
+    {
+        i.next();
+        msg.target_system = i.key();
+        msg.target_component = 0; // check that this value is correct
+        msg.chan1_raw = i.value().roll_override;
+        msg.chan2_raw = i.value().pitch_override;
+        msg.chan3_raw = i.value().throttle_override;
+        msg.chan4_raw = i.value().yaw_override;
+        msg.chan5_raw = 0;
+        msg.chan6_raw = 0;
+        msg.chan7_raw = 0;
+        msg.chan8_raw = 0;
+        arduPub_rcOverride.publish(msg);
+    }
+}
+
+
+void ROSParse::publishJoystickOverride_single(const int &VehicleID, const RC_Handler::cmd_Value &cmdValue)
 {
     StructureDefinitions::GCSDefinition GCSParameters;
     mavlink_common::RC_CHANNELS_OVERRIDE msg;
@@ -279,17 +305,19 @@ void ROSParse::publishJoystickOverride(const int &VehicleID, const StructureDefi
 
     msg.target_system = VehicleID;
     msg.target_component = 0; // check that this value is correct
-    msg.chan1_raw = RCOverride.roll_override;
-    msg.chan2_raw = RCOverride.pitch_override;
-    msg.chan3_raw = RCOverride.throttle_override;
-    msg.chan4_raw = RCOverride.yaw_override;
+
+    msg.chan1_raw = cmdValue.roll_override;
+    msg.chan2_raw = cmdValue.pitch_override;
+    msg.chan3_raw = cmdValue.throttle_override;
+    msg.chan4_raw = cmdValue.yaw_override;
     msg.chan5_raw = 0;
     msg.chan6_raw = 0;
     msg.chan7_raw = 0;
     msg.chan8_raw = 0;
-    arduPub_rcOverride.publish(msg);
-}
 
+    arduPub_rcOverride.publish(msg);
+
+}
 void ROSParse::JoystickValues(const sensor_msgs::Joy &msg)
 {
     emit(newJoystickValues(msg));

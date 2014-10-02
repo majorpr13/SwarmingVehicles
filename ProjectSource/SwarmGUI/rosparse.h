@@ -13,7 +13,7 @@
 #include <QVector>
 
 #include "Definitions.h"
-
+#include "rc_handler.h"
 
 #include <sensor_msgs/Joy.h>
 
@@ -52,7 +52,9 @@ public:
 
     void publishParameterRequest(const int &VehicleID, const QString &msgString);
 
-    void publishJoystickOverride(const int &VehicleID, const StructureDefinitions::RCOverride &RCOverride);
+    void publishJoystickOverride(const QMap<int,RC_Handler::cmd_Value> &cmdValue);
+
+    void publishJoystickOverride_single(const int &VehicleID, const RC_Handler::cmd_Value &cmdValue);
 
     void publishMAVcommand(const int &VehicleID, const int &idCMD, const int &confirmation, const QVector<double> &msgVector);
 

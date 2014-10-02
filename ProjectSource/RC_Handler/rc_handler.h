@@ -11,7 +11,8 @@ public:
         ROLL,
         PITCH,
         YAW,
-        THROTTLE
+        THROTTLE,
+        ALL
     };
 
     enum Vehicle_Params{
@@ -82,6 +83,7 @@ public:
 
     struct cmd_Value
     {
+        cmd_Value() : roll_override(0),pitch_override(0),yaw_override(0),throttle_override(0){}
         int roll_override;
         int pitch_override;
         int yaw_override;
@@ -90,6 +92,7 @@ public:
 
     struct usb_Value
     {
+        usb_Value() : roll_value(0),pitch_value(0),yaw_value(0),throttle_value(0){}
         double roll_value;
         double pitch_value;
         double yaw_value;
@@ -112,12 +115,17 @@ public:
 public:
     RC_Handler();
 
+    bool overrideDesired;
+
     void setRC_HL(const int_CalibValue &value);
-    void setJS_HL(const int_CalibValue &value);
+    void setJS_HL(const  USBJoystick &value);
     void setbool_Override(const FlightChannel &channel, const bool value);
     void setbool_Reverse(const FlightChannel &channel, const bool value);
-
     cmd_Value computeOverride(const usb_Value &usbCommand);
+
+private:
+    void checkOverride();
+
 private:
     USBJoystick store_USB;
     RCJoystick store_RC;

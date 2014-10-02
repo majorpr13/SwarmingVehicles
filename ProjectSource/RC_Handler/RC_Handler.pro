@@ -37,3 +37,10 @@ INSTALLS       += headers
 
 INCLUDEPATH += $$(FLIGHTVIEW_ROOT)/include
 
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../USBJoy_Handler/release/ -lUSBJoy_Handler
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../USBJoy_Handler/debug/ -lUSBJoy_Handler
+else:macx: LIBS += -L$$OUT_PWD/../USBJoy_Handler/ -lUSBJoy_Handler
+
+INCLUDEPATH += $$PWD/../USBJoy_Handler
+DEPENDPATH += $$PWD/../USBJoy_Handler

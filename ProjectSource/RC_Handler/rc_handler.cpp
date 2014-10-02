@@ -32,21 +32,34 @@ RC_Handler::RC_Handler()
     store_RC.RC_PH = 0;
     store_RC.RC_PR = false;
     store_RC.RC_PO = false;
+
+    overrideDesired = false;
 }
 
-void RC_Handler::setJS_HL(const int_CalibValue &value)
+void RC_Handler::checkOverride()
 {
-    store_USB.USB_RL = value.calibRollL;
-    store_USB.USB_RH = value.calibRollH;
+    if(store_RC.RC_PO == true)
+        if(store_RC.RC_RO == true)
+            if(store_RC.RC_YO == true)
+                if(store_RC.RC_TO == true)
+                    overrideDesired == true;
+    else
+                    overrideDesired == false;
+}
 
-    store_USB.USB_PL = value.calibPitchL;
-    store_USB.USB_PH = value.calibPitchH;
+void RC_Handler::setJS_HL(const USBJoystick &value)
+{
+    store_USB.USB_RL = value.USB_RL;
+    store_USB.USB_RH = value.USB_RH;
 
-    store_USB.USB_YL = value.calibYawL;
-    store_USB.USB_YH = value.calibYawH;
+    store_USB.USB_PL = value.USB_PL;
+    store_USB.USB_PH = value.USB_PH;
 
-    store_USB.USB_TL = value.calibThrottleL;
-    store_USB.USB_TH = value.calibThrottleH;
+    store_USB.USB_YL = value.USB_YL;
+    store_USB.USB_YH = value.USB_YH;
+
+    store_USB.USB_TL = value.USB_TL;
+    store_USB.USB_TH = value.USB_TH;
 }
 
 void RC_Handler::setRC_HL(const int_CalibValue &value)
@@ -80,9 +93,17 @@ void RC_Handler::setbool_Override(const FlightChannel &channel, const bool value
     case (THROTTLE):
         store_RC.RC_TO = value;
         break;
+    case (ALL):
+        store_RC.RC_RO = value;
+        store_RC.RC_PO = value;
+        store_RC.RC_YO = value;
+        store_RC.RC_TO = value;
+        break;
     default:
         break;
     }
+
+    checkOverride();
 }
 
 void RC_Handler::setbool_Reverse(const FlightChannel &channel, const bool value)

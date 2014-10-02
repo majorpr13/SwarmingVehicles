@@ -6,5 +6,6 @@ SUBDIRS += \
     GPS_Position \
     RC_Handler \
     FlightMode_Handler \
-    Command_Helper
+    Command_Helper \
+    USBJoy_Handler
 

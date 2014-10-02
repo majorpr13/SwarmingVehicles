@@ -12,6 +12,7 @@
 #include "conversions.h"
 #include "Definitions.h"
 
+#include "rc_handler.h"
 
 #ifdef ROS_LIBS
 #include <mavlink_common/ATTITUDE.h>
@@ -45,7 +46,7 @@ public:
 
     void updateVehicleParams(const mavlink_common::PARAM_VALUE &parameter);
 
-    void updateUSBOverride(int const &roll, int const &pitch, int const &yaw, int const &throttle);
+    void updateUSBOverride(const RC_Handler::cmd_Value &cmdValue);
 
     StructureDefinitions::GPS_Params requestPosition();
 

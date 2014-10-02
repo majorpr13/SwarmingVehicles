@@ -13,6 +13,11 @@
 #include "heartbeattimer.h"
 #include "vehicledatadisplay.h"
 
+
+#include "usbjoy_handler.h"
+#include "gps_position.h"
+#include "rc_handler.h"
+
 #ifdef ROS_LIBS
 #include "rosparse.h"
 #endif
@@ -28,7 +33,6 @@ class SwarmController_GUI : public QMainWindow
 public:
 
     SwarmController_GUI(QWidget *parent = 0);
-    //SwarmController_GUI();
 
     ~SwarmController_GUI();
 
@@ -77,9 +81,11 @@ private:
 
 private:
 
+    USBJoy_Handler *m_JoystickHandler;
+    QMap<int, RC_Handler*> m_MapRC;
+
     QTimer *m_Timer;
     Ui::SwarmController_GUI *ui;    
-
     HeartBeatTimer *m_HeartBeatTimer;
     HeartBeatTimer *m_GCSHeartbeat;
 

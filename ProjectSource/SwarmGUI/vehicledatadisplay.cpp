@@ -393,12 +393,12 @@ void VehicleDataDisplay::on_pushButton_reqWPParams_clicked()
     emit(requestWPParams(m_currentVehicleID));
 }
 
-void VehicleDataDisplay::updateUSBOverride(int const &roll, int const &pitch, int const &yaw, int const &throttle)
+void VehicleDataDisplay::updateUSBOverride(const RC_Handler::cmd_Value &cmdValue)
 {
-    ui->lineEdit_RollOR->setText(QString::number(roll));
-    ui->lineEdit_PitchOR->setText(QString::number(pitch));
-    ui->lineEdit_YawOR->setText(QString::number(yaw));
-    ui->lineEdit_ThrottleOR->setText(QString::number(throttle));
+    ui->lineEdit_RollOR->setText(QString::number(cmdValue.roll_override));
+    ui->lineEdit_PitchOR->setText(QString::number(cmdValue.pitch_override));
+    ui->lineEdit_YawOR->setText(QString::number(cmdValue.yaw_override));
+    ui->lineEdit_ThrottleOR->setText(QString::number(cmdValue.throttle_override));
 
 }
 
