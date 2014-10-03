@@ -27,6 +27,8 @@ public:
 
 private:
     struct_USBJoystick m_joystickCalib;
+
+    bool calibrationCalled;
 };
 
 #endif // USBJOY_HANDLER_H

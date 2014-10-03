@@ -15,10 +15,14 @@ USBJoy_Handler::USBJoy_Handler()
     m_joystickCalib.USB_TH = 0.0;
     m_joystickCalib.USB_TL = 0.0;
 
+    calibrationCalled = false;
+
 }
 
 void USBJoy_Handler::USBJoystickCalibration(const sensor_msgs::Joy &JoystickValues)
 {
+    calibrationCalled = true;
+
     double roll = JoystickValues.axes.at(0);
     double pitch = JoystickValues.axes.at(1);
     double yaw = JoystickValues.axes.at(4);

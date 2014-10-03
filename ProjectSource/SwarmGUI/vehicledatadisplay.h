@@ -13,6 +13,7 @@
 #include "Definitions.h"
 
 #include "rc_handler.h"
+#include "gps_position.h"
 
 #ifdef ROS_LIBS
 #include <mavlink_common/ATTITUDE.h>
@@ -48,7 +49,7 @@ public:
 
     void updateUSBOverride(const RC_Handler::cmd_Value &cmdValue);
 
-    StructureDefinitions::GPS_Params requestPosition();
+    GPS_Position requestPosition();
 
 
 
@@ -128,7 +129,7 @@ private:
     Ui::VehicleDataDisplay *ui;
 
     StructureDefinitions::VehicleRCHL m_RCCalibration;
-    StructureDefinitions::HomeDefinition m_HomeCoordinate;
+    GPS_Position m_HomeCoordinate;
     StructureDefinitions::VehicleStateV m_VehicleState;
 
 

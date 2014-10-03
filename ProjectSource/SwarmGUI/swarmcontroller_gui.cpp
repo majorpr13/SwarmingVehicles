@@ -302,15 +302,15 @@ void SwarmController_GUI::on_pushButton_USBJOY_Enable_clicked()
 
 void SwarmController_GUI::on_pushButton_ImportHome_clicked()
 {
-    StructureDefinitions::GPS_Params HomePosition;
+    GPS_Position HomePosition;
     QString string_VehicleID = ui->comboBox_VehicleHome->currentText();
     if(string_VehicleID != "ALL")
     {
         HomePosition = m_MapVehicleWidgets[string_VehicleID.toInt()]->requestPosition();
 
-        ui->doubleSpinBox_LatHome->setValue(HomePosition.Lat);
-        ui->doubleSpinBox_LonHome->setValue(HomePosition.Lon);
-        ui->doubleSpinBox_AltHome->setValue(HomePosition.Alt);
+        ui->doubleSpinBox_LatHome->setValue(HomePosition.Latitude);
+        ui->doubleSpinBox_LonHome->setValue(HomePosition.Longitude);
+        ui->doubleSpinBox_AltHome->setValue(HomePosition.Altitude);
     }
 }
 
