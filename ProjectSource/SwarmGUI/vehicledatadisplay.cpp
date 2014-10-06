@@ -46,7 +46,7 @@ void VehicleDataDisplay::updateVehicleType(const EnumerationDefinitions::Vehicle
 
 void VehicleDataDisplay::on_comboBox_DesiredFlightMode_activated(const QString &arg1)
 {
-    int DFM = m_Conversion->FlightMode_StringtoEnum(arg1);
+    int DFM = m_FlightModes.FlightMode_StringtoEnum(arg1);
     emit(desiredFlightMode(m_currentVehicleID,DFM));
 }
 
@@ -67,11 +67,11 @@ void VehicleDataDisplay::updateArmStatus(const bool &Armed)
 
 void VehicleDataDisplay::on_pushButton_STREAM_clicked()
 {
-    int streamTypeInt;
-    QString streamString = ui->comboBox_StreamType->currentText();
-    int streamRate = ui->spinBox_StreamRate->value();
-    streamTypeInt = m_Conversion->StreamMode_StringtoEnum(streamString);
-    emit(requestStream(m_currentVehicleID,streamTypeInt,streamRate));
+//    int streamTypeInt;
+//    QString streamString = ui->comboBox_StreamType->currentText();
+//    int streamRate = ui->spinBox_StreamRate->value();
+//    streamTypeInt = m_Conversion->StreamMode_StringtoEnum(streamString);
+//    emit(requestStream(m_currentVehicleID,streamTypeInt,streamRate));
 }
 
 void VehicleDataDisplay::on_pushButton_ARM_clicked()
@@ -171,7 +171,7 @@ void VehicleDataDisplay::updateVehicleParams(const mavlink_common::PARAM_VALUE &
         ba[i] = parameter.param_id.at(i);
     }
     QString newString(ba);
-    RC_Handler::Vehicle_Params VP = RC_Handler::RC_StringtoEnum(newString);
+    RC_Handler::Vehicle_Params VP = m_RCHandler.RC_StringtoEnum(newString);
 
     if(VP != RC_Handler::RC_Length)
     {
@@ -340,52 +340,10 @@ void VehicleDataDisplay::updatePositioning(const mavlink_common::GLOBAL_POSITION
 
 void VehicleDataDisplay::updateFlightMode(const mavlink_common::HEARTBEAT &VehicleHeartbeat)
 {
-    if(VehicleHeartbeat.custom_mode != m_Conversion->FlightMode_StringtoEnum(ui->lineEdit_FlightMode->text()))
+    if(VehicleHeartbeat.custom_mode != m_FlightModes.FlightMode_StringtoEnum(ui->lineEdit_FlightMode->text()))
     {
-        if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Stabilize)
-        {
-            ui->lineEdit_FlightMode->setText("Stabilize");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Acro)
-        {
-            ui->lineEdit_FlightMode->setText("Acro");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.AltHold)
-        {
-            ui->lineEdit_FlightMode->setText("AltHold");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Auto)
-        {
-            ui->lineEdit_FlightMode->setText("Auto");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Guided)
-        {
-            ui->lineEdit_FlightMode->setText("Guided");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Loiter)
-        {
-            ui->lineEdit_FlightMode->setText("Loiter");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.RTL)
-        {
-            ui->lineEdit_FlightMode->setText("RTL");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.CircleFM)
-        {
-            ui->lineEdit_FlightMode->setText("Circle");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Land)
-        {
-            ui->lineEdit_FlightMode->setText("Land");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Drift)
-        {
-            ui->lineEdit_FlightMode->setText("Drift");
-        }
-        else if(VehicleHeartbeat.custom_mode == m_Initialization->m_FlightModeV.Sport)
-        {
-            ui->lineEdit_FlightMode->setText("Sport");
-        }
+        QString setString = m_FlightModes.FlightMode_EnumtoString(VehicleHeartbeat.custom_mode);
+        ui->lineEdit_FlightMode->setText(setString);
         ui->comboBox_DesiredFlightMode->setCurrentIndex(ui->comboBox_DesiredFlightMode->findText(ui->lineEdit_FlightMode->text()));
     }
 }

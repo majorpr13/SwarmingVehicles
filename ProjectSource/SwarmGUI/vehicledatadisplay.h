@@ -14,6 +14,7 @@
 
 #include "rc_handler.h"
 #include "gps_position.h"
+#include "flightmode_handler.h"
 
 #ifdef ROS_LIBS
 #include <mavlink_common/ATTITUDE.h>
@@ -141,6 +142,9 @@ private:
     bool firstTimeLoad;
 
     int m_currentVehicleID;
+
+    FlightMode_Handler m_FlightModes;
+    RC_Handler m_RCHandler;
 
     Conversions *m_Conversion;
     Initialization *m_Initialization;

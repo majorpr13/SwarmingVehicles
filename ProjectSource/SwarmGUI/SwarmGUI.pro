@@ -109,3 +109,10 @@ else:unix:!macx:!symbian: LIBS += -L$$OUT_PWD/../Command_Helper/ -lCommand_Helpe
 
 INCLUDEPATH += $$PWD/../Command_Helper
 DEPENDPATH += $$PWD/../Command_Helper
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../FlightMode_Handler/release/ -lFlightMode_Handler
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../FlightMode_Handler/debug/ -lFlightMode_Handler
+else:unix:!macx:!symbian: LIBS += -L$$OUT_PWD/../FlightMode_Handler/ -lFlightMode_Handler
+
+INCLUDEPATH += $$PWD/../FlightMode_Handler
+DEPENDPATH += $$PWD/../FlightMode_Handler

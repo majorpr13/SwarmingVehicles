@@ -1,22 +1,22 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2014-09-30T08:49:28
+# Project created by QtCreator 2014-10-06T13:07:00
 #
 #-------------------------------------------------
 
 QT       -= gui
 
-TARGET = Command_Helper
+TARGET = StreamMode_Handler
 TEMPLATE = lib
 
 win32:TARGET_EXT += .dll
 
-DEFINES += COMMAND_HELPER_LIBRARY
+DEFINES += STREAMMODE_HANDLER_LIBRARY
 
-SOURCES += command_helper.cpp
+SOURCES += streammode_handler.cpp
 
-HEADERS += command_helper.h\
-        Command_Helper_global.h
+HEADERS += streammode_handler.h\
+        StreamMode_Handler_global.h
 
 # Unix lib Install
 unix:!symbian {
@@ -26,8 +26,8 @@ unix:!symbian {
 
 # Windows lib install
 lib.path    = $$(FLIGHTVIEW_ROOT)/lib
-win32:CONFIG(release, debug|release):       lib.files   += release/Command_Helper.lib release/Command_Helper.dll
-else:win32:CONFIG(debug, debug|release):    lib.files   += debug/Command_Helper.lib debug/Command_Helper.dll
+win32:CONFIG(release, debug|release):       lib.files   += release/StreamMode_Handler.lib release/StreamMode_Handler.dll
+else:win32:CONFIG(debug, debug|release):    lib.files   += debug/StreamMode_Handler.lib debug/StreamMode_Handler.dll
 INSTALLS += lib
 
 #Header file copy
