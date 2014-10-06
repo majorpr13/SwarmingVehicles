@@ -84,51 +84,51 @@ void VehicleDataDisplay::on_pushButton_DISARM_clicked()
     emit(armRequest(m_currentVehicleID,false));
 }
 
-void VehicleDataDisplay::updateHomeCoordinate(const StructureDefinitions::GPS_Params &homeValue)
+void VehicleDataDisplay::updateHomeCoordinate(const GPS_Position &homeValue)
 {
-        m_HomeCoordinate.Latitude = homeValue.Lat;
-        m_HomeCoordinate.Longitude = homeValue.Lon;
-        m_HomeCoordinate.Altitude = homeValue.Alt;
+        m_HomeCoordinate.Latitude = homeValue.Latitude;
+        m_HomeCoordinate.Longitude = homeValue.Longitude;
+        m_HomeCoordinate.Altitude = homeValue.Altitude;
 }
 
 void VehicleDataDisplay::on_checkBox_RollOverride_clicked(bool checked)
 {
-    emit(signalJoystickOverride(m_currentVehicleID,EnumerationDefinitions::Roll,checked));
+    emit(signalJoystickOverride(m_currentVehicleID,RC_Handler::ROLL,checked));
 }
 
 void VehicleDataDisplay::on_checkBox_PitchOverride_clicked(bool checked)
 {
-    emit(signalJoystickOverride(m_currentVehicleID,EnumerationDefinitions::Pitch,checked));
+    emit(signalJoystickOverride(m_currentVehicleID,RC_Handler::PITCH,checked));
 }
 
 void VehicleDataDisplay::on_checkBox_YawOverride_clicked(bool checked)
 {
-    emit(signalJoystickOverride(m_currentVehicleID,EnumerationDefinitions::Yaw,checked));
+    emit(signalJoystickOverride(m_currentVehicleID,RC_Handler::YAW,checked));
 }
 
 void VehicleDataDisplay::on_checkBox_ThrottleOverride_clicked(bool checked)
 {
-    emit(signalJoystickOverride(m_currentVehicleID,EnumerationDefinitions::Throttle,checked));
+    emit(signalJoystickOverride(m_currentVehicleID,RC_Handler::THROTTLE,checked));
 }
 
 void VehicleDataDisplay::on_checkBox_RollRev_clicked(bool checked)
 {
-    emit(signalJoystickReverse(m_currentVehicleID,EnumerationDefinitions::Roll,checked));
+    emit(signalJoystickReverse(m_currentVehicleID,RC_Handler::ROLL,checked));
 }
 
 void VehicleDataDisplay::on_checkBox_PitchRev_clicked(bool checked)
 {
-    emit(signalJoystickReverse(m_currentVehicleID,EnumerationDefinitions::Pitch,checked));
+    emit(signalJoystickReverse(m_currentVehicleID,RC_Handler::PITCH,checked));
 }
 
 void VehicleDataDisplay::on_checkBox_YawRev_clicked(bool checked)
 {
-    emit(signalJoystickReverse(m_currentVehicleID,EnumerationDefinitions::Yaw,checked));
+    emit(signalJoystickReverse(m_currentVehicleID,RC_Handler::YAW,checked));
 }
 
 void VehicleDataDisplay::on_checkBox_ThrottleRev_clicked(bool checked)
 {
-    emit(signalJoystickReverse(m_currentVehicleID,EnumerationDefinitions::Throttle,checked));
+    emit(signalJoystickReverse(m_currentVehicleID,RC_Handler::THROTTLE,checked));
 }
 
 
@@ -166,21 +166,22 @@ void VehicleDataDisplay::updateOverrideCheckbox()
 void VehicleDataDisplay::updateVehicleParams(const mavlink_common::PARAM_VALUE &parameter)
 {
     QByteArray ba;
-
     for(uint i = 0; i < parameter.param_id.size(); i++)
     {
         ba[i] = parameter.param_id.at(i);
     }
     QString newString(ba);
-    EnumerationDefinitions::Vehicle_Params VP = m_Conversion->VehicleParam_StringtoEnum(newString);
-    if(VP < EnumerationDefinitions::RC_Length)
+    RC_Handler::Vehicle_Params VP = RC_Handler::RC_StringtoEnum(newString);
+
+    if(VP != RC_Handler::RC_Length)
     {
         updateRCParam(VP,parameter.param_value);
     }
-    else if((VP > EnumerationDefinitions::RC_Length) && (VP< EnumerationDefinitions::WP_Length))
-    {
-        updateWPParam(VP,parameter.param_value);
-    }
+    //if RC_Length was returned this means it was not one of the RC parameters lets continue to check
+//    else if((VP > EnumerationDefinitions::RC_Length) && (VP< EnumerationDefinitions::WP_Length))
+//    {
+//        updateWPParam(VP,parameter.param_value);
+//    }
 }
 
 void VehicleDataDisplay::updateWPParam(const EnumerationDefinitions::Vehicle_Params &Parameter, const double value)
@@ -213,41 +214,41 @@ void VehicleDataDisplay::updateWPParam(const EnumerationDefinitions::Vehicle_Par
     }
 }
 
-void VehicleDataDisplay::updateRCParam(const EnumerationDefinitions::Vehicle_Params &Parameter, const double value)
+void VehicleDataDisplay::updateRCParam(const RC_Handler::Vehicle_Params &Parameter, const double value)
 {
     switch(Parameter)
     {
-    case(EnumerationDefinitions::RC1_Min):
-        m_RCCalibration.roll_low = (int)value;
-        ui->lineEdit_RollLow->setText(QString::number(m_RCCalibration.roll_low));
+    case(RC_Handler::RC1_Min):
+        m_RCCalibration.RC_RL = (int)value;
+        ui->lineEdit_RollLow->setText(QString::number(m_RCCalibration.RC_RL));
         break;
-    case(EnumerationDefinitions::RC1_Max):
-        m_RCCalibration.roll_high = (int)value;
-        ui->lineEdit_RollHigh->setText(QString::number(m_RCCalibration.roll_high));
+    case(RC_Handler::RC1_Max):
+        m_RCCalibration.RC_RH = (int)value;
+        ui->lineEdit_RollHigh->setText(QString::number(m_RCCalibration.RC_RH));
         break;
-    case(EnumerationDefinitions::RC2_Min):
-        m_RCCalibration.pitch_low = (int)value;
-        ui->lineEdit_PitchLow->setText(QString::number(m_RCCalibration.pitch_low));
+    case(RC_Handler::RC2_Min):
+        m_RCCalibration.RC_PL = (int)value;
+        ui->lineEdit_PitchLow->setText(QString::number(m_RCCalibration.RC_PL));
         break;
-    case(EnumerationDefinitions::RC2_Max):
-        m_RCCalibration.pitch_high = (int)value;
-        ui->lineEdit_PitchHigh->setText(QString::number(m_RCCalibration.pitch_high));
+    case(RC_Handler::RC2_Max):
+        m_RCCalibration.RC_PH = (int)value;
+        ui->lineEdit_PitchHigh->setText(QString::number(m_RCCalibration.RC_PH));
         break;
-    case(EnumerationDefinitions::RC3_Min):
-        m_RCCalibration.throttle_low = (int)value;
-        ui->lineEdit_ThrottleLow->setText(QString::number(m_RCCalibration.throttle_low));
+    case(RC_Handler::RC3_Min):
+        m_RCCalibration.RC_TL = (int)value;
+        ui->lineEdit_ThrottleLow->setText(QString::number(m_RCCalibration.RC_TL));
         break;
-    case(EnumerationDefinitions::RC3_Max):
-        m_RCCalibration.throttle_high = (int)value;
-        ui->lineEdit_ThrottleHigh->setText(QString::number(m_RCCalibration.throttle_high));
+    case(RC_Handler::RC3_Max):
+        m_RCCalibration.RC_TH = (int)value;
+        ui->lineEdit_ThrottleHigh->setText(QString::number(m_RCCalibration.RC_TH));
         break;
-    case(EnumerationDefinitions::RC4_Min):
-        m_RCCalibration.yaw_low = (int)value;
-        ui->lineEdit_YawLow->setText(QString::number(m_RCCalibration.yaw_low));
+    case(RC_Handler::RC4_Min):
+        m_RCCalibration.RC_YL = (int)value;
+        ui->lineEdit_YawLow->setText(QString::number(m_RCCalibration.RC_YL));
         break;
-    case(EnumerationDefinitions::RC4_Max):
-        m_RCCalibration.yaw_high = (int)value;
-        ui->lineEdit_YawHigh->setText(QString::number(m_RCCalibration.yaw_high));
+    case(RC_Handler::RC4_Max):
+        m_RCCalibration.RC_YH = (int)value;
+        ui->lineEdit_YawHigh->setText(QString::number(m_RCCalibration.RC_YH));
         break;
     default:
         break;
@@ -259,14 +260,14 @@ void VehicleDataDisplay::updateRCParam(const EnumerationDefinitions::Vehicle_Par
 
 void VehicleDataDisplay::checkRCParams()
 {
-    if(m_RCCalibration.pitch_high != 0)
-        if(m_RCCalibration.pitch_low != 0)
-            if(m_RCCalibration.roll_high != 0)
-                if(m_RCCalibration.roll_low != 0)
-                    if(m_RCCalibration.throttle_high != 0)
-                        if(m_RCCalibration.throttle_low != 0)
-                            if(m_RCCalibration.yaw_high != 0)
-                                if(m_RCCalibration.yaw_low != 0)
+    if(m_RCCalibration.RC_PH != 0)
+        if(m_RCCalibration.RC_PL != 0)
+            if(m_RCCalibration.RC_RH != 0)
+                if(m_RCCalibration.RC_RL != 0)
+                    if(m_RCCalibration.RC_TH != 0)
+                        if(m_RCCalibration.RC_TL != 0)
+                            if(m_RCCalibration.RC_YH != 0)
+                                if(m_RCCalibration.RC_YL != 0)
                                 {
                                     boolRCCalibration = true;
                                     updateOverrideCheckbox();
@@ -406,24 +407,24 @@ void VehicleDataDisplay::updateUSBOverride(const RC_Handler::cmd_Value &cmdValue
 
 void VehicleDataDisplay::on_pushButton_trWPParams_clicked()
 {
-    double value = 0.0;
-    QString msgString = "";
+//    double value = 0.0;
+//    QString msgString = "";
 
-    value = ui->spinBox_WPSpeed->value();
-    msgString = m_Conversion->VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_SPEED);
-    emit(transmitWPParams(m_currentVehicleID,msgString,value));
+//    value = ui->spinBox_WPSpeed->value();
+//    msgString = m_Conversion->VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_SPEED);
+//    emit(transmitWPParams(m_currentVehicleID,msgString,value));
 
-    value = ui->spinBox_WPRadius->value();
-    msgString = m_Conversion->VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_RADIUS);
-    emit(transmitWPParams(m_currentVehicleID,msgString,value));
+//    value = ui->spinBox_WPRadius->value();
+//    msgString = m_Conversion->VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_RADIUS);
+//    emit(transmitWPParams(m_currentVehicleID,msgString,value));
 
-    value = ui->spinBox_WPAscent->value();
-    msgString = m_Conversion->VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_SPEED_UP);
-    emit(transmitWPParams(m_currentVehicleID,msgString,value));
+//    value = ui->spinBox_WPAscent->value();
+//    msgString = m_Conversion->VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_SPEED_UP);
+//    emit(transmitWPParams(m_currentVehicleID,msgString,value));
 
-    value = ui->spinBox_WPDescent->value();
-    msgString = m_Conversion->VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_SPEED_DN);
-    emit(transmitWPParams(m_currentVehicleID,msgString,value));
+//    value = ui->spinBox_WPDescent->value();
+//    msgString = m_Conversion->VehicleParam_EnumtoString(EnumerationDefinitions::WPNAV_SPEED_DN);
+//    emit(transmitWPParams(m_currentVehicleID,msgString,value));
 }
 
 void VehicleDataDisplay::on_pushButton_DisableOverride_clicked()
@@ -434,8 +435,8 @@ void VehicleDataDisplay::on_pushButton_DisableOverride_clicked()
     ui->checkBox_YawOverride->setChecked(false);
     ui->checkBox_ThrottleOverride->setChecked(false);
 
-    emit(signalJoystickOverride(m_currentVehicleID,EnumerationDefinitions::Roll,false));
-    emit(signalJoystickOverride(m_currentVehicleID,EnumerationDefinitions::Pitch,false));
-    emit(signalJoystickOverride(m_currentVehicleID,EnumerationDefinitions::Yaw,false));
-    emit(signalJoystickOverride(m_currentVehicleID,EnumerationDefinitions::Throttle,false));
+    emit(signalJoystickOverride(m_currentVehicleID,RC_Handler::ROLL,false));
+    emit(signalJoystickOverride(m_currentVehicleID,RC_Handler::PITCH,false));
+    emit(signalJoystickOverride(m_currentVehicleID,RC_Handler::YAW,false));
+    emit(signalJoystickOverride(m_currentVehicleID,RC_Handler::THROTTLE,false));
 }

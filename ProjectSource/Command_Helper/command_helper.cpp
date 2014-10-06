@@ -5,16 +5,17 @@ Command_Helper::Command_Helper()
 {
 }
 
-QVector<double> Command_Helper::convert_setHome()
+QVector<double> Command_Helper::convert_setHome(const int &useCurrent,const GPS_Position &Position)
 {
     QVector<double> returnVector(7);
-//    returnVector.insert(0 , mavCMD.useCurrent);
-//    returnVector.insert(1 , mavCMD.empty1);
-//    returnVector.insert(2 , mavCMD.empty2);
-//    returnVector.insert(3 , mavCMD.empty3);
-//    returnVector.insert(4 , mavCMD.Latitude);
-//    returnVector.insert(5 , mavCMD.Longitude);
-//    returnVector.insert(6 , mavCMD.Altitude);
+    returnVector.insert(0 , (double)useCurrent);
+    returnVector.insert(1 , 0.0);
+    returnVector.insert(2 , 0.0);
+    returnVector.insert(3 , 0.0);
+    returnVector.insert(4 , Position.Latitude);
+    returnVector.insert(5 , Position.Longitude);
+    returnVector.insert(6 , Position.Altitude);
 
     return(returnVector);
 }
+

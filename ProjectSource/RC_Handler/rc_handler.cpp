@@ -233,3 +233,224 @@ RC_Handler::cmd_Value RC_Handler::computeOverride(const RC_Handler::usb_Value &u
     return(overrideValue);
 }
 
+RC_Handler::cmd_Value RC_Handler::updateRCOverrides(const RC_Handler::FlightChannel &FlightMode, const bool &boolOverrride)
+{
+    RC_Handler::cmd_Value override_command;
+
+    override_command.roll_override = 65535;
+    override_command.pitch_override = 65535;
+    override_command.yaw_override = 65535;
+    override_command.throttle_override = 65535;
+
+    if(FlightMode == RC_Handler::ROLL)
+    {
+        store_RC.RC_RO = boolOverrride;
+        if(boolOverrride == false)
+            override_command.roll_override = 0;
+    }
+    else if(FlightMode == RC_Handler::PITCH)
+    {
+       store_RC.RC_PO = boolOverrride;
+        if(boolOverrride == false)
+            override_command.pitch_override = 0;
+    }
+    else if(FlightMode == RC_Handler::YAW)
+    {
+        store_RC.RC_YO = boolOverrride;
+        if(boolOverrride == false)
+            override_command.yaw_override = 0;
+    }
+    else if(FlightMode == RC_Handler::THROTTLE)
+    {
+        store_RC.RC_TO = boolOverrride;
+        if(boolOverrride == false)
+            override_command.throttle_override = 0;
+    }
+
+    return(override_command);
+}
+
+QList<QString> RC_Handler::parameterList_RC()
+{
+    QList<QString> returnList;
+    returnList.append(RC_EnumtoString(RC1_Max));
+    returnList.append(RC_EnumtoString(RC2_Max));
+    returnList.append(RC_EnumtoString(RC3_Max));
+    returnList.append(RC_EnumtoString(RC4_Max));
+
+    returnList.append(RC_EnumtoString(RC1_Min));
+    returnList.append(RC_EnumtoString(RC2_Min));
+    returnList.append(RC_EnumtoString(RC3_Min));
+    returnList.append(RC_EnumtoString(RC4_Min));
+    return(returnList);
+}
+
+QString RC_Handler::RC_EnumtoString(const int &Parameter)
+{
+    QString string_return = "";
+    switch(Parameter)
+    {
+    case(RC1_Min):
+        string_return = "RC1_Min";
+        break;
+    case(RC1_Max):
+        string_return = "RC1_Max";
+        break;
+    case(RC2_Min):
+        string_return = "RC2_Min";
+        break;
+    case(RC2_Max):
+        string_return = "RC2_Max";
+        break;
+    case(RC3_Min):
+        string_return = "RC3_Min";
+        break;
+    case(RC3_Max):
+        string_return = "RC3_Max";
+        break;
+    case(RC4_Min):
+        string_return = "RC4_Min";
+        break;
+    case(RC4_Max):
+        string_return = "RC4_Max";
+        break;
+
+    case(RC5_Min):
+        string_return = "RC5_Min";
+        break;
+    case(RC5_Max):
+        string_return = "RC5_Max";
+        break;
+    case(RC6_Min):
+        string_return = "RC6_Min";
+        break;
+    case(RC6_Max):
+        string_return = "RC6_Max";
+        break;
+    case(RC7_Min):
+        string_return = "RC7_Min";
+        break;
+    case(RC7_Max):
+        string_return = "RC7_Max";
+        break;
+    case(RC8_Min):
+        string_return = "RC8_Min";
+        break;
+    case(RC8_Max):
+        string_return = "RC8_Max";
+        break;
+
+    case(RC9_Min):
+        string_return = "RC9_Min";
+        break;
+    case(RC9_Max):
+        string_return = "RC9_Max";
+        break;
+    case(RC10_Min):
+        string_return = "RC10_Min";
+        break;
+    case(RC10_Max):
+        string_return = "RC10_Max";
+        break;
+    case(RC11_Min):
+        string_return = "RC11_Min";
+        break;
+    case(RC11_Max):
+        string_return = "RC11_Max";
+        break;
+    case(RC12_Min):
+        string_return = "RC12_Min";
+        break;
+    case(RC12_Max):
+        string_return = "RC12_Max";
+        break;
+
+    case(RC13_Min):
+        string_return = "RC13_Min";
+        break;
+    case(RC13_Max):
+        string_return = "RC13_Max";
+        break;
+    case(RC14_Min):
+        string_return = "RC14_Min";
+        break;
+    case(RC14_Max):
+        string_return = "RC14_Max";
+        break;
+
+    default:
+        string_return = "";
+    }
+    return(string_return);
+}
+
+RC_Handler::Vehicle_Params RC_Handler::RC_StringtoEnum(const QString &Parameter)
+{
+    RC_Handler::Vehicle_Params return_int;
+
+    if(Parameter == "RC1_Min")
+        return_int = RC_Handler::RC1_Min;
+    else if(Parameter == "RC1_Max")
+        return_int = RC_Handler::RC1_Max;
+    else if(Parameter == "RC2_Min")
+        return_int = RC_Handler::RC2_Min;
+    else if(Parameter == "RC2_Max")
+        return_int = RC_Handler::RC2_Max;
+    else if(Parameter == "RC3_Min")
+        return_int = RC_Handler::RC3_Min;
+    else if(Parameter == "RC3_Max")
+        return_int = RC_Handler::RC3_Max;
+    else if(Parameter == "RC4_Min")
+        return_int = RC_Handler::RC4_Min;
+    else if(Parameter == "RC4_Max")
+        return_int = RC_Handler::RC4_Max;
+
+    else if(Parameter == "RC5_Min")
+        return_int = RC_Handler::RC5_Min;
+    else if(Parameter == "RC5_Max")
+        return_int = RC_Handler::RC5_Max;
+    else if(Parameter == "RC6_Min")
+        return_int = RC_Handler::RC6_Min;
+    else if(Parameter == "RC6_Max")
+        return_int = RC_Handler::RC6_Max;
+    else if(Parameter == "RC7_Min")
+        return_int = RC_Handler::RC7_Min;
+    else if(Parameter == "RC7_Max")
+        return_int = RC_Handler::RC7_Max;
+    else if(Parameter == "RC8_Min")
+        return_int = RC_Handler::RC8_Min;
+    else if(Parameter == "RC8_Max")
+        return_int = RC_Handler::RC8_Max;
+
+    else if(Parameter == "RC9_Min")
+        return_int = RC_Handler::RC9_Min;
+    else if(Parameter == "RC9_Max")
+        return_int = RC_Handler::RC9_Max;
+    else if(Parameter == "RC10_Min")
+        return_int = RC_Handler::RC10_Min;
+    else if(Parameter == "RC10_Max")
+        return_int = RC_Handler::RC10_Max;
+    else if(Parameter == "RC11_Min")
+        return_int = RC_Handler::RC11_Min;
+    else if(Parameter == "RC11_Max")
+        return_int = RC_Handler::RC11_Max;
+    else if(Parameter == "RC12_Min")
+        return_int = RC_Handler::RC12_Min;
+    else if(Parameter == "RC12_Max")
+        return_int = RC_Handler::RC12_Max;
+
+    else if(Parameter == "RC13_Min")
+        return_int = RC_Handler::RC13_Min;
+    else if(Parameter == "RC13_Max")
+        return_int = RC_Handler::RC13_Max;
+    else if(Parameter == "RC14_Min")
+        return_int = RC_Handler::RC14_Min;
+    else if(Parameter == "RC14_Max")
+        return_int = RC_Handler::RC14_Max;
+    else
+        return_int = RC_Handler::RC_Length;
+
+    return(return_int);
+
+}
+

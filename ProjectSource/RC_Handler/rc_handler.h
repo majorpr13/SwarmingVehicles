@@ -1,6 +1,9 @@
 #ifndef RC_HANDLER_H
 #define RC_HANDLER_H
 
+#include <QList>
+#include <QString>
+
 #include "RC_Handler_global.h"
 
 class RC_HANDLERSHARED_EXPORT RC_Handler {
@@ -43,7 +46,8 @@ public:
         RC13_Min,
         RC13_Max,
         RC14_Min,
-        RC14_Max
+        RC14_Max,
+        RC_Length
     };
 
     struct RCJoystick
@@ -121,7 +125,14 @@ public:
     void setJS_HL(const  USBJoystick &value);
     void setbool_Override(const FlightChannel &channel, const bool value);
     void setbool_Reverse(const FlightChannel &channel, const bool value);
+
+    cmd_Value updateRCOverrides(const FlightChannel &FlightMode, const bool &boolOverrride);
+
     cmd_Value computeOverride(const usb_Value &usbCommand);
+
+    QList<QString> parameterList_RC();
+    QString RC_EnumtoString(const int &Parameter);
+    Vehicle_Params RC_StringtoEnum(const QString &Parameter);
 
 private:
     void checkOverride();

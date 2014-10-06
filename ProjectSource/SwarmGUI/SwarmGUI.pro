@@ -102,3 +102,10 @@ else:unix:!macx:!symbian: LIBS += -L$$OUT_PWD/../RC_Handler/ -lRC_Handler
 
 INCLUDEPATH += $$PWD/../RC_Handler
 DEPENDPATH += $$PWD/../RC_Handler
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Command_Helper/release/ -lCommand_Helper
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Command_Helper/debug/ -lCommand_Helper
+else:unix:!macx:!symbian: LIBS += -L$$OUT_PWD/../Command_Helper/ -lCommand_Helper
+
+INCLUDEPATH += $$PWD/../Command_Helper
+DEPENDPATH += $$PWD/../Command_Helper

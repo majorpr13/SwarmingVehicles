@@ -39,7 +39,7 @@ public:
 
     void addVehicle(const int &VehicleID);
 
-    void updateHomeCoordinate(const StructureDefinitions::GPS_Params &homeValue);
+    void updateHomeCoordinate(const GPS_Position &homeValue);
 
     void updateVehicleType(const EnumerationDefinitions::Vehicle_Type &vehicleType);
 
@@ -77,8 +77,8 @@ signals:
     void requestWPParams(const int &vehicleID);
     void transmitWPParams(const int &VehicleID, const QString &msgString, const double &value);
 
-    void signalJoystickOverride(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolOverride);
-    void signalJoystickReverse(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolReverse);
+    void signalJoystickOverride(const int &VehicleID, const RC_Handler::FlightChannel &FlightChannel, const bool &boolOverride);
+    void signalJoystickReverse(const int &VehicleID, const RC_Handler::FlightChannel &FlightChannel, const bool &boolReverse);
 
 private slots:
 
@@ -116,7 +116,7 @@ private slots:
 
 private:
 
-    void updateRCParam(const EnumerationDefinitions::Vehicle_Params &Parameter, const double value);
+    void updateRCParam(const RC_Handler::Vehicle_Params &Parameter, const double value);
 
     void updateWPParam(const EnumerationDefinitions::Vehicle_Params &Parameter, const double value);
 
@@ -128,8 +128,10 @@ private:
 
     Ui::VehicleDataDisplay *ui;
 
-    StructureDefinitions::VehicleRCHL m_RCCalibration;
+    RC_Handler::RCJoystick m_RCCalibration;
+
     GPS_Position m_HomeCoordinate;
+
     StructureDefinitions::VehicleStateV m_VehicleState;
 
 

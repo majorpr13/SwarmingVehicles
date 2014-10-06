@@ -17,6 +17,7 @@
 #include "usbjoy_handler.h"
 #include "gps_position.h"
 #include "rc_handler.h"
+#include "command_helper.h"
 
 #ifdef ROS_LIBS
 #include "rosparse.h"
@@ -47,9 +48,9 @@ private slots:
 
     void requestRCParams(const int &VehicleID);
 
-    void updateRCOverrides(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolOverrride);
+    void updateRCOverrides(const int &VehicleID, const RC_Handler::FlightChannel &FlightChannel, const bool &boolOverride);
 
-    void updateRCReverse(const int &VehicleID, const EnumerationDefinitions::FlightMethods &FlightMode, const bool &boolReverse);
+    void updateRCReverse(const int &VehicleID, const RC_Handler::FlightChannel &FlightChannel, const bool &boolReverse);
 
     void requestWPParams(const int &VehicleID);
 
@@ -84,28 +85,23 @@ private:
     USBJoy_Handler *m_JoystickHandler;
     QMap<int, RC_Handler*> m_MapRC;
 
-    QTimer *m_Timer;
     Ui::SwarmController_GUI *ui;    
     HeartBeatTimer *m_HeartBeatTimer;
     HeartBeatTimer *m_GCSHeartbeat;
 
     Conversions *m_Conversions;
-    cmdConversions *m_cmdConversions;
-    mavCommandStructures::mavCMD_numberList mavCmdNum;
+    Command_Helper *m_CommandHelper;
+
+    mavCommandStructures::mavCMD_numberList *mavCmdNum;
 
     QMap<int, VehicleDataDisplay*> m_MapVehicleWidgets;
-    QMap<int, StructureDefinitions::VehicleRCHL> m_MapVehicleRC;
 
     QList<QString> listVehicles;
 
-    StructureDefinitions::JoystickHL m_USBJoystickHL;
-    StructureDefinitions::HomeDefinition m_GlobalHome;
     StructureDefinitions::USB_Buttons m_USBButtons;
 
     bool JoystickCalibrate;
     bool JoystickEnabled;
-
-    int warningCounter;
 
 #ifdef ROS_LIBS
     ROSParse *m_ROSParser;

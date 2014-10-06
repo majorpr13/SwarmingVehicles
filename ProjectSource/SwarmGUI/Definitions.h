@@ -95,27 +95,7 @@ struct VehicleStateV
     double Goal_Heading;
     double Goal_Altitude;
 };
-struct VehicleRCHL
-{
-    VehicleRCHL(): throttle_low(1100),throttle_high(1900),throttle_or(false),yaw_low(1100),yaw_high(1900),yaw_or(false),pitch_low(1100),pitch_high(1900),pitch_or(false),roll_low(1100),roll_high(1900),roll_or(false),roll_reverse(false),pitch_reverse(false),yaw_reverse(false),throttle_reverse(false){}
-    //VehicleRCHL(): throttle_low(1500),throttle_high(1500),throttle_or(false),yaw_low(1500),yaw_high(1500),yaw_or(false),pitch_low(1500),pitch_high(1500),pitch_or(false),roll_low(1500),roll_high(1500),roll_or(false),roll_reverse(false),pitch_reverse(false),yaw_reverse(false),throttle_reverse(false){}
-    int throttle_low;
-    int throttle_high;
-    bool throttle_or;
-    int yaw_low;
-    int yaw_high;
-    bool yaw_or;
-    int pitch_low;
-    int pitch_high;
-    bool pitch_or;
-    int roll_low;
-    int roll_high;
-    bool roll_or;
-    bool roll_reverse;
-    bool pitch_reverse;
-    bool yaw_reverse;
-    bool throttle_reverse;
-};
+
 struct JoystickHL
 {
     JoystickHL(): throttle_low(0.0),throttle_high(0.0),yaw_low(0.0),yaw_high(0.0),pitch_low(0.0),pitch_high(0.0),roll_low(0.0),roll_high(0.0){}
