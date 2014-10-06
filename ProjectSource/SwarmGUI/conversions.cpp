@@ -2,7 +2,6 @@
 #include <iostream>
 Conversions::Conversions()
 {
-    m_Initialization = new Initialization();
     PI = 3.14159265358979;
 }
 

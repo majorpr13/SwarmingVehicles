@@ -7,7 +7,6 @@ VehicleDataDisplay::VehicleDataDisplay(QWidget *parent) :
 {
     ui->setupUi(this);
     m_Conversion = new Conversions();
-    m_Initialization = new Initialization();
 
     boolUSBCalibraiton = false;
     boolRCCalibration = false;

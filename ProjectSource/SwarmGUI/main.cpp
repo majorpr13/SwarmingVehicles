@@ -3,6 +3,7 @@
 #include <QGraphicsSvgItem>
 #include <QMetaType>
 #include "gps_position.h"
+#include "parameterrequestwindow.h"
 
 int main(int argc, char *argv[])
 {
@@ -24,29 +25,11 @@ int main(int argc, char *argv[])
 
 #endif
 
-    SwarmController_GUI w;
+//    SwarmController_GUI w;
+//    w.show();
+
+    parameterRequestWindow w;
     w.show();
-
-//    std::cout<<"I got into here."<<std::endl;
-//    QString msgString = "CH8_OPT";
-//    boost::array<u_int8_t, 16> stringArray;
-
-//    QByteArray ba = msgString.toLocal8Bit();
-//    const char *c_str2 = ba.data();
-//    std::cout<<"The original message: "<<c_str2<<std::endl;
-//    std::cout<<"The length of the byte array: "<<ba.length()<<std::endl;
-//    for(int i = 0; i < ba.length(); i++)
-//    {
-//        stringArray[i] = ba.at(i);
-//    }
-
-
-//    for(int i = 0; i < stringArray.size(); i++)
-//    {
-//        ba[i] = stringArray.at(i);
-//    }
-//    QString newString(ba);
-//    std::cout<<newString.toStdString()<<std::endl;
 
     return a.exec();
 }

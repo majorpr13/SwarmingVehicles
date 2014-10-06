@@ -7,8 +7,6 @@
 #include <QTimer>
 #include <QMapIterator>
 
-#include "cmdconversions.h"
-
 #include "Definitions.h"
 #include "heartbeattimer.h"
 #include "vehicledatadisplay.h"
@@ -75,6 +73,8 @@ private slots:
 
 #endif
 
+    void on_pushButton_SendFlightCommand_clicked();
+
 private:
     void initialization();
     void updateButtons();
@@ -89,16 +89,13 @@ private:
     HeartBeatTimer *m_HeartBeatTimer;
     HeartBeatTimer *m_GCSHeartbeat;
 
-    Conversions *m_Conversions;
     Command_Helper *m_CommandHelper;
 
-    mavCommandStructures::mavCMD_numberList *mavCmdNum;
+    Command_Helper::mavCMD_numberList *mavCmdNum;
 
     QMap<int, VehicleDataDisplay*> m_MapVehicleWidgets;
 
     QList<QString> listVehicles;
-
-    StructureDefinitions::USB_Buttons m_USBButtons;
 
     bool JoystickCalibrate;
     bool JoystickEnabled;

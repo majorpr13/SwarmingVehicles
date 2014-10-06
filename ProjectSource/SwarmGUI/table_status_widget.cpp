@@ -3,8 +3,6 @@
 #include <QStandardItemModel>
 #include <QHeaderView>
 
-#include "table_widget_item_status.h"
-
 TableStatusWidget::TableStatusWidget(QWidget *parent) :
     QTableWidget(parent)
 {

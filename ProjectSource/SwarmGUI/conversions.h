@@ -1,7 +1,6 @@
 #ifndef CONVERSIONS_H
 #define CONVERSIONS_H
 #include "Definitions.h"
-#include "initialization.h"
 #include "math.h"
 
 #include <QList>
@@ -21,8 +20,6 @@ public:
     QString VehicleParam_EnumtoString(const int &Parameter);
 
     QList<QString> parameterList_WP();
-
-    Initialization *m_Initialization;
 
 private:
 

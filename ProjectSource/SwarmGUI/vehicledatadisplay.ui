@@ -479,6 +479,10 @@
           </item>
          </layout>
         </widget>
+        <zorder>line</zorder>
+        <zorder>layoutWidget</zorder>
+        <zorder>layoutWidget</zorder>
+        <zorder></zorder>
        </widget>
        <widget class="QWidget" name="tab_2">
         <attribute name="title">

@@ -6,9 +6,6 @@
 #include "WidgetPFD.h"
 #include "qfi_PFD.h"
 
-#include "cmdconversions.h"
-
-#include "initialization.h"
 #include "conversions.h"
 #include "Definitions.h"
 
@@ -147,7 +144,6 @@ private:
     RC_Handler m_RCHandler;
 
     Conversions *m_Conversion;
-    Initialization *m_Initialization;
 
 };
 

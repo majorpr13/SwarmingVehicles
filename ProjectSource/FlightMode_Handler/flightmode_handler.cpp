@@ -19,10 +19,13 @@ FlightMode_Handler::FlightMode_Handler()
     m_FlightMode.Sport = 13;
     m_FlightMode.Stabilize = 0;//
    // m_FlightMode.SuperSimple = 0;
+
+    m_FlightMode.TakeOff = 99;
+
 }
 
 
-uint FlightMode_Handler::FlightMode_StringtoEnum(const QString &QFlightMode)
+int FlightMode_Handler::FlightMode_StringtoEnum(const QString &QFlightMode)
 {
     if(QFlightMode == "Acro")
         return m_FlightMode.Acro;
@@ -54,6 +57,8 @@ uint FlightMode_Handler::FlightMode_StringtoEnum(const QString &QFlightMode)
         return m_FlightMode.Stabilize;
     //else if(QFlightMode == "Super Simple")
         //return m_FlightMode.SuperSimple;
+    else if(QFlightMode == "TakeOff")
+        return m_FlightMode.TakeOff;
     else
         return -1;
 }
@@ -90,6 +95,8 @@ QString FlightMode_Handler::FlightMode_EnumtoString(const uint &FlightMode)
         return "Stabilize";
     //else if(FlightMode == m_FlightMode.SuperSimple)
         //return "Super Simple";
+    else if(FlightMode == m_FlightMode.TakeOff)
+        return("TakeOff");
     else
         return "";
 }
@@ -126,6 +133,8 @@ FlightMode_Handler::enum_FlightModes FlightMode_Handler::getFlightMode(const uin
         return FlightMode_Handler::Stabilize;
     //else if(FlightMode == m_FlightMode.SuperSimple)
         //return "Super Simple";
+    else if(FlightMode == m_FlightMode.TakeOff)
+        return FlightMode_Handler::TakeOff;
     else
         return FlightMode_Handler::FlightMode_Length;
 }

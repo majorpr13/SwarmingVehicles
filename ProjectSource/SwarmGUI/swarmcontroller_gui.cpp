@@ -18,9 +18,6 @@ SwarmController_GUI::SwarmController_GUI(QWidget *parent) :
 
     m_CommandHelper = new Command_Helper();
 
-    m_Conversions = new Conversions();
-
-
     connect(m_HeartBeatTimer,SIGNAL(elapsedUpdate(int,int)),this,SLOT(updateElapsedHearbeat(int,int)));
 
     JoystickCalibrate = false;
@@ -180,13 +177,13 @@ void SwarmController_GUI::requestRCParams(const int &VehicleID)
 
 void SwarmController_GUI::requestWPParams(const int &VehicleID)
 {
-    QList<QString> listRC = m_Conversions->parameterList_WP();
-    for(int i = 0; i < listRC.length(); i++)
-    {
-#ifdef ROS_LIBS
-        m_ROSParser->publishParameterRequest(VehicleID,listRC.at(i));
-#endif
-    }
+//    QList<QString> listRC = m_Conversions->parameterList_WP();
+//    for(int i = 0; i < listRC.length(); i++)
+//    {
+//#ifdef ROS_LIBS
+//        m_ROSParser->publishParameterRequest(VehicleID,listRC.at(i));
+//#endif
+//    }
 
 }
 
@@ -437,26 +434,48 @@ void::SwarmController_GUI::USBJoystick(const sensor_msgs::Joy &JoystickValues)
 
 void SwarmController_GUI::updateUSBButtons(const sensor_msgs::Joy &JoystickValues)
 {
-    if(m_USBButtons.Button1 != JoystickValues.buttons.at(0))
-    {
-        m_USBButtons.Button1 = JoystickValues.buttons.at(0);
-    }
-    if(m_USBButtons.Button2 != JoystickValues.buttons.at(1))
-    {
-        m_USBButtons.Button2 = JoystickValues.buttons.at(1);
-    }
-    if(m_USBButtons.Button3 != JoystickValues.buttons.at(2))
-    {
-        m_USBButtons.Button3 = JoystickValues.buttons.at(2);
-    }
-    if(m_USBButtons.Button4 != JoystickValues.buttons.at(3))
-    {
-        m_USBButtons.Button4 = JoystickValues.buttons.at(3);
-    }
-    if(m_USBButtons.Button5 != JoystickValues.buttons.at(4))
-    {
-        m_USBButtons.Button5 = JoystickValues.buttons.at(4);
-    }
+//    if(m_USBButtons.Button1 != JoystickValues.buttons.at(0))
+//    {
+//        m_USBButtons.Button1 = JoystickValues.buttons.at(0);
+//    }
+//    if(m_USBButtons.Button2 != JoystickValues.buttons.at(1))
+//    {
+//        m_USBButtons.Button2 = JoystickValues.buttons.at(1);
+//    }
+//    if(m_USBButtons.Button3 != JoystickValues.buttons.at(2))
+//    {
+//        m_USBButtons.Button3 = JoystickValues.buttons.at(2);
+//    }
+//    if(m_USBButtons.Button4 != JoystickValues.buttons.at(3))
+//    {
+//        m_USBButtons.Button4 = JoystickValues.buttons.at(3);
+//    }
+//    if(m_USBButtons.Button5 != JoystickValues.buttons.at(4))
+//    {
+//        m_USBButtons.Button5 = JoystickValues.buttons.at(4);
+//    }
 }
 
 #endif
+
+void SwarmController_GUI::on_pushButton_SendFlightCommand_clicked()
+{
+    QVector<double> commandVector(7);
+
+    if(ui->comboBox_DesiredSwarmBehavior->currentText() == "TakeOff")
+    {
+            QMapIterator<int, VehicleDataDisplay*> i(m_MapVehicleWidgets);
+            while(i.hasNext())
+            {
+                i.next();
+                GPS_Position Command_Position = m_MapVehicleWidgets[i.key()]->requestPosition();
+                commandVector = m_CommandHelper->convert_takeOff(Command_Position);
+                //m_ROSParser->publishMAVcommand(i.key(),0,commandVector);
+            }
+    }
+    else
+    {
+
+    }
+
+}
