@@ -7,5 +7,6 @@ SUBDIRS += \
     RC_Handler \
     FlightMode_Handler \
     Command_Helper \
-    USBJoy_Handler
+    USBJoy_Handler \
+    StreamMode_Handler
 

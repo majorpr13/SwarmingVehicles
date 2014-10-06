@@ -5,7 +5,6 @@
 #include <QtDesigner/QtDesigner>
 
 #include "Definitions.h"
-#include "table_widget_item_status.h"
 
 
 #ifdef ROS_LIBS

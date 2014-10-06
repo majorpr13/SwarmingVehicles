@@ -15,26 +15,20 @@ TEMPLATE = app
 SOURCES += main.cpp\
     swarmcontroller_gui.cpp \
     table_status_widget.cpp \
-    table_widget_item_status.cpp \
     vehicledatadisplay.cpp \
     rosparse.cpp \
     vehiclestate.cpp \
     heartbeattimer.cpp \
-    initialization.cpp \
-    conversions.cpp \
-    cmdconversions.cpp
+    conversions.cpp
 
 HEADERS  += swarmcontroller_gui.h \
     table_status_widget.h \
-    table_widget_item_status.h \
     vehicledatadisplay.h \
     rosparse.h \
     vehiclestate.h \
     heartbeattimer.h \
     Definitions.h \
-    initialization.h \
-    conversions.h \
-    cmdconversions.h
+    conversions.h
 
 FORMS    += swarmcontroller_gui.ui \
     vehicledatadisplay.ui
