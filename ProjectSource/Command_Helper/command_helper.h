@@ -30,6 +30,11 @@ public:
 
     QVector<double> convert_takeOff(const GPS_Position &Position);
 
+    QVector<defaultCMD_Structure> getcmdstructure_TakeOff(const GPS_Position &currentGPS);
+
+    QVector<defaultCMD_Structure> getcmdstructure_SwarmTakeOff();
+
+
 
 };
 

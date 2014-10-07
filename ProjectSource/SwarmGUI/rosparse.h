@@ -60,8 +60,6 @@ public:
 
     void joystickMode(const bool &joystickOperations);
 
-    void initiate(const int &GCSID);
-
 signals:
 
     void newVehicleAttitude(mavlink_common::ATTITUDE msg);

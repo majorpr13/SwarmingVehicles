@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     vehiclestate.cpp \
     heartbeattimer.cpp \
     conversions.cpp \
-    parameterrequestwindow.cpp
+    parameterrequestwindow.cpp \
+    parameterrequest.cpp
 
 HEADERS  += swarmcontroller_gui.h \
     table_status_widget.h \
@@ -30,11 +31,13 @@ HEADERS  += swarmcontroller_gui.h \
     heartbeattimer.h \
     Definitions.h \
     conversions.h \
-    parameterrequestwindow.h
+    parameterrequestwindow.h \
+    parameterrequest.h
 
 FORMS    += swarmcontroller_gui.ui \
     vehicledatadisplay.ui \
-    parameterrequestwindow.ui
+    parameterrequestwindow.ui \
+    parameterrequest.ui
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../QTFlightView/release/ -lQTFlightView

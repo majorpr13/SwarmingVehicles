@@ -17,6 +17,8 @@
 #include "rc_handler.h"
 #include "command_helper.h"
 
+#include "parameterrequest.h"
+
 #ifdef ROS_LIBS
 #include "rosparse.h"
 #endif
@@ -73,7 +75,9 @@ private slots:
 
 #endif
 
-    void on_pushButton_SendFlightCommand_clicked();
+    void on_pushButton_SendCmd_clicked();
+
+    void on_pushButton_SendFM_clicked();
 
 private:
     void initialization();
@@ -90,6 +94,7 @@ private:
     HeartBeatTimer *m_GCSHeartbeat;
 
     Command_Helper *m_CommandHelper;
+    FlightMode_Handler *m_FlightModeHelper;
 
     Command_Helper::mavCMD_numberList *mavCmdNum;
 

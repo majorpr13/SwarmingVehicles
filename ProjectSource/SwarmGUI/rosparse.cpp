@@ -8,9 +8,6 @@
 
 ROSParse::ROSParse(const int &GCSID)
 {
-    //m_Timer->setInterval(1500);
-    //connect(m_Timer,SIGNAL(timeout()),this,SLOT(publishGCSHeartbeat()));
-
     m_GCSID = GCSID;
 
     ros::NodeHandle node_handler;
@@ -30,8 +27,7 @@ ROSParse::ROSParse(const int &GCSID)
     arduPub_paramReq = node_handler.advertise<mavlink_common::PARAM_REQUEST_READ>("to_mav_param_request_read",20);
     arduPub_cmdReq = node_handler.advertise<mavlink_common::COMMAND_LONG>("to_mav_command_long",10);
 
-    //arduPub_gcsHeartbeat = node_handler.advertise<mavlink_common::HEARTBEAT>("to_mav_heartbeat",2);
-    //m_Timer->start();
+
     rosspinner = new ros::AsyncSpinner(0);
     rosspinner->start();
 
@@ -39,11 +35,6 @@ ROSParse::ROSParse(const int &GCSID)
 }
 
 ROSParse::~ROSParse()
-{
-
-}
-
-void ROSParse::initiate(const int &GCSID)
 {
 
 }

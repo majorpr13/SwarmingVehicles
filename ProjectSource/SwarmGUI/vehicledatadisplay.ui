@@ -31,7 +31,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
@@ -479,10 +479,9 @@
           </item>
          </layout>
         </widget>
+        <zorder>layoutWidget</zorder>
+        <zorder>layoutWidget</zorder>
         <zorder>line</zorder>
-        <zorder>layoutWidget</zorder>
-        <zorder>layoutWidget</zorder>
-        <zorder></zorder>
        </widget>
        <widget class="QWidget" name="tab_2">
         <attribute name="title">
@@ -922,7 +921,7 @@
           <rect>
            <x>2</x>
            <y>0</y>
-           <width>512</width>
+           <width>371</width>
            <height>187</height>
           </rect>
          </property>

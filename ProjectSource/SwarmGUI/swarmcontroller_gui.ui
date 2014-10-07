@@ -157,7 +157,7 @@
          </font>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_4">
          <attribute name="title">
@@ -166,8 +166,8 @@
          <widget class="QWidget" name="">
           <property name="geometry">
            <rect>
-            <x>8</x>
-            <y>10</y>
+            <x>9</x>
+            <y>11</y>
             <width>261</width>
             <height>29</height>
            </rect>
@@ -195,7 +195,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="comboBox_DesiredSwarmBehavior">
+            <widget class="QComboBox" name="comboBox_DesiredSwarmBehavior_FM">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -262,9 +262,86 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_SendFlightCommand">
+            <widget class="QPushButton" name="pushButton_SendFM">
              <property name="text">
-              <string>Send It</string>
+              <string>Send FM</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="">
+          <property name="geometry">
+           <rect>
+            <x>6</x>
+            <y>50</y>
+            <width>261</width>
+            <height>29</height>
+           </rect>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <widget class="QLabel" name="label_22">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Desired:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comboBox_DesiredSwarmBehavior_CMD">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>111</width>
+               <height>27</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <property name="sizeAdjustPolicy">
+              <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+             </property>
+             <item>
+              <property name="text">
+               <string>Land</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>TakeOff</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_SendCmd">
+             <property name="text">
+              <string>Send CMD</string>
              </property>
             </widget>
            </item>
@@ -614,7 +691,7 @@
            <rect>
             <x>1</x>
             <y>11</y>
-            <width>464</width>
+            <width>351</width>
             <height>209</height>
            </rect>
           </property>

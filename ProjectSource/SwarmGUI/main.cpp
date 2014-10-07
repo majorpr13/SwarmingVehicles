@@ -3,7 +3,7 @@
 #include <QGraphicsSvgItem>
 #include <QMetaType>
 #include "gps_position.h"
-#include "parameterrequestwindow.h"
+#include "parameterrequest.h"
 
 int main(int argc, char *argv[])
 {
@@ -25,11 +25,16 @@ int main(int argc, char *argv[])
 
 #endif
 
-//    SwarmController_GUI w;
-//    w.show();
-
-    parameterRequestWindow w;
+    SwarmController_GUI w;
     w.show();
+//    double result = 0;
+//    Command_Helper cmdObject;
 
+//    parameterRequest *w = new parameterRequest();
+//    w->setValues(cmdObject.getcmdstructure_SwarmTakeOff());
+//    if(w->exec() == QDialog::Accepted)
+//        result = w->value;
+//        std::cout<<"Accepted was triggered and exited with a value of "<<result<<std::endl;
+//        delete(w);
     return a.exec();
 }

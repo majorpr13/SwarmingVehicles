@@ -21,6 +21,7 @@ public:
          uint CircleFM;
          uint Position;
          uint Land;
+         uint TakeOff;
          //int FollowMe;
          //int Simple;
          //int SuperSimple;
@@ -40,6 +41,7 @@ public:
         CircleFM,
         Position,
         Land,
+        TakeOff,
         //int FollowMe;
         //int Simple;
         //int SuperSimple;
@@ -49,7 +51,7 @@ public:
 public:
     FlightMode_Handler();
 
-    uint FlightMode_StringtoEnum(const QString &QFlightMode);
+    int FlightMode_StringtoEnum(const QString &QFlightMode);
 
     QString FlightMode_EnumtoString(const uint &FlightMode);
 

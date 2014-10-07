@@ -434,6 +434,15 @@ void::SwarmController_GUI::USBJoystick(const sensor_msgs::Joy &JoystickValues)
 
 void SwarmController_GUI::updateUSBButtons(const sensor_msgs::Joy &JoystickValues)
 {
+
+//    while(i.hasNext())
+//    {
+//        i.next();
+//        m_MapRC[i.key()]->setbool_Override(RC_Handler::ALL,false);
+//        RC_Handler::cmd_Value override_command;
+//        m_ROSParser->publishJoystickOverride_single(i.key(),override_command);
+//    }
+
 //    if(m_USBButtons.Button1 != JoystickValues.buttons.at(0))
 //    {
 //        m_USBButtons.Button1 = JoystickValues.buttons.at(0);
@@ -458,24 +467,44 @@ void SwarmController_GUI::updateUSBButtons(const sensor_msgs::Joy &JoystickValue
 
 #endif
 
-void SwarmController_GUI::on_pushButton_SendFlightCommand_clicked()
+void SwarmController_GUI::on_pushButton_SendCmd_clicked()
 {
-    QVector<double> commandVector(7);
-
-    if(ui->comboBox_DesiredSwarmBehavior->currentText() == "TakeOff")
+    if(ui->comboBox_DesiredSwarmBehavior_CMD->currentText() == "TakeOff")
     {
-            QMapIterator<int, VehicleDataDisplay*> i(m_MapVehicleWidgets);
-            while(i.hasNext())
+            parameterRequest *prWindow = new parameterRequest();
+            if(prWindow->exec() == QDialog::Accepted)
             {
-                i.next();
-                GPS_Position Command_Position = m_MapVehicleWidgets[i.key()]->requestPosition();
-                commandVector = m_CommandHelper->convert_takeOff(Command_Position);
-                //m_ROSParser->publishMAVcommand(i.key(),0,commandVector);
+                double altitude = prWindow->returnVector.at(7);
+                GPS_Position Command_Position;
+                Command_Position.Altitude = altitude;
+
+                QMapIterator<int, VehicleDataDisplay*> i(m_MapVehicleWidgets);
+                QVector<double> commandVector(7);
+                while(i.hasNext())
+                {
+                    i.next();
+                    GPS_Position Command_Position = m_MapVehicleWidgets[i.key()]->requestPosition();
+                    commandVector = m_CommandHelper->convert_takeOff(Command_Position);
+                    m_ROSParser->publishMAVcommand(i.key(),mavCmdNum->takeOff,0,commandVector);
+                }
             }
+            delete(prWindow);
     }
     else
     {
 
     }
+}
 
+void SwarmController_GUI::on_pushButton_SendFM_clicked()
+{
+    QString stringFM = ui->comboBox_DesiredSwarmBehavior_FM->currentText();
+    int DFM = m_FlightModeHelper->FlightMode_StringtoEnum(stringFM);
+
+    QMapIterator<int, VehicleDataDisplay*> i(m_MapVehicleWidgets);
+    while(i.hasNext())
+    {
+        i.next();
+        m_ROSParser->publishDesiredFlightMode(i.key(),DFM);
+    }
 }
