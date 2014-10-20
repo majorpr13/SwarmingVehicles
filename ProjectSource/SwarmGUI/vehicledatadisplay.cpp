@@ -162,26 +162,6 @@ void VehicleDataDisplay::updateOverrideCheckbox()
     }
 }
 
-void VehicleDataDisplay::updateVehicleParams(const mavlink_common::PARAM_VALUE &parameter)
-{
-    QByteArray ba;
-    for(uint i = 0; i < parameter.param_id.size(); i++)
-    {
-        ba[i] = parameter.param_id.at(i);
-    }
-    QString newString(ba);
-    RC_Handler::Vehicle_Params VP = m_RCHandler.RC_StringtoEnum(newString);
-
-    if(VP != RC_Handler::RC_Length)
-    {
-        updateRCParam(VP,parameter.param_value);
-    }
-    //if RC_Length was returned this means it was not one of the RC parameters lets continue to check
-//    else if((VP > EnumerationDefinitions::RC_Length) && (VP< EnumerationDefinitions::WP_Length))
-//    {
-//        updateWPParam(VP,parameter.param_value);
-//    }
-}
 
 void VehicleDataDisplay::updateWPParam(const EnumerationDefinitions::Vehicle_Params &Parameter, const double value)
 {
@@ -279,6 +259,28 @@ void VehicleDataDisplay::checkRCParams()
 
 
 #ifdef ROS_LIBS
+void VehicleDataDisplay::updateVehicleParams(const mavlink_common::PARAM_VALUE &parameter)
+{
+    QByteArray ba;
+    for(uint i = 0; i < parameter.param_id.size(); i++)
+    {
+        ba[i] = parameter.param_id.at(i);
+    }
+    QString newString(ba);
+    RC_Handler::Vehicle_Params VP = m_RCHandler.RC_StringtoEnum(newString);
+
+    if(VP != RC_Handler::RC_Length)
+    {
+        updateRCParam(VP,parameter.param_value);
+    }
+    //if RC_Length was returned this means it was not one of the RC parameters lets continue to check
+//    else if((VP > EnumerationDefinitions::RC_Length) && (VP< EnumerationDefinitions::WP_Length))
+//    {
+//        updateWPParam(VP,parameter.param_value);
+//    }
+}
+
+
 void VehicleDataDisplay::updateRCValues(const mavlink_common::RC_CHANNELS_RAW &RCValues)
 {
     ui->lineEdit_PitchCurrent->setText(QString::number(RCValues.chan2_raw));

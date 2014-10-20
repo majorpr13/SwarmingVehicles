@@ -43,8 +43,6 @@ public:
 
     void USBcalibrationCompleted();
 
-    void updateVehicleParams(const mavlink_common::PARAM_VALUE &parameter);
-
     void updateUSBOverride(const RC_Handler::cmd_Value &cmdValue);
 
     GPS_Position requestPosition();
@@ -52,6 +50,7 @@ public:
 
 
 #ifdef ROS_LIBS
+    void updateVehicleParams(const mavlink_common::PARAM_VALUE &parameter);
     void updateRCValues(const mavlink_common::RC_CHANNELS_RAW &RCValues);
 #endif
 

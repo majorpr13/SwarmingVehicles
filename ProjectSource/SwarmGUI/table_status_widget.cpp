@@ -140,14 +140,14 @@ void TableStatusWidget::ChangeConnection(const int &VehicleID, const bool &Conne
     if(Connection == true)
     {
         valid = "GOOD";
-        bgcolor = Qt::green;
+        bgcolor.setRgb(60,180,60); // green;
         m_VehicleInformationP[VehicleID].Connection->setText(valid);
         m_VehicleInformationP[VehicleID].Connection->setBackgroundColor(bgcolor);
     }
     else
     {
         valid = "LOST";
-        bgcolor = Qt::red;
+        bgcolor.setRgb(200,30,30); // red
         m_VehicleInformationP[VehicleID].Connection->setText(valid);
         m_VehicleInformationP[VehicleID].Connection->setBackgroundColor(bgcolor);
     }
@@ -178,18 +178,21 @@ void TableStatusWidget::updateElapsedTime(const int VehicleID, const int elapsed
         return;
     m_VehicleInformationP[VehicleID].Connection->setText(QString::number(elapsedTime));
     QColor color;
-    color = Qt::green;
+    // color = Qt::green;
+    color.setRgb(60,180,60); // green
     if(elapsedTime < 2000)
         m_VehicleInformationP[VehicleID].Connection->setBackgroundColor(color);
     else if((elapsedTime >= 2000) && (elapsedTime <= 5000))
     {
-         color = Qt::yellow;
-         m_VehicleInformationP[VehicleID].Connection->setBackgroundColor(color);
+        // color = Qt::yellow;
+        color.setRgb(180,180,30); // yellow
+        m_VehicleInformationP[VehicleID].Connection->setBackgroundColor(color);
     }
     else if(elapsedTime >5000)
     {
-         color = Qt::red;
-         m_VehicleInformationP[VehicleID].Connection->setBackgroundColor(color);
+        // color = Qt::red;
+        color.setRgb(200,30,30); // red
+        m_VehicleInformationP[VehicleID].Connection->setBackgroundColor(color);
     }
 
 }
@@ -231,6 +234,9 @@ void TableStatusWidget::ChangeBatteryVoltage(const mavlink_common::SYS_STATUS &s
     double battery_voltage = status.voltage_battery / 1000.0;
     double battery_current = status.current_battery / 10000.0;
 
+
+    QColor volotage_color;
+
     //Check battery voltage and update background
     if(battery_voltage > (3.7 * m_VehicleInformationFull[VehicleID].Cell_Count))
     {
@@ -239,28 +245,30 @@ void TableStatusWidget::ChangeBatteryVoltage(const mavlink_common::SYS_STATUS &s
 
     else if(battery_voltage > (3.2 * m_VehicleInformationFull[VehicleID].Cell_Count))
     {
-        m_VehicleInformationP[VehicleID].Battery_V->setBackgroundColor(Qt::yellow);
+        voltage_color.setRgb(180,180,30); // yellow
+        m_VehicleInformationP[VehicleID].Battery_V->setBackgroundColor(voltage_color);
     }
-
     else
     {
-        m_VehicleInformationP[VehicleID].Battery_V->setBackgroundColor(Qt::red);
+        volotage_color.setRgb(200,30,30); // red
+        m_VehicleInformationP[VehicleID].Battery_V->setBackgroundColor(volotage_color);
     }
 
     //Check amperage consumption and update background
+    QColor amperage_color;
     if(battery_current < (m_VehicleInformationFull[VehicleID].Battery_AH - 0.25 * m_VehicleInformationFull[VehicleID].Battery_AH))
     {
         m_VehicleInformationP[VehicleID].Battery_A->setBackgroundColor(Qt::white);
     }
-
     else if(status.voltage_battery < (m_VehicleInformationFull[VehicleID].Battery_AH - 0.1 * m_VehicleInformationFull[VehicleID].Battery_AH))
     {
-        m_VehicleInformationP[VehicleID].Battery_A->setBackgroundColor(Qt::yellow);
+        amperage_color.setRgb(180,180,30); // yellow
+        m_VehicleInformationP[VehicleID].Battery_A->setBackgroundColor(amperage_color);
     }
-
     else
     {
-        m_VehicleInformationP[VehicleID].Battery_A->setBackgroundColor(Qt::red);
+        amperage_color.setRgb(200,30,30); // red
+        m_VehicleInformationP[VehicleID].Battery_A->setBackgroundColor(amperage_color);
     }
 
 
@@ -275,16 +283,21 @@ void TableStatusWidget::ChangeSatellite(const mavlink_common::GPS_RAW_INT &statu
 
     m_VehicleInformationP[VehicleID].GPS_Number->setText(QString::number(status.satellites_visible));
 
+    QColor color;
+
     switch(status.fix_type)
     {
     case 3:
-        m_VehicleInformationP[VehicleID].GPS_Number->setBackgroundColor(Qt::green);
+        color.setRgb(60,180,60); // green
+        m_VehicleInformationP[VehicleID].GPS_Number->setBackgroundColor(color);
         break;
     case 2:
-        m_VehicleInformationP[VehicleID].GPS_Number->setBackgroundColor(Qt::yellow);
+        color.setRgb(180,180,30); // yellow
+        m_VehicleInformationP[VehicleID].GPS_Number->setBackgroundColor(color);
         break;
-    default:
-        m_VehicleInformationP[VehicleID].GPS_Number->setBackgroundColor(Qt::red);
+    default:        
+        color.setRgb(200,30,30); // red
+        m_VehicleInformationP[VehicleID].GPS_Number->setBackgroundColor(color);
         break;
     }
 
